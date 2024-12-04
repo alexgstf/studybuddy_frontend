@@ -7,40 +7,128 @@ hide: true
 menu: nav/home.html
 ---
 
-Study Buddy
 
-Welcome to Study Buddy, your ultimate study companion! Stay organized, collaborate effectively, and make studying fun with Study Buddy. Here’s what we offer:
+    header {
+        background: #4CAF50;
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-Features
+    header h1 {
+        margin: 0;
+        font-size: 2rem;
+    }
 
-Collaborative Tools
+    nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: 1rem;
+    }
 
-Work together with friends using real-time study sessions, shared notes, and more!
+    nav ul li {
+        display: inline;
+    }
 
-Personalized Dashboard
+    nav ul li a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+    }
 
-Track your progress and customize your study schedule to stay on top of your goals.
+    .hero {
+        text-align: center;
+        padding: 3rem 1rem;
+    }
 
-Fun Challenges
+    .hero h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
 
-Turn studying into a game with rewards, leaderboards, and exciting challenges!
+    .hero p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+    }
 
-How to Get Started
+    .hero button {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+    }
 
-Ready to level up your study game? Hit the button below to join us today:
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 2rem;
+    }
 
-Get Started
+    .feature {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
 
-Navigation
+    .feature h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
 
-Home
+    .feature p {
+        font-size: 1rem;
+        color: #555;
+    }
 
-Features
+    footer {
+        text-align: center;
+        padding: 1rem;
+        background: #333;
+        color: white;
+        margin-top: 2rem;
+    }
 
-Contact Us
+    footer a {
+        color: #4CAF50;
+        text-decoration: none;
+    }
 
-Contact Us
+    footer a:hover {
+        text-decoration: underline;
+    }
+</style>
 
-© 2024 Study Buddy. Designed with 💡 and 🧠. Reach Out
+<section class="hero">
+    <h2>Your Ultimate Study Companion</h2>
+    <p>Stay organized, collaborate effectively, and make studying fun with Study Buddy.</p>
+    <button>Get Started</button>
+</section>
 
+<section id="features" class="features">
+    <div class="feature">
+        <h3>Collaborative Tools</h3>
+        <p>Work together with friends using real-time study sessions, shared notes, and more!</p>
+    </div>
+    <div class="feature">
+        <h3>Personalized Dashboard</h3>
+        <p>Track your progress and customize your study schedule to stay on top of your goals.</p>
+    </div>
+    <div class="feature">
+        <h3>Fun Challenges</h3>
+        <p>Turn studying into a game with rewards, leaderboards, and exciting challenges!</p>
+    </div>
+</section>
 
+<footer>
+    <p>&copy; 2024 Study Buddy. Designed with 💡 and 🧠. <a href="#contact">Contact Us</a></p>
+</footer>
