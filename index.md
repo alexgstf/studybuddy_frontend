@@ -7,7 +7,6 @@ hide: true
 menu: nav/home.html
 ---
 
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -19,17 +18,21 @@ menu: nav/home.html
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(to right, #fceabb, #f8b500);
-            color: #333;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            overflow-x: hidden;
         }
 
         header {
-            background: #4CAF50;
-            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         header h1 {
@@ -42,80 +45,99 @@ menu: nav/home.html
             margin: 0;
             padding: 0;
             display: flex;
-            gap: 1rem;
-        }
-
-        nav ul li {
-            display: inline;
+            gap: 1.5rem;
         }
 
         nav ul li a {
-            color: white;
+            color: #fff;
             text-decoration: none;
             font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #ffd700;
         }
 
         .hero {
             text-align: center;
-            padding: 3rem 1rem;
+            padding: 5rem 1rem;
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
         }
 
         .hero h2 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 1rem;
         }
 
         .hero p {
             font-size: 1.2rem;
             margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .hero button {
-            background: #4CAF50;
-            color: white;
+            background: #ffd700;
+            color: #000;
             border: none;
-            padding: 0.8rem 1.5rem;
-            font-size: 1rem;
-            border-radius: 5px;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 50px;
             cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .hero button:hover {
+            background: #ffc700;
         }
 
         .features {
+            padding: 3rem 1rem;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            padding: 2rem;
         }
 
         .feature {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
             text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-10px);
         }
 
         .feature h3 {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             margin-bottom: 1rem;
         }
 
         .feature p {
             font-size: 1rem;
-            color: #555;
         }
 
         footer {
             text-align: center;
-            padding: 1rem;
-            background: #333;
-            color: white;
-            margin-top: 2rem;
+            padding: 2rem 1rem;
+            background: #000;
+        }
+
+        footer p {
+            margin: 0;
+            color: #fff;
         }
 
         footer a {
-            color: #4CAF50;
+            color: #ffd700;
             text-decoration: none;
+            font-weight: bold;
         }
 
         footer a:hover {
@@ -137,7 +159,7 @@ menu: nav/home.html
 
     <section class="hero">
         <h2>Your Ultimate Study Companion</h2>
-        <p>Stay organized, collaborate effectively, and make studying fun with Study Buddy.</p>
+        <p>Stay organized, collaborate effectively, and make studying fun with Study Buddy. We’re here to help you achieve your goals with ease and style!</p>
         <button>Get Started</button>
     </section>
 
