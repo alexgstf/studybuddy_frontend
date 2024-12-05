@@ -123,20 +123,44 @@ permalink: /task_manager
 </style>
 
 <div id="task-manager-container">
-  <label for="task-input">Enter your task:</label>
-  <input type="text" id="task-input" placeholder="e.g., Study math for 2 hours" />
+  <label for="title-input">Task Title:</label>
+  <input type="text" id="title-input" placeholder="e.g., Study math" />
+
+  <label for="time-input">Time to be Taken:</label>
+  <input type="text" id="time-input" placeholder="e.g., 2 hours" />
+
+  <label for="class-input">Class:</label>
+  <input type="text" id="class-input" placeholder="e.g., Math" />
+
+  <label for="date-input">Date to be Completed:</label>
+  <input type="date" id="date-input" />
+
   <button id="add-task-button">Add Task</button>
 
   <div id="tasks-container" style="display:none;">
     <h2>Your Tasks</h2>
-    <ul id="task-list"></ul>
+    <table id="task-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Time to be Taken</th>
+          <th>Class</th>
+          <th>Date to be Completed</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="task-list"></tbody>
+    </table>
     <button id="clear-tasks-button" style="display:none;">Clear All Tasks</button>
   </div>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const taskInput = document.getElementById("task-input");
+  const titleInput = document.getElementById("title-input");
+  const timeInput = document.getElementById("time-input");
+  const classInput = document.getElementById("class-input");
+  const dateInput = document.getElementById("date-input");
   const addTaskButton = document.getElementById("add-task-button");
   const tasksContainer = document.getElementById("tasks-container");
   const taskList = document.getElementById("task-list");
@@ -149,17 +173,33 @@ document.addEventListener("DOMContentLoaded", () => {
     taskList.innerHTML = ""; // Clear the current list
 
     tasks.forEach((task, index) => {
-      const taskItem = document.createElement("li");
-      taskItem.classList.add("task-item");
-      taskItem.textContent = task;
+      const taskRow = document.createElement("tr");
 
+      const titleCell = document.createElement("td");
+      titleCell.textContent = task.title;
+      taskRow.appendChild(titleCell);
+
+      const timeCell = document.createElement("td");
+      timeCell.textContent = task.time;
+      taskRow.appendChild(timeCell);
+
+      const classCell = document.createElement("td");
+      classCell.textContent = task.class;
+      taskRow.appendChild(classCell);
+
+      const dateCell = document.createElement("td");
+      dateCell.textContent = task.date;
+      taskRow.appendChild(dateCell);
+
+      const actionsCell = document.createElement("td");
       const deleteButton = document.createElement("button");
       deleteButton.classList.add("delete-btn");
       deleteButton.textContent = "Delete";
       deleteButton.onclick = () => deleteTask(index);
+      actionsCell.appendChild(deleteButton);
+      taskRow.appendChild(actionsCell);
 
-      taskItem.appendChild(deleteButton);
-      taskList.appendChild(taskItem);
+      taskList.appendChild(taskRow);
     });
 
     // Show tasks container and clear button if there are tasks
@@ -174,14 +214,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add a new task
   addTaskButton.addEventListener("click", () => {
-    const taskText = taskInput.value.trim();
-    if (!taskText) {
-      alert("Please enter a task!");
+    const title = titleInput.value.trim();
+    const time = timeInput.value.trim();
+    const className = classInput.value.trim();
+    const date = dateInput.value.trim();
+
+    if (!title || !time || !className || !date) {
+      alert("Please fill in all fields!");
       return;
     }
 
-    tasks.push(taskText);
-    taskInput.value = ""; // Clear the input field
+    const task = {
+      title: title,
+      time: time,
+      class: className,
+      date: date,
+    };
+
+    tasks.push(task);
+    titleInput.value = "";
+    timeInput.value = "";
+    classInput.value = "";
+    dateInput.value = ""; // Clear the input fields
 
     // Save tasks to local storage
     localStorage.setItem("tasks", JSON.stringify(tasks));
