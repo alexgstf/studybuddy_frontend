@@ -158,7 +158,7 @@ hide: true
         <p>Manage your tasks with our simple Task Manger tailored to your specific needs!</p>
     </div>
     <div class="feature">
-        <h3><a href="{{site.baseurl}}/resource_control">Resource Control</a></h3>
+        <h3><a href="{{site.baseurl}}/resource_corner">Resource Control</a></h3>
         <p>Upload Important Files or find important files posted by others for your own needs in school!</p>
     </div>
 </section>
