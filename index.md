@@ -158,6 +158,10 @@ hide: true
         <h3><a href="{{site.baseurl}}/quizzone">Quiz Zone</a></h3>
         <p>Test your knowledge with our staff-curated quizzes, covering a wide variety of subjects!</p>
     </div>
+    <div class="feature">
+        <h3><a href="{{site.baseurl}}/task_manager">Task Manager</a></h3>
+        <p>Manage your tasks with our simple Task Manger tailored to your specific needs!</p>
+    </div>
 </section>
 
 <footer>
