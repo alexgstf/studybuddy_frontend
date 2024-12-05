@@ -162,6 +162,10 @@ hide: true
         <h3><a href="{{site.baseurl}}/task_manager">Task Manager</a></h3>
         <p>Manage your tasks with our simple Task Manger tailored to your specific needs!</p>
     </div>
+    <div class="feature">
+        <h3><a href="{{site.baseurl}}/resource_control">Resource Control</a></h3>
+        <p>Upload Important Files or find important files posted by others for your own needs in school!</p>
+    </div>
 </section>
 
 <footer>
