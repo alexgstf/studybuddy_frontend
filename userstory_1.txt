@@ -1,0 +1,3 @@
+Add this to the other ones when completed:
+
+As a student, I want a section that can be accessed from the home page that shows a school-related fun fact every time I load it, so that I can learn something new when I don't have anything else to study.
