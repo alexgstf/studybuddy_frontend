@@ -131,6 +131,7 @@ hide: true
             <li><a href="#">Home</a></li>
             <li><a href="#features">Features</a></li>
             <li><a href="#contact">Contact</a></li>
+            <li><a href="{{site.baseurl}}/quizzone">Quiz Zone</a></li>
         </ul>
     </nav>
 </header>
