@@ -170,7 +170,7 @@ Click the button below to learn something new and exciting about Math, Science, 
     <button id="generate-fact" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
         Generate Fun Fact
     </button>
-    <p id="fun-fact" style="margin-top: 20px; font-size: 18px; font-style: italic; color: #333;"></p>
+    <p id="fun-fact" style="margin-top: 20px; font-size: 18px; font-style: italic; color: #FFF;"></p>
     </div>
 </section>
 <script>
