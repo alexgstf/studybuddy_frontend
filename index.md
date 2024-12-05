@@ -131,7 +131,6 @@ hide: true
             <li><a href="#">Home</a></li>
             <li><a href="#features">Features</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li><a href="{{site.baseurl}}/quizzone">Quiz Zone</a></li>
         </ul>
     </nav>
 </header>
@@ -154,6 +153,10 @@ hide: true
     <div class="feature">
         <h3>Fun Challenges</h3>
         <p>Turn studying into a game with rewards, leaderboards, and exciting challenges!</p>
+    </div>
+    <div class="feature">
+        <h3><a href="{{site.baseurl}}/quizzone">Quiz Zone</a></h3>
+        <p>Test your knowledge with our staff-curated quizzes, covering a wide variety of subjects!</p>
     </div>
 </section>
 
