@@ -46,8 +46,13 @@
 
             .title{
                 text-align: center;
-                font-size: 45px;
+                font-size: 80px;
             }
+            .subjectTitle{
+                font-size: 50px;
+                margin-left: 10%;
+            }
+
             .quizzesHolder {
                 margin: auto;
                 display: flex;
@@ -63,10 +68,10 @@
                 -ms-overflow-style: none;  /* For Internet Explorer 10+ */
                 scrollbar-width: none;     /* For Firefox */
                 --mask: linear-gradient(to right, 
-                    rgba(0,0,0, 0) 1%,    /* Start with fully transparent */
-                    rgba(0,0,0, 1) 8%,   /* Full opacity after 25% */
-                    rgba(0,0,0, 1) 92%,   /* Keep full opacity until 75% */
-                    rgba(0,0,0, 0) 99%   /* Fade out at the end */
+                    rgba(0,0,0, 0) 0%,    /* Start with fully transparent */
+                    rgba(0,0,0, 1) 5%,   /* Full opacity after 25% */
+                    rgba(0,0,0, 1) 95%,   /* Keep full opacity until 75% */
+                    rgba(0,0,0, 0) 100%   /* Fade out at the end */
                 ) 100% 50% / 100% 100% repeat-x;
                 
                 -webkit-mask: var(--mask); 
@@ -142,6 +147,8 @@
 
         <h1 class="title">Quizzes</h1>
 
+
+        <h1 class="subjectTitle">Math</h1>
         <div class="quizzesHolder">
             <a href="" class="scroll-btn"><h1>Quiz 1</h1><h3 class="btnDesc">this is a basic quiz on the understanding of this subject.</h3></a>
             <a href="" class="scroll-btn"><h1>Quiz 2</h1><h3 class="btnDesc">this is a basic quiz on the understanding of this subject.</h3></a>
