@@ -108,5 +108,5 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <footer>
-    <p>&copy; 2024 Study Buddy. Designed with :bulb: and :brain:. <a href="#contact">Contact Us</a></p>
+    <p><a href="#contact">Contact Us</a></p>
 </footer>
