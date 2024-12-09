@@ -38,7 +38,7 @@ hide: true
         <p>Turn studying into a game with rewards, leaderboards, and exciting challenges!</p>
     </div>
     <div class="feature">
-        <h3><a href="{{site.baseurl}}/quizzone">Quiz Zone</a></h3>
+        <h3><a href="{{site.baseurl}}/studybuddy/quizhome.html">Quiz Zone</a></h3>
         <p>Test your knowledge with our staff-curated quizzes, covering a wide variety of subjects!</p>
     </div>
     <div class="feature">
