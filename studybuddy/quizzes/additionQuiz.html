@@ -35,7 +35,6 @@
         .back-home {
             display: inline-block;
             margin: 1rem auto;
-            margin-right: 1%;
             padding: 0.8rem 2rem;
             font-size: 1rem;
             font-weight: bold;
@@ -49,16 +48,9 @@
         }
 
         .back-home:hover {
-            background: rgba(255, 255, 255, 0.45);
-            color: #222;
+            background: #ffd700;
+            color: #000;
             transform: scale(1.05);
-            text-shadow: none;
-        }
-
-        .title {
-            text-align: center;
-            font-size: 80px;
-            margin: 2rem 0;
         }
 
         .quiz-container {
@@ -68,19 +60,17 @@
             padding: 2rem;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .question-number {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .question {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             font-size: 1.2rem;
-            margin: 1rem 0;
-        }
-
-        .question label {
-            flex: 1;
-            text-align: left;
+            margin-bottom: 1rem;
         }
 
         input[type="text"] {
@@ -96,110 +86,36 @@
             margin-left: 10px;
         }
 
-        input[type="text"]::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
         input[type="text"]:focus {
-            border-bottom-color: #b1f3ff;
+            border-bottom-color: #ffd700;
         }
 
-        .submit-btn {
-            display: block;
-            width: 100%;
-            padding: 1rem;
-            font-size: 1.2rem;
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .nav-btn {
+            padding: 1rem 2rem;
+            font-size: 1rem;
             font-weight: bold;
             color: #fff;
-            background: #3bbeff;
+            background: #2575fc;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 2rem;
             transition: background 0.3s ease;
         }
 
-        .submit-btn:hover {
-            background: #7abaff;
-        }
-
-        .refresh-btn {
-            display: block;
-            width: 100%;
-            padding: 1rem;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #fff;
-            background: #ff4b4b;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 1rem;
-            transition: background 0.3s ease;
-        }
-
-        .refresh-btn:hover {
-            background: #ff7373;
-        }
-
-        .results {
-            margin-top: 2rem;
-            text-align: center;
-        }
-
-        .progress-bar-container {
-            position: relative;
-            margin: 2rem auto;
-            width: 80%;
-            background: rgba(255, 255, 255, 0.1);
-            height: 30px;
-            border-radius: 15px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            transition: width 0.5s ease;
+        .nav-btn:hover {
             background: #ffd700;
-            position: relative;
+            color: #000;
         }
 
-        .progress-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 5px;
-            height: 100%;
-            background: #fff;
-        }
-
-        .progress-label {
-            margin-top: 10px;
-            font-size: 1.5rem;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .answer-feedback {
-            margin-top: 2rem;
-            text-align: left;
-        }
-
-        .feedback {
-            padding: 0.8rem;
-            border-radius: 8px;
-            margin: 0.5rem 0;
-        }
-
-        .correct {
-            color: #0f5132;
-            background: #d1e7dd;
-        }
-
-        .incorrect {
-            color: #664d03;
-            background: #fff3cd;
+        .nav-btn:disabled {
+            background: rgba(255, 255, 255, 0.3);
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -210,14 +126,18 @@
     </header>
 
     <main>
-        <div class="title">Addition Quiz</div>
         <div class="quiz-container">
-            <form id="quizForm">
-                <div id="questions"></div>
-                <button type="button" class="submit-btn" onclick="submitQuiz()">Submit Quiz</button>
-            </form>
-            <div class="results" id="results"></div>
+            <div id="question-container">
+                <div class="question-number">Question 1/15</div>
+                <div class="question" id="current-question"></div>
+                <input type="text" id="answer-input" placeholder="?" required>
+            </div>
+            <div class="navigation-buttons">
+                <button class="nav-btn" id="back-btn" onclick="prevQuestion()" disabled>Back</button>
+                <button class="nav-btn" id="next-btn" onclick="nextQuestion()">Next</button>
+            </div>
         </div>
+        <div id="results"></div>
     </main>
 
     <script>
@@ -225,21 +145,43 @@
         for (let i = 0; i < 15; i++) {
             const num1 = Math.floor(Math.random() * 50) + 1;
             const num2 = Math.floor(Math.random() * 50) + 1;
-            questions.push({ num1, num2, correctAnswer: num1 + num2 });
+            questions.push({ num1, num2, correctAnswer: num1 + num2, userAnswer: '' });
         }
 
-        const questionsContainer = document.getElementById('questions');
-        questions.forEach((q, index) => {
-            const questionHTML = `
-                <div class="question">
-                    <label for="answer-${index}">
-                        ${index + 1}. ${q.num1} + ${q.num2} =
-                    </label>
-                    <input type="text" id="answer-${index}" placeholder="?" required>
-                </div>
-            `;
-            questionsContainer.innerHTML += questionHTML;
-        });
+        let currentQuestionIndex = 0;
+
+        function renderQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById('current-question').textContent = `${question.num1} + ${question.num2} =`;
+            document.getElementById('answer-input').value = question.userAnswer || '';
+            document.querySelector('.question-number').textContent = `Question ${currentQuestionIndex + 1}/15`;
+
+            document.getElementById('back-btn').disabled = currentQuestionIndex === 0;
+            document.getElementById('next-btn').textContent = currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next';
+        }
+
+        function saveAnswer() {
+            const input = document.getElementById('answer-input');
+            questions[currentQuestionIndex].userAnswer = input.value;
+        }
+
+        function prevQuestion() {
+            saveAnswer();
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            saveAnswer();
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                submitQuiz();
+            }
+        }
 
         function submitQuiz() {
             const resultsContainer = document.getElementById('results');
@@ -248,28 +190,23 @@
             resultsContainer.innerHTML = '';
 
             questions.forEach((q, index) => {
-                const userAnswer = document.getElementById(`answer-${index}`).value;
-                const isCorrect = parseInt(userAnswer) === q.correctAnswer;
-
+                const isCorrect = parseInt(q.userAnswer) === q.correctAnswer;
                 feedback += `
-                    <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
-                        Question ${index + 1}: ${isCorrect ? 'Correct!' : `Incorrect. Correct answer: ${q.correctAnswer}`}
-                    </div>
+                    <div>${index + 1}. ${q.num1} + ${q.num2} = ${q.correctAnswer} 
+                    (${isCorrect ? 'Correct' : `Your Answer: ${q.userAnswer || 'Blank'}`})</div>
                 `;
                 if (isCorrect) correct++;
             });
 
-            const progressHTML = `
-                <div class="progress-bar-container">
-                    <div class="progress-bar" style="width: ${(correct / 15) * 100}%"></div>
-                </div>
-                <div class="progress-label">${correct} Correct, ${15 - correct} Incorrect</div>
-                <div class="answer-feedback">${feedback}</div>
-                <button class="refresh-btn" onclick="location.reload()">Try Again</button>
+            resultsContainer.innerHTML = `
+                <h2>Results</h2>
+                <p>${correct} out of ${questions.length} correct</p>
+                ${feedback}
+                <button class="nav-btn" onclick="location.reload()">Retry Quiz</button>
             `;
-
-            resultsContainer.innerHTML = progressHTML;
         }
+
+        renderQuestion();
     </script>
 </body>
 </html>
