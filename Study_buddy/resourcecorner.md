@@ -167,8 +167,11 @@ permalink: /resource_corner
 <body>
     <div id="resource-corner-container">
         <header>
-            <h1>Study Buddy</h1>
+            <h1>Study Buddy Post Channel!</h1>
         </header>
+        <main>
+            <div id="posts-container" class="post-container"></div>
+        </main>
         <button class="add-post-button" id="open-modal">+</button>
     </div> 
     <div class="modal" id="post-modal">
