@@ -203,6 +203,9 @@
 
     <main>
         <div class="quiz-container">
+            <div id="skibidibarthing" class="progress-bar-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
+            </div>
             <div id="question-container">
                 <div class="question-number">Question 1/15</div>
                 <div class="question" id="current-question"></div>
@@ -226,6 +229,12 @@
 
         let currentQuestionIndex = 0;
 
+        function updateProgressBar() {
+            const progressBar = document.getElementById('progress-bar');
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            progressBar.style.width = progress + '%';
+        }
+
         function renderQuestion() {
             const question = questions[currentQuestionIndex];
             document.getElementById('current-question').textContent = `${question.num1} + ${question.num2} =`;
@@ -234,6 +243,8 @@
 
             document.getElementById('back-btn').disabled = currentQuestionIndex === 0;
             document.getElementById('next-btn').textContent = currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next';
+
+            updateProgressBar();
         }
 
         function saveAnswer() {
@@ -260,6 +271,9 @@
         }
 
         function submitQuiz() {
+            document.getElementById("progress-bar").remove();
+            document.getElementById("skibidibarthing").remove();
+
             const resultsContainer = document.getElementById('results');
             let correct = 0;
             let feedback = '';
