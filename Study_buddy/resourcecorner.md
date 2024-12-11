@@ -4,270 +4,286 @@ title: Resource Corner
 permalink: /resource_corner
 ---
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Study Buddy</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<style>
-    body {
-        font-family: 'Poppins', sans-serif;
-        margin: 0;
-        padding: 0;
-        background: linear-gradient(135deg, #6a11cb, #2575fc);
-        color: #fff;
-        overflow-x: hidden;
-    }
-
-    header {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-    }
-    header h1 {
-        margin: 0;
-        font-size: 2rem;
-    }
-    nav ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        gap: 1.5rem;
-    }
-    nav ul li a {
-        color: #fff;
-        text-decoration: none;
-        font-weight: bold;
-        transition: color 0.3s ease;
-    }
-    nav ul li a:hover {
-        color: #ffd700;
-    }
-    .hero {
-        text-align: center;
-        padding: 5rem 1rem;
-        background: linear-gradient(135deg, #2575fc, #6a11cb);
-    }
-    .hero h2 {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-    }
-    .hero p {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        max-width: 700px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    .hero button {
-        background: #ffd700;
-        color: #000;
-        border: none;
-        padding: 1rem 2rem;
-        font-size: 1.2rem;
-        border-radius: 50px;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
-    .hero button:hover {
-        background: #ffc700;
-    }
-    .features {
-        padding: 3rem 1rem;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-    }
-    .feature {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 2rem;
-        text-align: center;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        transition: transform 0.3s ease;
-    }
-    .feature:hover {
-        transform: translateY(-10px);
-    }
-    .feature h3 {
-        font-size: 1.8rem;
-        margin-bottom: 1rem;
-    }
-    .feature p {
-        font-size: 1rem;
-    }
-    footer {
-        text-align: center;
-        padding: 2rem 1rem;
-        background: #000;
-    }
-    footer p {
-        margin: 0;
-        color: #fff;
-    }
-    footer a {
-        color: #ffd700;
-        text-decoration: none;
-        font-weight: bold;
-    }
-    footer a:hover {
-        text-decoration: underline;
-    }
-</style>
 
 
-<div id="resource-corner-container">
-  <h2>Resource Corner</h2>
-  
-  <!-- File Upload Section -->
-  <label for="file-upload">Upload a File:</label>
-  <input type="file" id="file-upload" />
-  <button id="upload-file-button">Upload File</button>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Buddy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            overflow-x: hidden;
+        }
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        .post-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .post-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .post-card h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            color: #ffd700;
+        }
+        .post-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin: 0.5rem 0;
+        }
+        .post-card .actions {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+        .btn {
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+        .btn.delete {
+            background: #ff5555;
+            color: #fff;
+        }
+        .btn.delete:hover {
+            background: #e44a4a;
+        }
+        .add-post-button {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background: #ffd700;
+            color: #000;
+            padding: 1rem 1.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .add-post-button:hover {
+            background: #e6c000;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-content {
+            background: #fff;
+            color: #000;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 400px;
+        }
+        .modal-content h2 {
+            margin-top: 0;
+        }
+        .modal-content .resource-input {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .modal-content button {
+            background: #2575fc;
+            color: #fff;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+        .modal-content button:hover {
+            background: #1e63d6;
+        }
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="resource-corner-container">
+        <header>
+            <h1>Study Buddy</h1>
+        </header>
+        <button class="add-post-button" id="open-modal">+</button>
+    </div> 
+    <div class="modal" id="post-modal">
+        <div class="modal-content">
+            <h2>Add a New Post</h2>
+            <div class="resource-input">
+                <input type="file" id="file-upload" />
+                <textarea id="note-input" placeholder="Write your note here..."></textarea>
+                <button id="add-resource-button">Add Post</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const fileUpload = document.getElementById("file-upload");
+            const noteInput = document.getElementById("note-input");
+            const addResourceButton = document.getElementById("add-resource-button");
+            const postsContainer = document.getElementById("posts-container");
+            const openModalButton = document.getElementById("open-modal");
+            const postModal = document.getElementById("post-modal");
 
-  <!-- Notes Section -->
-  <label for="note-input">Add a Note:</label>
-  <textarea id="note-input" placeholder="Write your note here..."></textarea>
-  <button id="add-note-button">Add Note</button>
+            let posts = []; // Array to hold posts
 
-  <!-- Resource Table -->
-  <div id="resources-container" style="display:none;">
-    <h3>Your Resources</h3>
-    <table id="resource-table">
-      <thead>
-        <tr>
-          <th>File Name</th>
-          <th>Note</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="resource-list"></tbody>
-    </table>
-    <button id="clear-resources-button" style="display:none;">Clear All Resources</button>
-  </div>
-</div>
+            // Render posts on the page
+            function renderPosts() {
+                postsContainer.innerHTML = ""; // Clear current posts
+                if (posts.length === 0) {
+                    const emptyMessage = document.createElement("p");
+                    emptyMessage.textContent = "No posts available.";
+                    postsContainer.appendChild(emptyMessage);
+                } else {
+                    posts.forEach((post, index) => {
+                        const postCard = document.createElement("div");
+                        postCard.className = "post-card";
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const fileUpload = document.getElementById("file-upload");
-  const uploadFileButton = document.getElementById("upload-file-button");
-  const noteInput = document.getElementById("note-input");
-  const addNoteButton = document.getElementById("add-note-button");
-  const resourcesContainer = document.getElementById("resources-container");
-  const resourceList = document.getElementById("resource-list");
-  const clearResourcesButton = document.getElementById("clear-resources-button");
+                        const title = document.createElement("h3");
+                        title.textContent = post.title || "Untitled Post";
 
-  let resources = JSON.parse(localStorage.getItem("resources")) || []; // Load resources from local storage if available
+                        const note = document.createElement("p");
+                        note.textContent = post.comment || "No note added.";
 
-  // Update the resource list
-  function updateResourceList() {
-    resourceList.innerHTML = ""; // Clear the current list
+                        if (post.image_url) {
+                            const image = document.createElement("img");
+                            image.src = post.image_url;
+                            image.alt = post.title || "Uploaded Image";
+                            image.style.maxWidth = "100%";
+                            image.style.borderRadius = "10px";
+                            postCard.appendChild(image);
+                        }
 
-    resources.forEach((resource, index) => {
-      const resourceRow = document.createElement("tr");
+                        const actions = document.createElement("div");
+                        actions.className = "actions";
 
-      const fileNameCell = document.createElement("td");
-      fileNameCell.textContent = resource.fileName;
-      resourceRow.appendChild(fileNameCell);
+                        const deleteButton = document.createElement("button");
+                        deleteButton.className = "btn delete";
+                        deleteButton.textContent = "Delete";
+                        deleteButton.onclick = () => deletePost(index);
 
-      const noteCell = document.createElement("td");
-      noteCell.textContent = resource.note || "No note added";
-      resourceRow.appendChild(noteCell);
+                        actions.appendChild(deleteButton);
+                        postCard.appendChild(title);
+                        postCard.appendChild(note);
+                        postCard.appendChild(actions);
 
-      const actionsCell = document.createElement("td");
-      const deleteButton = document.createElement("button");
-      deleteButton.classList.add("delete-btn");
-      deleteButton.textContent = "Delete";
-      deleteButton.onclick = () => deleteResource(index);
-      actionsCell.appendChild(deleteButton);
-      resourceRow.appendChild(actionsCell);
+                        postsContainer.appendChild(postCard);
+                    });
+                }
+            }
 
-      resourceList.appendChild(resourceRow);
-    });
+            // Add new post
+            addResourceButton.addEventListener("click", () => {
+                const file = fileUpload.files[0];
+                const noteText = noteInput.value.trim();
 
-    // Show resources container and clear button if there are resources
-    if (resources.length > 0) {
-      resourcesContainer.style.display = "block";
-      clearResourcesButton.style.display = "block";
-    } else {
-      resourcesContainer.style.display = "none";
-      clearResourcesButton.style.display = "none";
-    }
-  }
+                if (!file && !noteText) {
+                    alert("Please upload a file or write a note!");
+                    return;
+                }
 
-  // Upload a file
-  uploadFileButton.addEventListener("click", () => {
-    const file = fileUpload.files[0];
-    if (!file) {
-      alert("Please select a file to upload!");
-      return;
-    }
+                const newPost = {
+                    title: file ? file.name : "Note",
+                    comment: noteText,
+                    image_url: file ? URL.createObjectURL(file) : null,
+                };
 
-    const fileName = file.name;
-    const resource = {
-      fileName: fileName,
-      note: "",
-    };
+                posts.push(newPost);
+                renderPosts();
 
-    // Add resource to the list
-    resources.push(resource);
+                // Clear inputs
+                fileUpload.value = "";
+                noteInput.value = "";
 
-    // Save resources to local storage
-    localStorage.setItem("resources", JSON.stringify(resources));
+                // Close modal
+                postModal.classList.remove("active");
+            });
 
-    // Update the resource list
-    updateResourceList();
-  });
+            // Delete post
+            function deletePost(index) {
+                posts.splice(index, 1);
+                renderPosts();
+            }
 
-  // Add a note
-  addNoteButton.addEventListener("click", () => {
-    const noteText = noteInput.value.trim();
-    if (!noteText) {
-      alert("Please enter a note!");
-      return;
-    }
+            // Open modal
+            openModalButton.addEventListener("click", () => {
+                postModal.classList.add("active");
+            });
 
-    // Add note to the last uploaded file
-    if (resources.length > 0) {
-      resources[resources.length - 1].note = noteText;
-      noteInput.value = ""; // Clear the input field
+            // Close modal when clicking outside
+            postModal.addEventListener("click", (e) => {
+                if (e.target === postModal) {
+                    postModal.classList.remove("active");
+                }
+            });
 
-      // Save resources to local storage
-      localStorage.setItem("resources", JSON.stringify(resources));
-
-      // Update the resource list
-      updateResourceList();
-    } else {
-      alert("Please upload a file first!");
-    }
-  });
-
-  // Delete a resource
-  function deleteResource(index) {
-    resources.splice(index, 1); // Remove the resource from the array
-    localStorage.setItem("resources", JSON.stringify(resources)); // Save updated resources to local storage
-
-    // Update the resource list
-    updateResourceList();
-  }
-
-  // Clear all resources
-  clearResourcesButton.addEventListener("click", () => {
-    resources.length = 0; // Clear the resources array
-    localStorage.setItem("resources", JSON.stringify(resources)); // Save updated resources to local storage
-
-    // Update the resource list
-    updateResourceList();
-  });
-
-  // Initialize the resource list from local storage
-  updateResourceList();
-});
-</script>
-
+            renderPosts(); // Initial render
+        });
+    </script>
+</body>
+</html>
