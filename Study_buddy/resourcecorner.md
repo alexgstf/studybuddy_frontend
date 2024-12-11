@@ -19,7 +19,6 @@ permalink: /resource_corner
             padding: 0;
             background: linear-gradient(135deg, #6a11cb, #2575fc);
             color: #fff;
-            overflow-x: hidden;
         }
         header {
             background: rgba(255, 255, 255, 0.1);
@@ -52,6 +51,8 @@ permalink: /resource_corner
             border-radius: 15px;
             padding: 1rem;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: relative;
         }
         .post-card h3 {
             margin-top: 0;
@@ -84,22 +85,31 @@ permalink: /resource_corner
         .btn.delete:hover {
             background: #e44a4a;
         }
-        .add-post-button {
+        .btn.edit {
+            background: #ffa500;
+            color: #fff;
+        }
+        .btn.edit:hover {
+            background: #e69500;
+        }
+        .floating-btn {
             position: fixed;
-            right: 20px;
             bottom: 20px;
+            right: 20px;
             background: #ffd700;
             color: #000;
-            padding: 1rem 1.5rem;
-            font-size: 1.2rem;
-            font-weight: bold;
             border: none;
-            border-radius: 50px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: background 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
-        .add-post-button:hover {
+        .floating-btn:hover {
             background: #e6c000;
         }
         .modal {
@@ -108,184 +118,190 @@ permalink: /resource_corner
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.6);
             display: flex;
-            justify-content: center;
             align-items: center;
-            z-index: 1000;
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        .modal.active {
-            visibility: visible;
-            opacity: 1;
+            justify-content: center;
+            z-index: 1001;
         }
         .modal-content {
-            background: #fff;
-            color: #000;
-            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            width: 90%;
+            padding: 2rem;
             max-width: 400px;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            color: #fff;
         }
         .modal-content h2 {
             margin-top: 0;
         }
-        .modal-content .resource-input {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+        .modal-content input,
+        .modal-content textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            border: none;
+            font-size: 1rem;
+            outline: none;
         }
         .modal-content button {
-            background: #2575fc;
-            color: #fff;
+            padding: 0.5rem 1rem;
             border: none;
-            padding: 0.8rem;
-            border-radius: 10px;
+            border-radius: 25px;
+            background: #ffd700;
+            color: #000;
             cursor: pointer;
-            font-size: 1rem;
+            font-weight: bold;
             transition: background 0.3s ease;
         }
         .modal-content button:hover {
-            background: #1e63d6;
-        }
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            font-weight: bold;
-            cursor: pointer;
-            color: #fff;
+            background: #e6c000;
         }
     </style>
 </head>
 <body>
-    <div id="resource-corner-container">
-        <header>
-            <h1>Study Buddy Post Channel!</h1>
-        </header>
-        <main>
-            <div id="posts-container" class="post-container"></div>
-        </main>
-        <button class="add-post-button" id="open-modal">+</button>
-    </div> 
-    <div class="modal" id="post-modal">
+    <header>
+        <h1>Study Buddy Post Channel!</h1>
+    </header>
+    <main>
+        <!-- Post List -->
+        <div id="posts-container" class="post-container"></div>
+        <!-- Floating Add Post Button -->
+        <button id="add-post-button" class="floating-btn">+</button>
+    </main>
+
+    <!-- Add Post Modal -->
+    <div id="add-post-modal" class="modal" style="display: none;">
         <div class="modal-content">
-            <h2>Add a New Post</h2>
-            <div class="resource-input">
-                <input type="file" id="file-upload" />
-                <textarea id="note-input" placeholder="Write your note here..."></textarea>
-                <button id="add-resource-button">Add Post</button>
-            </div>
+            <h2>Add Post</h2>
+            <input type="file" id="file-upload" />
+            <textarea id="note-input" placeholder="Write your note here..."></textarea>
+            <button id="submit-post-button">Submit</button>
         </div>
     </div>
+
+    <!-- Edit Post Modal -->
+    <div id="edit-post-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Edit Post</h2>
+            <input type="file" id="edit-file-upload" />
+            <textarea id="edit-note-input" placeholder="Edit your note here..."></textarea>
+            <button id="save-edit-button">Save Changes</button>
+        </div>
+    </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const fileUpload = document.getElementById("file-upload");
-            const noteInput = document.getElementById("note-input");
-            const addResourceButton = document.getElementById("add-resource-button");
             const postsContainer = document.getElementById("posts-container");
-            const openModalButton = document.getElementById("open-modal");
-            const postModal = document.getElementById("post-modal");
+            const addPostButton = document.getElementById("add-post-button");
+            const addPostModal = document.getElementById("add-post-modal");
+            const submitPostButton = document.getElementById("submit-post-button");
+            const editPostModal = document.getElementById("edit-post-modal");
+            const saveEditButton = document.getElementById("save-edit-button");
 
-            let posts = []; // Array to hold posts
+            let posts = [];
+            let currentEditIndex = null;
 
-            // Render posts on the page
             function renderPosts() {
-                postsContainer.innerHTML = ""; // Clear current posts
-                if (posts.length === 0) {
-                    const emptyMessage = document.createElement("p");
-                    emptyMessage.textContent = "No posts available.";
-                    postsContainer.appendChild(emptyMessage);
-                } else {
-                    posts.forEach((post, index) => {
-                        const postCard = document.createElement("div");
-                        postCard.className = "post-card";
+                postsContainer.innerHTML = "";
+                posts.forEach((post, index) => {
+                    const postCard = document.createElement("div");
+                    postCard.className = "post-card";
 
-                        const title = document.createElement("h3");
-                        title.textContent = post.title || "Untitled Post";
+                    const title = document.createElement("h3");
+                    title.textContent = post.title || "Untitled Post";
 
-                        const note = document.createElement("p");
-                        note.textContent = post.comment || "No note added.";
+                    const note = document.createElement("p");
+                    note.textContent = post.note || "No note added.";
 
-                        if (post.image_url) {
-                            const image = document.createElement("img");
-                            image.src = post.image_url;
-                            image.alt = post.title || "Uploaded Image";
-                            image.style.maxWidth = "100%";
-                            image.style.borderRadius = "10px";
-                            postCard.appendChild(image);
-                        }
+                    if (post.image) {
+                        const image = document.createElement("img");
+                        image.src = URL.createObjectURL(post.image);
+                        image.alt = post.title || "Uploaded Image";
+                        image.style.maxWidth = "100%";
+                        image.style.borderRadius = "10px";
+                        postCard.appendChild(image);
+                    }
 
-                        const actions = document.createElement("div");
-                        actions.className = "actions";
+                    const actions = document.createElement("div");
+                    actions.className = "actions";
 
-                        const deleteButton = document.createElement("button");
-                        deleteButton.className = "btn delete";
-                        deleteButton.textContent = "Delete";
-                        deleteButton.onclick = () => deletePost(index);
+                    const deleteButton = document.createElement("button");
+                    deleteButton.className = "btn delete";
+                    deleteButton.textContent = "Delete";
+                    deleteButton.onclick = () => {
+                        posts.splice(index, 1);
+                        renderPosts();
+                    };
 
-                        actions.appendChild(deleteButton);
-                        postCard.appendChild(title);
-                        postCard.appendChild(note);
-                        postCard.appendChild(actions);
+                    const editButton = document.createElement("button");
+                    editButton.className = "btn edit";
+                    editButton.textContent = "Edit";
+                    editButton.onclick = () => {
+                        currentEditIndex = index;
+                        document.getElementById("edit-note-input").value = post.note || "";
+                        document.getElementById("edit-file-upload").value = "";
+                        editPostModal.style.display = "flex";
+                    };
 
-                        postsContainer.appendChild(postCard);
-                    });
-                }
+                    actions.appendChild(editButton);
+                    actions.appendChild(deleteButton);
+                    postCard.appendChild(title);
+                    postCard.appendChild(note);
+                    postCard.appendChild(actions);
+                    postsContainer.appendChild(postCard);
+                });
             }
 
-            // Add new post
-            addResourceButton.addEventListener("click", () => {
-                const file = fileUpload.files[0];
-                const noteText = noteInput.value.trim();
+            addPostButton.addEventListener("click", () => {
+                addPostModal.style.display = "flex";
+            });
 
-                if (!file && !noteText) {
-                    alert("Please upload a file or write a note!");
-                    return;
-                }
+            submitPostButton.addEventListener("click", () => {
+                const fileInput = document.getElementById("file-upload");
+                const noteInput = document.getElementById("note-input");
 
                 const newPost = {
-                    title: file ? file.name : "Note",
-                    comment: noteText,
-                    image_url: file ? URL.createObjectURL(file) : null,
+                    title: fileInput.files[0]?.name || "Note",
+                    note: noteInput.value,
+                    image: fileInput.files[0] || null,
                 };
 
                 posts.push(newPost);
-                renderPosts();
-
-                // Clear inputs
-                fileUpload.value = "";
+                addPostModal.style.display = "none";
                 noteInput.value = "";
-
-                // Close modal
-                postModal.classList.remove("active");
-            });
-
-            // Delete post
-            function deletePost(index) {
-                posts.splice(index, 1);
+                fileInput.value = "";
                 renderPosts();
-            }
-
-            // Open modal
-            openModalButton.addEventListener("click", () => {
-                postModal.classList.add("active");
             });
 
-            // Close modal when clicking outside
-            postModal.addEventListener("click", (e) => {
-                if (e.target === postModal) {
-                    postModal.classList.remove("active");
+            saveEditButton.addEventListener("click", () => {
+                const fileInput = document.getElementById("edit-file-upload");
+                const noteInput = document.getElementById("edit-note-input");
+
+                const editedPost = posts[currentEditIndex];
+                editedPost.note = noteInput.value;
+                if (fileInput.files[0]) {
+                    editedPost.image = fileInput.files[0];
+                    editedPost.title = fileInput.files[0].name;
+                }
+
+                editPostModal.style.display = "none";
+                renderPosts();
+            });
+
+            document.addEventListener("click", (event) => {
+                if (event.target === addPostModal) {
+                    addPostModal.style.display = "none";
+                }
+                if (event.target === editPostModal) {
+                    editPostModal.style.display = "none";
                 }
             });
 
-            renderPosts(); // Initial render
+            renderPosts();
         });
     </script>
 </body>
