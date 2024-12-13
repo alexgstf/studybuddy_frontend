@@ -193,6 +193,24 @@
         .refresh-btn:hover {
             background: #ff7373;
         }
+        .xp-bar-container {
+            position: relative;
+            margin: 2rem auto;
+            width: 80%;
+            background: rgba(255, 255, 255, 0.1);
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .xp-bar {
+            height: 100%;
+            transition: width 0.5s ease;
+            background: linear-gradient(90deg, #1e90ff, #00bfff); /* Blue gradient for XP bar */
+            position: relative;
+            border-radius: 15px;
+        }
+
     </style>
 </head>
 <body>
@@ -215,9 +233,11 @@
                 <button class="nav-btn" id="back-btn" onclick="prevQuestion()" disabled>Back</button>
                 <button class="nav-btn" id="next-btn" onclick="nextQuestion()">Next</button>
             </div>
+            <canvas id="confetti-canvas" style="position: absolute; top: 0; left: 0; z-index: 9999; pointer-events: none;"></canvas>
             <div id="results"></div>
         </div>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
 
     <script>
         const questions = [];
@@ -270,39 +290,84 @@
             }
         }
 
-        function submitQuiz() {
-            document.getElementById("progress-bar").remove();
-            document.getElementById("skibidibarthing").remove();
+        async function submitQuiz() {
+        const resultsContainer = document.getElementById('results');
+        let correct = 0;
+        let feedback = '';
+        resultsContainer.innerHTML = '';
 
-            const resultsContainer = document.getElementById('results');
-            let correct = 0;
-            let feedback = '';
-            resultsContainer.innerHTML = '';
-
-            questions.forEach((q, index) => {
-                const isCorrect = parseInt(q.userAnswer) === q.correctAnswer;
-                feedback += `
-                    <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
-                        Question ${index + 1}: ${q.num1} + ${q.num2} = ${q.correctAnswer} 
-                        (${isCorrect ? 'Correct' : `Your Answer: ${q.userAnswer || 'Blank'}`})
-                    </div>
-                `;
-                if (isCorrect) correct++;
-            });
-
-            const progressHTML = `
-                <div class="progress-bar-container">
-                    <div class="progress-bar" style="width: ${(correct / 15) * 100}%"></div>
+        // Calculate the score and feedback
+        questions.forEach((q, index) => {
+            const isCorrect = parseInt(q.userAnswer) === q.correctAnswer;
+            feedback += `
+                <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
+                    Question ${index + 1}: ${q.num1} + ${q.num2} = ${q.correctAnswer} 
+                    (${isCorrect ? 'Correct' : `Your Answer: ${q.userAnswer || 'Blank'}`})
                 </div>
-                <div class="progress-label">${correct} Correct, ${15 - correct} Incorrect</div>
+            `;
+            if (isCorrect) correct++;
+        });
+
+        // Send quiz data to the backend
+        try {
+            const response = await fetch('http://localhost:8887/api/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    correct: correct,
+                    total: questions.length
+                })
+            });
+            const data = await response.json();
+
+            // Backend response: updated XP and level
+            const { xp, level } = data;
+
+            // Check for level-up condition
+            const leveledUp = xp === 0 && level > 1;
+
+            // Display progress and XP bar
+            resultsContainer.innerHTML = `
+                <h2>Quiz Results</h2>
+                <div class="xp-bar-container">
+                    <div class="xp-bar" style="width: ${(xp / (level * 10)) * 100}%;"></div>
+                </div>
+                <div class="progress-label">
+                    XP: ${xp}/${level * 10} | Level: ${level}
+                </div>
+                ${leveledUp ? '<h3>Level Up!</h3>' : ''}
                 <div class="answer-feedback">${feedback}</div>
                 <button class="refresh-btn" onclick="location.reload()">Try Again</button>
             `;
 
-            resultsContainer.innerHTML = progressHTML;
-            document.getElementById('question-container').style.display = 'none';
-            document.querySelector('.navigation-buttons').style.display = 'none';
+            // Show confetti if the user leveled up
+            if (leveledUp) {
+                launchConfetti();
+            }
+        } catch (error) {
+            console.error('Error submitting quiz:', error);
+            resultsContainer.innerHTML = `<p style="color: red;">Error submitting the quiz. Please try again later.</p>`;
         }
+
+        // Hide question UI after submission
+        document.getElementById('question-container').style.display = 'none';
+        document.querySelector('.navigation-buttons').style.display = 'none';
+    }
+
+    // Confetti effect
+    function launchConfetti() {
+        const confettiSettings = { target: 'confetti-canvas', width: window.innerWidth, height: window.innerHeight };
+        const confetti = new ConfettiGenerator(confettiSettings);
+        confetti.render();
+
+        // Remove confetti after 5 seconds
+        setTimeout(() => {
+            confetti.clear();
+        }, 5000);
+    }
+
 
         renderQuestion();
     </script>
