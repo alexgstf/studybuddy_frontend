@@ -5,6 +5,8 @@ permalink: /resource_corner
 ---
 
 
+
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -62,57 +64,6 @@ permalink: /resource_corner
             flex-direction: column;
             gap: 1.5rem;
         }
-        .post-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 1rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            position: relative;
-        }
-        .post-card h3 {
-            margin-top: 0;
-            font-size: 1.2rem;
-            color: #ffd700;
-        }
-        .post-card p {
-            font-size: 1rem;
-            line-height: 1.6;
-            margin: 0.5rem 0;
-        }
-        .post-card img {
-            width: 100%; /* Adjust image size as needed */
-            border-radius: 10px;
-        }
-        .post-card .actions {
-            margin-top: 1rem;
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.5rem;
-        }
-        .btn {
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: background 0.3s ease;
-        }
-        .btn.edit {
-            background: #4caf50;
-            color: #fff;
-        }
-        .btn.edit:hover {
-            background: #43a047;
-        }
-        .btn.delete {
-            background: #ff5555;
-            color: #fff;
-        }
-        .btn.delete:hover {
-            background: #e44a4a;
-        }
         .post-form {
             position: fixed;
             top: 50%;
@@ -120,10 +71,10 @@ permalink: /resource_corner
             transform: translate(-50%, -50%);
             background: rgba(255, 255, 255, 0.9);
             border-radius: 15px;
-            padding: 1rem 2rem;
+            padding: 1.5rem;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
             display: none;
-            width: 300px; /* Smaller form width */
+            width: 300px;
         }
         .post-form textarea {
             width: 100%;
@@ -142,9 +93,24 @@ permalink: /resource_corner
             border-radius: 10px;
             border: none;
         }
+        .post-form .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff5555;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
         .post-form button {
-            display: block;
-            margin: 0 auto;
             background: #ffd700;
             color: #000;
             padding: 0.8rem 1.5rem;
@@ -152,6 +118,8 @@ permalink: /resource_corner
             border-radius: 25px;
             border: none;
             cursor: pointer;
+            display: block;
+            margin: 0 auto;
         }
         .post-form button:hover {
             background: #e6c000;
@@ -172,27 +140,9 @@ permalink: /resource_corner
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             transition: background 0.3s ease-in-out;
-            position: relative
         }
-        .new-post-btn::after {
-            content: "Make a Post";
-            display: none;
-            position: absolute;
-            bottom: 60px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            padding: 0.5rem;
-            border-radius: 5px;
-            white-space: nowrap;
-            font-size: 0.9rem;
-            z-index: 1000
-            max-width: 200px;
-            text-align: center;
-        }
-        .new-post-btn:hover::after {
-            display: block;
+        .new-post-btn:hover {
+            background: #e6c000;
         }
     </style>
 </head>
@@ -218,6 +168,7 @@ permalink: /resource_corner
         </div>
     </main>
     <div class="post-form" id="post-form">
+        <button class="close-btn" id="close-post-form">×</button>
         <textarea id="note-input" placeholder="Write your note here..."></textarea>
         <input type="file" id="image-input" accept="image/*">
         <button id="save-post-button">Save Post</button>
@@ -231,47 +182,29 @@ permalink: /resource_corner
             const imageInput = document.getElementById("image-input");
             const savePostButton = document.getElementById("save-post-button");
             const newPostBtn = document.getElementById("new-post-btn");
+            const closePostForm = document.getElementById("close-post-form");
 
             let posts = [];
-            let editPostIndex = null;
 
             function renderPosts() {
                 postsContainer.innerHTML = "";
-                posts.forEach((post, index) => {
+                posts.forEach((post) => {
                     const postCard = document.createElement("div");
                     postCard.className = "post-card";
 
-                    const title = document.createElement("h3");
-                    title.textContent = `Post #${index + 1}`;
                     const note = document.createElement("p");
                     note.textContent = post.text;
 
                     if (post.image) {
                         const img = document.createElement("img");
                         img.src = post.image;
+                        img.alt = "Post Image";
+                        img.style.width = "100%";
+                        img.style.borderRadius = "10px";
                         postCard.appendChild(img);
                     }
 
-                    const actions = document.createElement("div");
-                    actions.className = "actions";
-
-                    const editButton = document.createElement("button");
-                    editButton.className = "btn edit";
-                    editButton.textContent = "Edit";
-                    editButton.onclick = () => editPost(index);
-
-                    const deleteButton = document.createElement("button");
-                    deleteButton.className = "btn delete";
-                    deleteButton.textContent = "Delete";
-                    deleteButton.onclick = () => deletePost(index);
-
-                    actions.appendChild(editButton);
-                    actions.appendChild(deleteButton);
-
-                    postCard.appendChild(title);
                     postCard.appendChild(note);
-                    postCard.appendChild(actions);
-
                     postsContainer.appendChild(postCard);
                 });
             }
@@ -280,66 +213,39 @@ permalink: /resource_corner
                 postForm.style.display = "block";
             }
 
-            function closePostForm() {
+            function closeForm() {
                 postForm.style.display = "none";
                 noteInput.value = "";
                 imageInput.value = "";
-                editPostIndex = null;
             }
 
             function savePost() {
                 const noteText = noteInput.value.trim();
                 const imageFile = imageInput.files[0];
-
-                if (!noteText && !imageFile) return;
-
                 let newPost = { text: noteText, image: null };
 
                 if (imageFile) {
                     const reader = new FileReader();
                     reader.onload = (e) => {
-                        newPost.image = e.target.result; // store the base64 image data
-                        if (editPostIndex !== null) {
-                            posts[editPostIndex] = newPost;
-                        } else {
-                            posts.push(newPost);
-                        }
-                        closePostForm();
+                        newPost.image = e.target.result;
+                        posts.push(newPost);
+                        closeForm();
                         renderPosts();
                     };
                     reader.readAsDataURL(imageFile);
                 } else {
-                    if (editPostIndex !== null) {
-                        posts[editPostIndex] = newPost;
-                    } else {
+                    if (noteText) {
                         posts.push(newPost);
+                        closeForm();
+                        renderPosts();
                     }
-                    closePostForm();
-                    renderPosts();
                 }
-            }
-
-            function editPost(index) {
-                editPostIndex = index;
-                noteInput.value = posts[index].text;
-
-                // Reset the image input if not editing an image
-                if (!posts[index].image) {
-                    imageInput.value = "";
-                }
-
-                openPostForm();
-            }
-
-            function deletePost(index) {
-                posts.splice(index, 1);
-                renderPosts();
             }
 
             newPostBtn.addEventListener("click", openPostForm);
+            closePostForm.addEventListener("click", closeForm);
             savePostButton.addEventListener("click", savePost);
 
-            // Initial rendering of posts
             renderPosts();
         });
     </script>
