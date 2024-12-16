@@ -9,15 +9,6 @@ permalink: /task_manager
 <title>Task Manager</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-    body {
-        font-family: 'Poppins', sans-serif;
-        margin: 0;
-        padding: 0;
-        background: linear-gradient(135deg, #6a11cb, #2575fc);
-        color: #fff;
-        overflow-x: hidden;
-    }
-
     #task-manager-container {
         margin: 2rem auto;
         max-width: 700px;
