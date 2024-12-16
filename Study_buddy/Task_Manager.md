@@ -6,7 +6,7 @@ permalink: /task_manager
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Study Buddy</title>
+<title>Task Manager</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
     body {
@@ -18,130 +18,9 @@ permalink: /task_manager
         overflow-x: hidden;
     }
 
-    header {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-    }
-
-    header h1 {
-        margin: 0;
-        font-size: 2rem;
-    }
-
-    nav ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        gap: 1.5rem;
-    }
-
-    nav ul li a {
-        color: #fff;
-        text-decoration: none;
-        font-weight: bold;
-        transition: color 0.3s ease;
-    }
-
-    nav ul li a:hover {
-        color: #ffd700;
-    }
-
-    .hero {
-        text-align: center;
-        padding: 5rem 1rem;
-        background: linear-gradient(135deg, #2575fc, #6a11cb);
-    }
-
-    .hero h2 {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-    }
-
-    .hero p {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        max-width: 700px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .hero button {
-        background: #ffd700;
-        color: #000;
-        border: none;
-        padding: 1rem 2rem;
-        font-size: 1.2rem;
-        border-radius: 50px;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
-
-    .hero button:hover {
-        background: #ffc700;
-    }
-
-    .features {
-        padding: 3rem 1rem;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-    }
-
-    .feature {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 2rem;
-        text-align: center;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        transition: transform 0.3s ease;
-    }
-
-    .feature:hover {
-        transform: translateY(-10px);
-    }
-
-    .feature h3 {
-        font-size: 1.8rem;
-        margin-bottom: 1rem;
-    }
-
-    .feature p {
-        font-size: 1rem;
-    }
-
-    footer {
-        text-align: center;
-        padding: 2rem 1rem;
-        background: #000;
-    }
-
-    footer p {
-        margin: 0;
-        color: #fff;
-    }
-
-    footer a {
-        color: #ffd700;
-        text-decoration: none;
-        font-weight: bold;
-    }
-
-    footer a:hover {
-        text-decoration: underline;
-    }
-
     #task-manager-container {
         margin: 2rem auto;
-        max-width: 600px;
+        max-width: 700px;
         padding: 1.5rem;
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
@@ -149,15 +28,14 @@ permalink: /task_manager
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
 
-    #task-manager-container label {
+    label {
         display: block;
         font-size: 1rem;
         margin-bottom: 0.5rem;
         font-weight: 600;
     }
 
-    #task-manager-container input,
-    #task-manager-container textarea {
+    input, textarea {
         width: 100%;
         padding: 0.8rem;
         margin-bottom: 1.2rem;
@@ -169,14 +47,13 @@ permalink: /task_manager
         transition: border-color 0.3s ease;
     }
 
-    #task-manager-container input:focus,
-    #task-manager-container textarea:focus {
+    input:focus, textarea:focus {
         outline: none;
         border-color: #ffd700;
         box-shadow: 0 0 5px #ffd700;
     }
 
-    #task-manager-container button {
+    button {
         width: 100%;
         padding: 1rem;
         background: #ffd700;
@@ -189,195 +66,180 @@ permalink: /task_manager
         margin-bottom: 1.2rem;
     }
 
-    #task-manager-container button:hover {
+    button:hover {
         background: #ffc700;
     }
 
-    #task-manager-container input, 
-    #task-manager-container button {
-        font-family: 'Poppins', sans-serif;
+    #error-message {
+        color: #ff3b3b;
+        font-size: 1.1rem;
+        text-align: center;
+        margin-top: 1rem;
     }
 
-    #tasks-container {
-        display: none;
-        margin-top: 2rem;
-    }
-
-    #tasks-container h2 {
-        font-size: 1.8rem;
-        margin-bottom: 1rem;
-    }
-
-    #task-table {
+    table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 1rem;
     }
 
-    #task-table th, #task-table td {
+    th, td {
         padding: 1rem;
         text-align: left;
         border-bottom: 1px solid #fff;
     }
 
-    #task-table th {
+    th {
         font-weight: 600;
         background: #2575fc;
         color: #fff;
     }
 
-    #task-table tr:nth-child(even) {
+    tr:nth-child(even) {
         background: rgba(255, 255, 255, 0.05);
     }
 
-    #task-table tr:hover {
+    tr:hover {
         background: rgba(255, 255, 255, 0.1);
     }
 
-    .delete-btn {
-        background: #ff3b3b;
+    .complete-btn {
+        background: #28a745; /* Green */
         color: #fff;
-        border: none;
+        border: 2px solid #28a745; /* Green border */
         padding: 0.5rem 1rem;
         font-size: 0.9rem;
         border-radius: 8px;
         cursor: pointer;
-        transition: background 0.3s ease;
+        transition: background 0.3s ease, border 0.3s ease;
+    }
+
+    .complete-btn:hover {
+        background: #218838; /* Darker green */
+        border: 2px solid #218838; /* Darker green border */
+    }
+
+    .delete-btn {
+        background: #dc3545; /* Red */
+        color: #fff;
+        border: 2px solid #dc3545; /* Red border */
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s ease, border 0.3s ease;
     }
 
     .delete-btn:hover {
-        background: #e03e3e;
-    }
-
-    #clear-tasks-button {
-        width: 100%;
-        padding: 1rem;
-        background: #ff3b3b;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        font-size: 1.2rem;
-        cursor: pointer;
-        margin-top: 1rem;
-        transition: background 0.3s ease;
-    }
-
-    #clear-tasks-button:hover {
-        background: #e03e3e;
+        background: #c82333; /* Darker red */
+        border: 2px solid #c82333; /* Darker red border */
     }
 </style>
 
 <div id="task-manager-container">
-  <label for="title-input">Task Title:</label>
-  <input type="text" id="title-input" placeholder="e.g., Study math" />
+    <label for="title-input">Task Title:</label>
+    <input type="text" id="title-input" placeholder="e.g., Study math" />
 
-  <label for="description-input">Description:</label>
-  <textarea id="description-input" placeholder="e.g., Review Chapter 2 for the test" rows="4"></textarea>
+    <label for="description-input">Description:</label>
+    <textarea id="description-input" placeholder="e.g., Review Chapter 2 for the test" rows="4"></textarea>
 
-  <label for="date-input">Date to be Completed:</label>
-  <input type="date" id="date-input" />
+    <label for="date-input">Date to be Completed:</label>
+    <input type="date" id="date-input" />
 
-  <button id="add-task-button">Add Task</button>
+    <button id="add-task-button">Add Task</button>
 
-  <div id="tasks-container">
-    <h2>Your Tasks</h2>
-    <table id="task-table">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Date to be Completed</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="task-list"></tbody>
-    </table>
-    <button id="clear-tasks-button" style="display:none;">Clear All Tasks</button>
-  </div>
+    <div id="error-message"></div>
+
+    <div id="tasks-container">
+        <h2>Your Tasks</h2>
+        <table id="task-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="task-list"></tbody>
+        </table>
+    </div>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const titleInput = document.getElementById("title-input");
-  const descriptionInput = document.getElementById("description-input");
-  const dateInput = document.getElementById("date-input");
-  const addTaskButton = document.getElementById("add-task-button");
-  const tasksContainer = document.getElementById("tasks-container");
-  const taskList = document.getElementById("task-list");
-  const clearTasksButton = document.getElementById("clear-tasks-button");
+    const titleInput = document.getElementById("title-input");
+    const descriptionInput = document.getElementById("description-input");
+    const dateInput = document.getElementById("date-input");
+    const addTaskButton = document.getElementById("add-task-button");
+    const taskList = document.getElementById("task-list");
+    const errorMessage = document.getElementById("error-message");
 
-  let tasks = JSON.parse(localStorage.getItem("tasks")) || []; // Load tasks from local storage if available
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-  // Update the task list
-  function updateTaskList() {
-    taskList.innerHTML = ""; // Clear the current list
+    // Render tasks
+    function renderTasks() {
+        taskList.innerHTML = "";
 
-    tasks.forEach((task, index) => {
-      const taskRow = document.createElement("tr");
+        tasks.forEach((task, index) => {
+            const row = document.createElement("tr");
 
-      const titleCell = document.createElement("td");
-      titleCell.textContent = task.title;
-      taskRow.appendChild(titleCell);
+            // Task details
+            row.innerHTML += `
+                <td>${task.title}</td>
+                <td>${task.description}</td>
+                <td>${task.date}</td>
+                <td>
+                    <button class="complete-btn" onclick="completeTask(${index})">Complete</button>
+                    <button class="delete-btn" onclick="deleteTask(${index})">Delete</button>
+                </td>
+            `;
 
-      const descriptionCell = document.createElement("td");
-      descriptionCell.textContent = task.description;
-      taskRow.appendChild(descriptionCell);
+            taskList.appendChild(row);
+        });
 
-      const dateCell = document.createElement("td");
-      dateCell.textContent = task.date;
-      taskRow.appendChild(dateCell);
+        localStorage.setItem("tasks", JSON.stringify(tasks));  // Ensure tasks are always saved
+    }
 
-      const actionsCell = document.createElement("td");
+    // Complete task
+    window.completeTask = (index) => {
+        tasks.splice(index, 1);  // Remove task from the list
+        renderTasks();  // Re-render the task list
+    };
 
-      const deleteButton = document.createElement("button");
-      deleteButton.textContent = "Delete";
-      deleteButton.classList.add("delete-btn");
-      deleteButton.onclick = () => {
-        tasks.splice(index, 1);
-        localStorage.setItem("tasks", JSON.stringify(tasks)); // Update local storage
-        updateTaskList(); // Update the list
-      };
+    // Delete task
+    window.deleteTask = (index) => {
+        tasks.splice(index, 1);  // Remove task from the list
+        renderTasks();  // Re-render the task list
+    };
 
-      actionsCell.appendChild(deleteButton);
-      taskRow.appendChild(actionsCell);
-      taskList.appendChild(taskRow);
+    addTaskButton.addEventListener("click", () => {
+        const title = titleInput.value.trim();
+        const description = descriptionInput.value.trim();
+        const date = dateInput.value;
+
+        // Clear previous error message
+        errorMessage.textContent = "";
+
+        // Validate input
+        if (!title || !description || !date) {
+            errorMessage.textContent = "Please ensure that all fields are filled out and the date is correct.";
+            return;
+        }
+
+        const today = new Date().toISOString().split('T')[0];
+        if (date < today) {
+            errorMessage.textContent = "Please ensure the date is correct and not in the past.";
+            return;
+        }
+
+        tasks.push({ title, description, date });
+        renderTasks();
+
+        // Clear the inputs
+        titleInput.value = descriptionInput.value = dateInput.value = "";
     });
 
-    // Show "Clear All Tasks" button if there are tasks
-    if (tasks.length > 0) {
-      tasksContainer.style.display = "block";
-      clearTasksButton.style.display = "block";
-    } else {
-      tasksContainer.style.display = "none";
-      clearTasksButton.style.display = "none";
-    }
-  }
-
-  // Add task
-  addTaskButton.addEventListener("click", () => {
-    const title = titleInput.value.trim();
-    const description = descriptionInput.value.trim();
-    const date = dateInput.value;
-
-    if (title && description && date) {
-      tasks.push({ title, description, date });
-      localStorage.setItem("tasks", JSON.stringify(tasks)); // Save to local storage
-      updateTaskList();
-      titleInput.value = "";
-      descriptionInput.value = "";
-      dateInput.value = "";
-    } else {
-      alert("Please fill out all fields.");
-    }
-  });
-
-  // Clear all tasks
-  clearTasksButton.addEventListener("click", () => {
-    tasks = [];
-    localStorage.setItem("tasks", JSON.stringify(tasks)); // Clear from local storage
-    updateTaskList();
-  });
-
-  updateTaskList();
+    renderTasks();
 });
 </script>
