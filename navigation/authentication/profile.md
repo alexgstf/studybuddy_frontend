@@ -10,8 +10,8 @@ show_reading_time: false
  <div class="card">
    <form>
      <div>
-       <label for="newUid">Enter New UID:</label>
-       <input type="text" id="newUid" placeholder="New UID">
+       <label for="newUid">Enter New Username:</label>
+       <input type="text" id="newUid" placeholder="New Username">
      </div>
      <div>
        <label for="newName">Enter New Name:</label>
