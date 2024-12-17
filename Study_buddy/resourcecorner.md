@@ -206,7 +206,7 @@ permalink: /resource_corner
         const newPostBtn = document.getElementById("new-post-btn");
         const closePostForm = document.getElementById("close-post-form");
 
-        const API_URL = "http://localhost:8887"; // Replace with your API endpoint
+        const API_URL = "http://localhost:8887/api/posts"; // Replace with your API endpoint
 
         async function getAuthToken() {
             return localStorage.getItem("jwtToken"); // Retrieve token from localStorage
