@@ -38,18 +38,24 @@ hide: true
         <h3>Fun Challenges</h3>
         <p>Turn studying into a game with rewards, leaderboards, and exciting challenges!</p>
     </div>
+    <a href="{{site.baseurl}}/studybuddy/quizhome.html" style="text-decoration: none; color: inherit;">
     <div class="feature">
-        <h3><a href="{{site.baseurl}}/studybuddy/quizhome.html">Quiz Zone</a></h3>
+        <h3>Quiz Zone</h3>
         <p>Test your knowledge with our staff-curated quizzes, covering a wide variety of subjects!</p>
     </div>
+    </a>
+    <a href="{{site.baseurl}}/task_manager" style="text-decoration: none; color: inherit;">
     <div class="feature">
-        <h3><a href="{{site.baseurl}}/task_manager">Task Manager</a></h3>
+        <h3>Task Manager</h3>
         <p>Manage your tasks with our simple Task Manger tailored to your specific needs!</p>
     </div>
+    </a>
+    <a href="{{site.baseurl}}/resource_corner" style="text-decoration: none; color: inherit;">
     <div class="feature">
-        <h3><a href="{{site.baseurl}}/resource_corner">Resource Control</a></h3>
+        <h3>Resource Control</h3>
         <p>Upload Important Files or find important files posted by others for your own needs in school!</p>
     </div>
+    </a>
 </section>
 
 ## Fun Fact Generator 🎉
