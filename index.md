@@ -23,7 +23,7 @@ hide: true
 <section class="hero">
     <h2>Your Ultimate Study Companion</h2>
     <p>Stay organized, collaborate effectively, and make studying fun with Study Buddy. We’re here to help you achieve your goals with ease and style!</p>
-    <button>Get Started</button>
+    <a href="{{site.baseurl}}/login"><button>Get Started</button></a>
 </section>
 <section id="features" class="features">
     <div class="feature">

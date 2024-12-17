@@ -48,11 +48,11 @@ show_reading_time: false
 <div class="login-container">
     <!-- Python Login Form -->
     <div class="login-card">
-        <h1 id="pythonTitle">User Login (Python/Flask)</h1>
+        <h1 id="pythonTitle">User Login</h1>
         <form id="pythonForm" onsubmit="pythonLogin(); return false;">
             <p>
                 <label>
-                    GitHub ID:
+                    Username:
                     <input type="text" name="uid" id="uid" required>
                 </label>
             </p>
@@ -73,13 +73,13 @@ show_reading_time: false
         <form id="signupForm" onsubmit="signup(); return false;">
             <p>
                 <label>
-                    Name:
+                    Nickname:
                     <input type="text" name="name" id="name" required>
                 </label>
             </p>
             <p>
                 <label>
-                    GitHub ID:
+                    Username:
                     <input type="text" name="signupUid" id="signupUid" required>
                 </label>
             </p>
