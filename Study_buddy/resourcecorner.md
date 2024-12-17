@@ -216,9 +216,12 @@ permalink: /resource_corner
             try {
                 const token = await getAuthToken(); // Get the token from localStorage
                 const response = await fetch(API_URL, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
+                   method: "POST",
+                   headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                     },
+                    body:JSON.stringify(postData),
                 });
 
                 if (!response.ok) {
@@ -234,8 +237,8 @@ permalink: /resource_corner
 
         async function savePost() {
             const postData = {
-                title: "Post Title", // Replace with your actual title
-                content: "This is the content of the post" // Replace with your actual content
+                title: noteInput.value.trim(), // Replace with your actual title
+                content: noteInput.value.trip() // Replace with your actual content
             };
 
             fetch("http://localhost:8887/api/posts", {
@@ -253,6 +256,7 @@ permalink: /resource_corner
     })
     .then(data => console.log("Post saved successfully:", data))
     .catch(error => console.error("Error saving post:", error));
+    console.log("Post Data:", postData);
 }
 
 
@@ -272,10 +276,6 @@ permalink: /resource_corner
             } catch (error) {
                 console.error("Error deleting post:", error);
             }
-        }
-
-        async function getAuthToken() {
-            return localStorage.getItem("jwtToken"); // Retrieve token from localStorage
         }
 
         // Open and close post form
