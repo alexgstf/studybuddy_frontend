@@ -233,33 +233,28 @@ permalink: /resource_corner
         }
 
         async function savePost() {
-            const noteText = noteInput.value.trim();
-            const imageFile = imageInput.files[0];
+            const postData = {
+                title: "Post Title", // Replace with your actual title
+                content: "This is the content of the post" // Replace with your actual content
+            };
 
-            if (!noteText) return;
-
-            const formData = new FormData();
-            formData.append("text", noteText);
-            if (imageFile) formData.append("image", imageFile);
-
-            try {
-                const token = await getAuthToken(); // Get the token from localStorage
-                const response = await fetch(API_URL, {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: formData,
-                });
-
-                if (!response.ok) throw new Error("Failed to save post");
-
-                closeForm(); // Close the form
-                fetchPosts(); // Refresh the posts
-            } catch (error) {
-                console.error("Error saving post:", error);
-            }
+            fetch("http://localhost:8887/api/posts", {
+                method: "POST",
+                headers: {
+             "Content-Type": "application/json" // Tell the server you're sending JSON
+        },
+        body: JSON.stringify(postData) // Convert the object to JSON
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Failed to save post");
         }
+        return response.json();
+    })
+    .then(data => console.log("Post saved successfully:", data))
+    .catch(error => console.error("Error saving post:", error));
+}
+
 
         async function deletePost(postId) {
             try {
