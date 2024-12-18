@@ -1,24 +1,4 @@
----
-layout: base
-title: Chatroom
-permalink: /chatroom
----
-
-<div id="chatroom-container">
-    <!-- Chat display area -->
-    <div id="chat-display" style="border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll;">
-        <!-- Messages will be dynamically added here -->
-    </div>
-
-    <!-- Input area -->
-    <div id="chat-input" style="margin-top: 10px;">
-        <input type="text" id="message-input" placeholder="Type your message here..." style="width: 80%; padding: 5px;">
-        <button id="send-button" style="padding: 5px 10px;">Send</button>
-    </div>
-</div>
-
-<script type="module">
-import { pythonURI, fetchOptions } from './assets/js/api/config.js';
+import { pythonURI, fetchOptions } from './assets/js/api/config.js'
 
 document.addEventListener('DOMContentLoaded', () => {
     const chatDisplay = document.getElementById('chat-display');
@@ -29,12 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchMessages() {
         try {
             const response = await fetch(`${pythonURI}/api/chatroom/get_messages`, fetchOptions);
-            if (!response.ok) throw new Error('Failed to fetch messages');
+            if (!response.ok) {
+                throw new Error(`Failed to fetch messages: ${response.statusText}`);
+            }
             const messages = await response.json();
 
-            // Clear chat display and append messages
+            // Clear current messages and display the new ones
             chatDisplay.innerHTML = '';
-            messages.forEach(msg => {
+            messages.forEach((msg) => {
                 const messageDiv = document.createElement('div');
                 messageDiv.textContent = `${msg.username}: ${msg.message}`;
                 chatDisplay.appendChild(messageDiv);
@@ -47,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Function to send a message
+    // Function to send a new message
     async function sendMessage() {
         const message = messageInput.value.trim();
         const username = localStorage.getItem('username');
@@ -66,31 +48,34 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`${pythonURI}/api/chatroom/send_message`, {
                 ...fetchOptions,
                 method: 'POST',
-                body: JSON.stringify({ username, message })
+                body: JSON.stringify({ username, message }),
             });
 
-            if (!response.ok) throw new Error('Failed to send message');
+            if (!response.ok) {
+                throw new Error(`Failed to send message: ${response.statusText}`);
+            }
+
+            // Clear the message input and refresh the messages
             messageInput.value = '';
-            fetchMessages(); // Refresh messages after sending
+            await fetchMessages();
         } catch (err) {
             console.error('Error sending message:', err);
         }
     }
 
-    // Event listener for send button
+    // Event listener for the Send button
     sendButton.addEventListener('click', sendMessage);
 
-    // Event listener for Enter key
+    // Event listener for pressing Enter in the message input
     messageInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             sendMessage();
         }
     });
 
-    // Fetch messages every 2 seconds
+    // Fetch messages every 2 seconds to keep the chat real-time
     setInterval(fetchMessages, 2000);
 
-    // Initial fetch
+    // Initial fetch to load existing messages
     fetchMessages();
 });
-</script>
