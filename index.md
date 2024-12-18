@@ -26,10 +26,12 @@ hide: true
     <a href="{{site.baseurl}}/login"><button>Get Started</button></a>
 </section>
 <section id="features" class="features">
+    <a href="{{site.baseurl}}/chatroom" style="text-decoration: none; color: inherit;">
     <div class="feature">
         <h3>Collaborative Tools</h3>
         <p>Work together with friends using real-time study sessions, shared notes, and more!</p>
     </div>
+    </a>
     <div class="feature">
         <h3>Personalized Dashboard</h3>
         <p>Track your progress and customize your study schedule to stay on top of your goals.</p>
