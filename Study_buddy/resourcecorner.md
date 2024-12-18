@@ -197,103 +197,117 @@ permalink: /resource_corner
 </style>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const postsContainer = document.getElementById("posts-container");
-        const postForm = document.getElementById("post-form");
-        const noteInput = document.getElementById("note-input");
-        const imageInput = document.getElementById("image-input");
-        const savePostButton = document.getElementById("save-post-button");
-        const newPostBtn = document.getElementById("new-post-btn");
-        const closePostForm = document.getElementById("close-post-form");
+document.addEventListener("DOMContentLoaded", () => {
+    const postsContainer = document.getElementById("posts-container");
+    const postForm = document.getElementById("post-form");
+    const noteInput = document.getElementById("note-input");
+    const imageInput = document.getElementById("image-input");
+    const savePostButton = document.getElementById("save-post-button");
+    const newPostBtn = document.getElementById("new-post-btn");
+    const closePostForm = document.getElementById("close-post-form");
 
-        const API_URL = "http://localhost:8887/api/posts"; // Replace with your API endpoint
+    const API_URL = "http://localhost:8887/api/posts"; // Replace with your API endpoint
 
-        async function getAuthToken() {
-            return localStorage.getItem("jwtToken"); // Retrieve token from localStorage
-        }
+    async function getAuthToken() {
+        return localStorage.getItem("jwtToken"); // Retrieve token from localStorage
+    }
 
-        async function fetchPosts() {
-            try {
-                const token = await getAuthToken(); // Get the token from localStorage
-                const response = await fetch(API_URL, {
-                   method: "POST",
-                   headers: {
-                    "Content-Type": "application/json",
+    async function fetchPosts() {
+        try {
+            const token = await getAuthToken(); // Get the token from localStorage
+            const response = await fetch(API_URL, {
+                headers: {
                     Authorization: `Bearer ${token}`,
-                    },
-                    body:JSON.stringify(postData),
-                });
+                },
+            });
 
-                if (!response.ok) {
-                    throw new Error("Failed to fetch posts. Please check your authentication.");
-                }
-
-                posts = await response.json();
-                renderPosts();
-            } catch (error) {
-                console.error("Error fetching posts:", error);
+            if (!response.ok) {
+                throw new Error("Failed to fetch posts. Please check your authentication.");
             }
+
+            const posts = await response.json();
+            renderPosts(posts); // Pass the posts to renderPosts
+        } catch (error) {
+            console.error("Error fetching posts:", error);
         }
+    }
 
-        async function savePost() {
-            const postData = {
-                title: noteInput.value.trim(), // Replace with your actual title
-                content: noteInput.value.trip() // Replace with your actual content
-            };
+    async function savePost() {
+        const postData = {
+            title: noteInput.value.trim(),   // Trim the input value
+            content: noteInput.value.trim()   // Trim the input value
+        };
 
-            fetch("http://localhost:8887/api/posts", {
+        try {
+            const response = await fetch(API_URL, {
                 method: "POST",
                 headers: {
-             "Content-Type": "application/json" // Tell the server you're sending JSON
-        },
-        body: JSON.stringify(postData) // Convert the object to JSON
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Failed to save post");
-        }
-        return response.json();
-    })
-    .then(data => console.log("Post saved successfully:", data))
-    .catch(error => console.error("Error saving post:", error));
-    console.log("Post Data:", postData);
-}
+                    "Content-Type": "application/json", // Tell the server you're sending JSON
+                },
+                body: JSON.stringify(postData) // Convert the object to JSON
+            });
 
-
-        async function deletePost(postId) {
-            try {
-                const token = await getAuthToken(); // Get the token from localStorage
-                const response = await fetch(`${API_URL}/${postId}`, {
-                    method: "DELETE",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                if (!response.ok) throw new Error("Failed to delete post");
-
-                fetchPosts(); // Refresh the posts
-            } catch (error) {
-                console.error("Error deleting post:", error);
+            if (!response.ok) {
+                throw new Error("Failed to save post");
             }
+
+            const data = await response.json();
+            console.log("Post saved successfully:", data);
+            fetchPosts(); // Refresh posts after saving
+        } catch (error) {
+            console.error("Error saving post:", error);
         }
+    }
 
-        // Open and close post form
-        function openPostForm() {
-            postForm.style.display = "block";
+    async function deletePost(postId) {
+        try {
+            const token = await getAuthToken(); // Get the token from localStorage
+            const response = await fetch(`${API_URL}/${postId}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to delete post");
+            }
+
+            fetchPosts(); // Refresh the posts
+        } catch (error) {
+            console.error("Error deleting post:", error);
         }
+    }
 
-        function closeForm() {
-            postForm.style.display = "none";
-            noteInput.value = "";
-            imageInput.value = "";
-        }
+    function renderPosts(posts) {
+        postsContainer.innerHTML = ""; // Clear the container before rendering
+        posts.forEach(post => {
+            const postElement = document.createElement("div");
+            postElement.className = "post-card";
+            postElement.innerHTML = `
+                <h3>${post.title}</h3>
+                <p>${post.content}</p>
+                <button class="delete-btn" onclick="deletePost(${post.id})">Delete</button>
+            `;
+            postsContainer.appendChild(postElement);
+        });
+    }
 
-        newPostBtn.addEventListener("click", openPostForm);
-        closePostForm.addEventListener("click", closeForm);
-        savePostButton.addEventListener("click", savePost);
+    // Open and close post form
+    function openPostForm() {
+        postForm.style.display = "block";
+    }
 
-        // Fetch posts on page load
-        fetchPosts();
-    });
-</script>
+    function closeForm() {
+        postForm.style.display = "none";
+        noteInput.value = "";
+        imageInput.value = "";
+    }
+
+    newPostBtn.addEventListener("click", openPostForm);
+    closePostForm.addEventListener("click", closeForm);
+    savePostButton.addEventListener("click", savePost);
+
+    // Fetch posts on page load
+    fetchPosts();
+});
