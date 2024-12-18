@@ -225,12 +225,45 @@ h1 {
     }
 }
 
+.fact-container {
+    display: block; 
+    margin: 20px auto; 
+    max-width: 700px; 
+    width: 90%; 
+    padding: 30px;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#fact {
+    font-size: 24px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    animation: colorChange 3s infinite;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes colorChange {
+    0% { color: #ff9a9e; }
+    33% { color: #fad0c4; }
+    66% { color: #a1c4fd; }
+    100% { color: #fbc2eb; }
+}
 
 </style>
 
 <h1>Fun Fact Generator</h1>
 <p>Click the button below to learn something fascinating!</p>
 <button onclick="fetchRandomFact()">Generate Fun Fact</button>
-<p id="fact">Your fun fact will appear here!</p>
-
+<div class="fact-container">
+    <p id="fact">Your fun fact will appear here!</p>
+</div>
 
