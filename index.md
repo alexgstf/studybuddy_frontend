@@ -58,62 +58,179 @@ hide: true
     </a>
 </section>
 
-## Fun Fact Generator 🎉
-Click the button below to learn something new and exciting about Math, Science, or History!
-<section class="hero">
-    <div id="fun-fact-container" style="text-align: center; margin-top: 20px;">
-    <button id="generate-fact" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
-        Generate Fun Fact
-    </button>
-    <p id="fun-fact" style="margin-top: 20px; font-size: 18px; font-style: italic; color: #FFF;"></p>
-    </div>
-</section>
+
+
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const facts = [
-    // Math facts
-    "The number zero was invented independently by ancient mathematicians in India and the Maya civilization.",
-    "A 'googol' is the digit 1 followed by 100 zeros.",
-    "The word 'hundred' comes from the Old Norse term 'hundrath,' which actually means 120.",
-    "Pi (π) has been calculated to over 31 trillion digits as of 2024.",
-    "Leonhard Euler introduced the concept of a mathematical function.",
-    "Prime numbers are so important that they are used to secure online transactions.",
-    "A perfect number is a positive integer that is equal to the sum of its proper divisors, excluding itself.",
-    "The Fibonacci sequence is found everywhere in nature, from sunflower spirals to pinecones.",
-    "The most common favorite number worldwide is 7.",
-    "The concept of infinity was first studied by Greek philosopher Zeno in his paradoxes.",
-    // Science facts
-    "Water can boil and freeze at the same time under specific pressure conditions, called the triple point.",
-    "Bananas are radioactive because they contain potassium-40, a radioactive isotope of potassium.",
-    "Octopuses have three hearts, and their blood is blue due to copper-based hemocyanin.",
-    "Lightning strikes the Earth about 8 million times per day.",
-    "The DNA in a single human cell, if uncoiled, would stretch about 2 meters.",
-    "Venus is the hottest planet in the solar system, despite Mercury being closer to the Sun.",
-    "Your body contains about 37.2 trillion cells.",
-    "The speed of light is 299,792 kilometers per second.",
-    "Ants have been around for over 100 million years, outliving the dinosaurs.",
-    "The human brain generates enough electricity to power a small LED light bulb.",
-    // History facts
-    "The Great Wall of China is not a single continuous wall but a series of walls built over centuries.",
-    "Cleopatra lived closer in time to the moon landing than to the construction of the Great Pyramid of Giza.",
-    "Napoleon was not short; he was 5'6\" or 5'7\", average height for his time.",
-    "The Eiffel Tower was supposed to be dismantled after 20 years.",
-    "Albert Einstein was offered the presidency of Israel in 1952 but declined.",
-    "The shortest war in history was between Britain and Zanzibar on August 27, 1896. It lasted 38 minutes.",
-    "The ancient Romans used lead pipes for plumbing, coining the term 'plumber' from the Latin word for lead, 'plumbum.'",
-    "Shakespeare invented over 1,700 words we still use today, including 'eyeball' and 'bedroom.'",
-    "In 1969, Apollo 11 astronauts left mirrors on the Moon to reflect lasers for measuring the distance between the Earth and the Moon.",
-    "The longest reigning monarch in history was Louis XIV of France, who ruled for 72 years and 110 days."
-  ];
-  const generateFactButton = document.getElementById("generate-fact");
-  const funFactDisplay = document.getElementById("fun-fact");
-  generateFactButton.addEventListener("click", () => {
-    const randomIndex = Math.floor(Math.random() * facts.length);
-    funFactDisplay.textContent = facts[randomIndex];
-  });
-});
+    async function fetchRandomFact() {
+        try {
+            // Fetch the random fact from the Flask API
+            const response = await fetch('http://127.0.0.1:5001/api/funfacts/random'); // Ensure correct URL
+            if (response.ok) {
+                const data = await response.json();
+                const factElement = document.getElementById('fact');
+                
+                // Add animation effect
+                factElement.classList.add('fade-out');
+                setTimeout(() => {
+                    // Update the fact displayed
+                    factElement.innerText = data.fact;
+                    factElement.classList.remove('fade-out');
+                    factElement.classList.add('fade-in');
+                }, 500);
+                setTimeout(() => {
+                    // Remove the fade-in class after animation
+                    factElement.classList.remove('fade-in');
+                }, 1500);
+            } else {
+                console.error('Failed to fetch fact');
+            }
+        } catch (error) {
+            console.error('Error fetching fact:', error);
+        }
+    }
 </script>
 
-<footer>
-    <p><a href="#contact">Contact Us</a></p>
-</footer>
+<style>
+.login-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; /* allows the cards to wrap onto the next line if the screen is too small */
+}
+
+.login-card {
+    margin-top: 20px; /* remove the top margin */
+    width: 45%;
+    border: 10px solid #ddd;
+    border-radius: 25px;
+    padding: 20px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+    overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+.login-card h1 {
+    margin-bottom: 20px;
+}
+
+.signup-card {
+    margin-top: 20px; /* remove the top margin */
+    width: 45%;
+    border: 10px solid #ddd;
+    border-radius: 25px;
+    padding: 20px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+    overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+.signup-card h1 {
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 1.1rem; /* Slightly bigger text for readability */
+    color:rgb(236, 247, 255); /* Stronger grey for better contrast and readability */
+}
+
+/* Modern Input Boxes with Dynamic Moving Gradient (Vibrant Purple) */
+input[type="text"], input[type="password"] {
+    font-size: 1.1rem; /* Increased font size for better readability */
+    padding: 12px 15px;
+    width: 100%;
+    margin-top: 5px;
+    border-radius: 8px; /* Rounded corners for inputs */
+    border: 1px solid #ddd; /* Light border to match theme */
+    background: linear-gradient(45deg, #7a4cf7, #4a69bb, #3e3e9e, #b04da1); /* Softer purple gradient */
+    background-size: 400% 400%; /* Make the gradient large enough for movement */
+    color: white; /* White text for contrast */
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    transition: box-shadow 0.3s ease; /* Smooth transition for the shadow */
+    animation: gradientAnimation 5s ease infinite; /* Apply animation */
+}
+
+/* Focus Effect for Inputs */
+input[type="text"]:focus, input[type="password"]:focus {
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.7); /* Soft white glow on focus */
+}
+
+/* Keyframes for the Moving Gradient Effect */
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+button {
+    font-size: 1.1rem; /* Increased font size for readability */
+    padding: 12px 20px;
+    width: 100%;
+    border-radius: 8px; /* Rounded corners for buttons */
+    border: none; /* Remove border */
+    background: linear-gradient(45deg, #7a4cf7, #3e3e9e, #5c51e1, #6a61b9); /* Muted purple gradient */
+    color: white; /* White text for contrast */
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    transition: background 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for background and shadow */
+    animation: gradientAnimation 5s ease infinite; /* Apply animation */
+    background-size: 400% 400%; /* Make the gradient large enough for movement */
+}
+
+/* Button Hover Effect */
+button:hover {
+    background: linear-gradient(45deg, #6a61b9, #7a4cf7, #5c51e1, #3e3e9e); /* Reversed gradient on hover */
+    box-shadow: 0 0 10px rgba(100, 100, 255, 0.7); /* Soft glow effect on hover */
+}
+
+/* Button Focus Effect */
+button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.7); /* Soft white glow on focus */
+}
+
+/* Keyframes for the Moving Gradient Effect */
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+h1 {
+    font-size: 2.5rem; /* Adjust font size for titles */
+    overflow: hidden; /* Hide text during the animation */
+    white-space: nowrap; /* Keep text on a single line */
+    border-right: 3px solid #444; /* Simulate the typing cursor */
+    width: 0; /* Initially, the text will have width 0 */
+    animation: typewriter 2s steps(30) 1s forwards, blink 0.75s step-end infinite; /* Animation to simulate typing */
+}
+
+/* Typewriter Animation */
+@keyframes typewriter {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%; /* Fully reveal the text */
+    }
+}
+
+
+</style>
+
+<h1>Fun Fact Generator</h1>
+<p>Click the button below to learn something fascinating!</p>
+<button onclick="fetchRandomFact()">Generate Fun Fact</button>
+<p id="fact">Your fun fact will appear here!</p>
+
+
