@@ -62,35 +62,8 @@ hide: true
 
 
 
-<script>
-    async function fetchRandomFact() {
-        try {
-            // Fetch the random fact from the Flask API
-            const response = await fetch('http://127.0.0.1:5001/api/funfacts/random'); // Ensure correct URL
-            if (response.ok) {
-                const data = await response.json();
-                const factElement = document.getElementById('fact');
-                
-                // Add animation effect
-                factElement.classList.add('fade-out');
-                setTimeout(() => {
-                    // Update the fact displayed
-                    factElement.innerText = data.fact;
-                    factElement.classList.remove('fade-out');
-                    factElement.classList.add('fade-in');
-                }, 500);
-                setTimeout(() => {
-                    // Remove the fade-in class after animation
-                    factElement.classList.remove('fade-in');
-                }, 1500);
-            } else {
-                console.error('Failed to fetch fact');
-            }
-        } catch (error) {
-            console.error('Error fetching fact:', error);
-        }
-    }
-</script>
+
+
 
 <style>
 .login-container {
@@ -262,10 +235,31 @@ h1 {
 
 </style>
 
-<h1>Fun Fact Generator</h1>
-<p>Click the button below to learn something fascinating!</p>
-<button onclick="fetchRandomFact()">Generate Fun Fact</button>
-<div class="fact-container">
-    <p id="fact">Your fun fact will appear here!</p>
-</div>
 
+# Fun Fact Generator
+
+Click the button below to generate a random fun fact!
+
+<button id="fetch-fact">Get Fun Fact</button>
+
+<p id="fact">Your fun fact will appear here.</p>
+
+<script>
+    // Function to fetch random fact from the Flask API
+    async function fetchRandomFact() {
+        try {
+            const response = await fetch('http://127.0.0.1:5001/api/funfacts/random'); // Make request to backend API
+            if (response.ok) {
+                const data = await response.json(); // Parse JSON response
+                document.getElementById('fact').innerText = data.fact; // Display the fact
+            } else {
+                console.error('Failed to fetch fact');
+            }
+        } catch (error) {
+            console.error('Error fetching fact:', error);
+        }
+    }
+
+    // Event listener for button click to fetch fact
+    document.getElementById('fetch-fact').addEventListener('click', fetchRandomFact);
+</script>
