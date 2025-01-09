@@ -4,8 +4,6 @@ title: Resource Corner
 permalink: /resource_corner
 ---
 
-
-
 <header>
     <h1>Study Buddy</h1>
 </header>
@@ -109,7 +107,6 @@ permalink: /resource_corner
         bottom: 10px;
         right: 10px;
     }
-    .post-card .edit-btn,
     .post-card .delete-btn {
         background: #ffd700;
         color: #000;
@@ -117,7 +114,6 @@ permalink: /resource_corner
         border-radius: 25px;
         cursor: pointer;
     }
-    .post-card .edit-btn:hover,
     .post-card .delete-btn:hover {
         background: #e6c000;
     }
@@ -197,117 +193,137 @@ permalink: /resource_corner
 </style>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    const postsContainer = document.getElementById("posts-container");
-    const postForm = document.getElementById("post-form");
-    const noteInput = document.getElementById("note-input");
-    const imageInput = document.getElementById("image-input");
-    const savePostButton = document.getElementById("save-post-button");
-    const newPostBtn = document.getElementById("new-post-btn");
-    const closePostForm = document.getElementById("close-post-form");
+    document.addEventListener("DOMContentLoaded", () => {
+        const postsContainer = document.getElementById("posts-container");
+        const postForm = document.getElementById("post-form");
+        const noteInput = document.getElementById("note-input");
+        const imageInput = document.getElementById("image-input");
+        const savePostButton = document.getElementById("save-post-button");
+        const newPostBtn = document.getElementById("new-post-btn");
+        const closePostForm = document.getElementById("close-post-form");
 
-    const API_URL = "http://localhost:8887/api/posts"; // Replace with your API endpoint
+        const API_URL = "http://localhost:8887/api/posts"; // Replace with your API endpoint
 
-    async function getAuthToken() {
-        return localStorage.getItem("jwtToken"); // Retrieve token from localStorage
-    }
+        async function getAuthToken() {
+            return localStorage.getItem("jwtToken"); // Retrieve token from localStorage
+        }
 
-    async function fetchPosts() {
-        try {
-            const token = await getAuthToken(); // Get the token from localStorage
-            const response = await fetch(API_URL, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+        // Render posts function
+        function renderPosts(posts) {
+            postsContainer.innerHTML = ""; // Clear existing posts
 
-            if (!response.ok) {
-                throw new Error("Failed to fetch posts. Please check your authentication.");
+            if (posts.length === 0) {
+                postsContainer.innerHTML = "<p>No posts available. Start by creating one!</p>";
+                return;
             }
 
-            const posts = await response.json();
-            renderPosts(posts); // Pass the posts to renderPosts
-        } catch (error) {
-            console.error("Error fetching posts:", error);
+            posts.forEach(post => {
+                const postCard = document.createElement("div");
+                postCard.classList.add("post-card");
+
+                const postContent = `
+                    <p><strong>${post.title}</strong></p>
+                    <p>${post.content}</p>
+                `;
+                postCard.innerHTML = postContent;
+
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete";
+                deleteButton.classList.add("delete-btn");
+                deleteButton.onclick = () => deletePost(post.id);
+
+                const actionsDiv = document.createElement("div");
+                actionsDiv.classList.add("actions");
+                actionsDiv.appendChild(deleteButton);
+
+                postCard.appendChild(actionsDiv);
+                postsContainer.appendChild(postCard);
+            });
         }
-    }
 
-    async function savePost() {
-        const postData = {
-            title: noteInput.value.trim(),   // Trim the input value
-            content: noteInput.value.trim()   // Trim the input value
-        };
+        // Fetch posts function
+        async function fetchPosts() {
+            try {
+                const token = await getAuthToken(); // Get the token from localStorage
+                const response = await fetch(API_URL, {
+                    method: "GET", // Changed to GET
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
 
-        try {
-            const response = await fetch(API_URL, {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch posts. Please check your authentication.");
+                }
+
+                const posts = await response.json();
+                renderPosts(posts); // Assuming renderPosts will handle displaying the posts
+            } catch (error) {
+                console.error("Error fetching posts:", error);
+            }
+        }
+
+        // Save post function
+        async function savePost() {
+            const postData = {
+                title: noteInput.value.trim(), // Replace with your actual title
+                content: noteInput.value.trim(), // Fixed typo here
+            };
+
+            fetch("http://localhost:8887/api/posts", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json", // Tell the server you're sending JSON
                 },
-                body: JSON.stringify(postData) // Convert the object to JSON
-            });
+                body: JSON.stringify(postData), // Convert the object to JSON
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to save post");
+                }
+                return response.json();
+            })
+            .then(data => console.log("Post saved successfully:", data))
+            .catch(error => console.error("Error saving post:", error));
 
-            if (!response.ok) {
-                throw new Error("Failed to save post");
-            }
-
-            const data = await response.json();
-            console.log("Post saved successfully:", data);
-            fetchPosts(); // Refresh posts after saving
-        } catch (error) {
-            console.error("Error saving post:", error);
+            console.log("Post Data:", postData);
         }
-    }
 
-    async function deletePost(postId) {
-        try {
-            const token = await getAuthToken(); // Get the token from localStorage
-            const response = await fetch(`${API_URL}/${postId}`, {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+        // Delete post function
+        async function deletePost(postId) {
+            try {
+                const token = await getAuthToken(); // Get the token from localStorage
+                const response = await fetch(`${API_URL}/${postId}`, {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
 
-            if (!response.ok) {
-                throw new Error("Failed to delete post");
+                if (!response.ok) throw new Error("Failed to delete post");
+
+                fetchPosts(); // Refresh the posts
+            } catch (error) {
+                console.error("Error deleting post:", error);
             }
-
-            fetchPosts(); // Refresh the posts
-        } catch (error) {
-            console.error("Error deleting post:", error);
         }
-    }
 
-    function renderPosts(posts) {
-        postsContainer.innerHTML = ""; // Clear the container before rendering
-        posts.forEach(post => {
-            const postElement = document.createElement("div");
-            postElement.className = "post-card";
-            postElement.innerHTML = `
-                <h3>${post.title}</h3>
-                <p>${post.content}</p>
-                <button class="delete-btn" onclick="deletePost(${post.id})">Delete</button>
-            `;
-            postsContainer.appendChild(postElement);
-        });
-    }
+        // Open and close post form
+        function openPostForm() {
+            postForm.style.display = "block";
+        }
 
-    // Open and close post form
-    function openPostForm() {
-        postForm.style.display = "block";
-    }
+        function closeForm() {
+            postForm.style.display = "none";
+            noteInput.value = "";
+            imageInput.value = "";
+        }
 
-    function closeForm() {
-        postForm.style.display = "none";
-        noteInput.value = "";
-        imageInput.value = "";
-    }
+        newPostBtn.addEventListener("click", openPostForm);
+        closePostForm.addEventListener("click", closeForm);
+        savePostButton.addEventListener("click", savePost);
 
-    newPostBtn.addEventListener("click", openPostForm);
-    closePostForm.addEventListener("click", closeForm);
-    savePostButton.addEventListener("click", savePost);
-
-    // Fetch posts on page load
-    fetchPosts();
-});
+        // Fetch posts on page load
+        fetchPosts();
+    });
+</script>
