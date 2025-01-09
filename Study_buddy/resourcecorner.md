@@ -266,27 +266,46 @@ permalink: /resource_corner
         // Save post function
         async function savePost() {
             const postData = {
-                title: noteInput.value.trim(), // Replace with your actual title
-                content: noteInput.value.trim(), // Fixed typo here
+                title: noteInput.value.trim(),
+                content: noteInput.value.trim(),
             };
 
-            fetch("http://localhost:8887/api/posts", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json", // Tell the server you're sending JSON
-                },
-                body: JSON.stringify(postData), // Convert the object to JSON
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Failed to save post");
-                }
-                return response.json();
-            })
-            .then(data => console.log("Post saved successfully:", data))
-            .catch(error => console.error("Error saving post:", error));
+            const formData = new FormData();
+            formData.append("title", postData.title);
+            formData.append("content", postData.content);
 
-            console.log("Post Data:", postData);
+            const file = imageInput.files[0];
+            if (file) {
+                formData.append("image", file); // Append image if present
+            }
+
+            if (!postData.title || !postData.content) {
+                alert("Please provide both a title and content for the post.");
+                return;
+            }
+
+            try {
+                const token = await getAuthToken(); // Get the token from localStorage
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                    },
+                    body: formData, // Don't set Content-Type, let the browser handle it
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to save post: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log("Post saved successfully:", data);
+                fetchPosts(); // Refresh the posts after saving
+                closeForm(); // Close the form after saving the post
+
+            } catch (error) {
+                console.error("Error saving post:", error);
+            }
         }
 
         // Delete post function
