@@ -236,30 +236,33 @@ h1 {
 </style>
 
 
-# Fun Fact Generator
-
-Click the button below to generate a random fun fact!
-
-<button id="fetch-fact">Get Fun Fact</button>
-
-<p id="fact">Your fun fact will appear here.</p>
+<div>
+  <h1>Fun Fact Generator</h1>
+  <p>Click the button below to get a random fun fact!</p>
+  <button id="fetch-fact">Get Fun Fact</button>
+  <p id="fact">Your fun fact will appear here.</p>
+</div>
 
 <script>
-    // Function to fetch random fact from the Flask API
-    async function fetchRandomFact() {
-        try {
-            const response = await fetch('http://127.0.0.1:5001/api/funfacts/random'); // Make request to backend API
-            if (response.ok) {
-                const data = await response.json(); // Parse JSON response
-                document.getElementById('fact').innerText = data.fact; // Display the fact
-            } else {
-                console.error('Failed to fetch fact');
-            }
-        } catch (error) {
-            console.error('Error fetching fact:', error);
-        }
+  async function fetchRandomFact() {
+    try {
+      const response = await fetch('http://localhost:8887/api/funfacts/random');
+      if (response.ok) {
+        const data = await response.json();
+        document.getElementById('fact').innerText = data.fact;
+      } else {
+        document.getElementById('fact').innerText =
+          'Could not fetch a fun fact. Please try again later.';
+        console.error('Failed to fetch fact');
+      }
+    } catch (error) {
+      document.getElementById('fact').innerText =
+        'Could not fetch a fun fact. Please try again later.';
+      console.error('Error fetching fact:', error);
     }
+  }
 
-    // Event listener for button click to fetch fact
-    document.getElementById('fetch-fact').addEventListener('click', fetchRandomFact);
+  document
+    .getElementById('fetch-fact')
+    .addEventListener('click', fetchRandomFact);
 </script>
