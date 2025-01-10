@@ -4,13 +4,75 @@ title: Quotes
 permalink: /quotes
 ---
 
-<div>
-    <p id="quote">Click the button to fetch a quote!</p>
-    <p id="author"></p>
-    <p id="date"></p>
-    <button id="fetch-quote">Fetch a Quote</button>
-    <button id="reveal-details" style="display: none;">Author and Date</button>
+<div style="text-align: center; font-family: Arial, sans-serif; margin-top: 50px;">
+    <h1 class="handwritten-title">Quote Generator</h1>
+    <p id="quote" style="font-size: 1.5rem; color:rgb(255, 255, 255);">Click the button to find a quote!</p>
+    <p id="author" style="font-size: 1rem; color:rgb(212, 212, 212);"></p>
+    <p id="date" style="font-size: 1rem; color: rgb(212, 212, 212);"></p>
+    <button id="fetch-quote" class="styled-button">Find Quote</button>
+    <button id="reveal-details" class="styled-button" style="display: none;">Author and Date</button>
 </div>
+
+<style>
+    .handwritten-title {
+        font-size: 3rem;
+        font-weight: bold;
+        color:rgb(255, 255, 255);
+        border-right: 4px solid #3e3e9e;
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 0;
+        animation: handwriting 4s steps(30) 1s forwards, blink 0.75s step-end infinite;
+    }
+    @keyframes handwriting {
+        0% {
+            width: 0;
+        }
+        100% {
+            width: 100%;
+        }
+    }
+    @keyframes blink {
+        50% {
+            border-color: transparent;
+        }
+        100% {
+            border-color: #3e3e9e;
+        }
+    }
+
+    .styled-button {
+        font-size: 1rem;
+        font-weight: bold;
+        color: white;
+        background: linear-gradient(45deg, #7a4cf7, #5c51e1);
+        border: 3px solid #3e3e9e;
+        border-radius: 25px;
+        padding: 10px 20px;
+        margin: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .styled-button:hover {
+        background: linear-gradient(45deg, #5c51e1, #7a4cf7);
+        border-color: #6a61b9;
+        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+        transform: scale(1.1);
+    }
+
+    .styled-button:active {
+        background: #3e3e9e;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+        transform: scale(0.95);
+    }
+
+    p {
+        margin: 10px 0;
+    }
+</style>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
