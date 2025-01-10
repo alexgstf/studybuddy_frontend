@@ -4,6 +4,117 @@ title: Chatroom
 permalink: /chatroom
 ---
 
+<div class="container">
+    <div class="white-container" style="background-color: white; border-radius: 10px; box-shadow: 0 10px 20px rgba(58, 68, 177, 0.3); padding: 20px;">
+        <ul class="nav nav-tabs" id="topicTabs" role="tablist" style="display: flex; width: 100%; padding: 0; margin: 0; border-top-left-radius: 10px; border-top-right-radius: 10px; background-color: rgb(220, 200, 250);">
+            <!-- JavaScript will populate this -->
+        </ul>
+        <div class="tab-content" id="topicTabContent" style="border: 2px solid #3e3e9e; padding: 15px; border-radius: 10px; margin-top: 10px; background-color: #6a61b9; color: white;">
+            <!-- JavaScript will populate this -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // Fetch data from the Flask API and populate the tabs with Bootstrap interactivity
+    async function fetchTopics() {
+        const response = await fetch('http://127.0.0.1:8887/api/topics');
+        const topics = await response.json();
+        
+        const tabsContainer = document.getElementById('topicTabs');
+        const contentContainer = document.getElementById('topicTabContent');
+
+        tabsContainer.innerHTML = '';
+        contentContainer.innerHTML = '';
+
+        topics.forEach((topic, index) => {
+            const isActive = index === 0 ? 'active' : '';
+            const tabElement = `
+                <li class="nav-item" role="presentation" style="flex-grow: 1; text-align: center;">
+                    <button class="nav-link ${isActive}" id="tab-${index}" data-bs-toggle="tab" data-bs-target="#content-${index}" 
+                            type="button" role="tab" aria-controls="content-${index}" aria-selected="${index === 0}" 
+                            style="width: 100%; border-radius: 0;">
+                        ${topic.topic}
+                    </button>
+                </li>
+            `;
+            tabsContainer.innerHTML += tabElement;
+
+            const contentElement = `
+                <div class="tab-pane fade ${isActive ? 'show active' : ''}" id="content-${index}" 
+                     role="tabpanel" aria-labelledby="tab-${index}">
+                    <p>${topic.description}</p>
+                </div>
+            `;
+            contentContainer.innerHTML += contentElement;
+        });
+    }
+
+    fetchTopics();
+</script>
+
+<!-- Bootstrap CSS & JS for tab functionality -->
+<link rel="stylesheet" 
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    /* General Font Import */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    /* White Container */
+    .white-container {
+        background-color: white;
+        border-radius: 10px; /* Consistent border-radius */
+        box-shadow: 0 10px 20px rgba(58, 68, 177, 0.3); /* Soft shadow */
+        font-family: 'Poppins', sans-serif;
+        padding: 20px;
+    }
+
+    /* Tabs */
+    .nav-tabs {
+        display: flex;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        border-top-left-radius: 10px; /* Rounded outer top-left corner */
+        border-top-right-radius: 10px; /* Rounded outer top-right corner */
+        background-color: rgb(220, 200, 250); /* Light purple background */
+    }
+
+    .nav-tabs .nav-link {
+        border-radius: 0 !important;
+        flex-grow: 1;
+        text-align: center;
+        padding: 15px;
+        border: 1px solid #007bff;
+        color: #333; /* Ensures text is readable */
+        background-color: #f8f9fa; /* Neutral background color for tabs */
+    }
+
+    .nav-tabs .nav-item {
+        flex-grow: 1;
+    }
+
+    .nav-tabs .nav-link.active {
+        background-color: #007bff; /* Blue background for active tab */
+        color: white; /* White text for active tab */
+    }
+
+    /* Tab Content */
+    .tab-content {
+        border: 2px solid #3e3e9e; /* Deep blue border */
+        padding: 15px;
+        border-radius: 10px; /* Matching border-radius */
+        margin-top: 10px;
+        background-color: #6a61b9; /* Subtle background color */
+        color: white; /* White text for readability */
+    }
+</style>
+
+
+
+
 <style>
     /* General Font Import */
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
