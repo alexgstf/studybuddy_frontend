@@ -25,7 +25,6 @@ permalink: /resource_corner
 <div class="post-form" id="post-form">
     <button class="close-btn" id="close-post-form">×</button>
     <textarea id="note-input" placeholder="Write your note here..."></textarea>
-    <input type="file" id="image-input" accept="image/*">
     <button id="save-post-button">Save Post</button>
 </div>
 <button class="new-post-btn" id="new-post-btn">+</button>
@@ -93,10 +92,6 @@ permalink: /resource_corner
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         position: relative;
     }
-    .post-card img {
-        width: 100%;
-        border-radius: 10px;
-    }
     .post-card p {
         margin: 1rem 0;
     }
@@ -128,10 +123,9 @@ permalink: /resource_corner
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         display: none;
         width: 500px;
-        height: 400px;
+        height: 300px;
     }
-    .post-form textarea,
-    .post-form input[type="file"] {
+    .post-form textarea {
         width: 100%;
         margin: 1rem 0;
         padding: 0.8rem;
@@ -197,16 +191,11 @@ permalink: /resource_corner
         const postsContainer = document.getElementById("posts-container");
         const postForm = document.getElementById("post-form");
         const noteInput = document.getElementById("note-input");
-        const imageInput = document.getElementById("image-input");
         const savePostButton = document.getElementById("save-post-button");
         const newPostBtn = document.getElementById("new-post-btn");
         const closePostForm = document.getElementById("close-post-form");
 
         const API_URL = "http://localhost:8887/api/posts"; // Replace with your API endpoint
-
-        async function getAuthToken() {
-            return localStorage.getItem("jwtToken"); // Retrieve token from localStorage
-        }
 
         // Render posts function
         function renderPosts(posts) {
@@ -244,20 +233,16 @@ permalink: /resource_corner
         // Fetch posts function
         async function fetchPosts() {
             try {
-                const token = await getAuthToken(); // Get the token from localStorage
                 const response = await fetch(API_URL, {
-                    method: "GET", // Changed to GET
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                    },
+                    method: "GET",
                 });
 
                 if (!response.ok) {
-                    throw new Error("Failed to fetch posts. Please check your authentication.");
+                    throw new Error("Failed to fetch posts.");
                 }
 
                 const posts = await response.json();
-                renderPosts(posts); // Assuming renderPosts will handle displaying the posts
+                renderPosts(posts);
             } catch (error) {
                 console.error("Error fetching posts:", error);
             }
@@ -266,18 +251,9 @@ permalink: /resource_corner
         // Save post function
         async function savePost() {
             const postData = {
-                title: noteInput.value.trim(),
+                title: noteInput.value.trim().slice(0, 30),
                 content: noteInput.value.trim(),
             };
-
-            const formData = new FormData();
-            formData.append("title", postData.title);
-            formData.append("content", postData.content);
-
-            const file = imageInput.files[0];
-            if (file) {
-                formData.append("image", file); // Append image if present
-            }
 
             if (!postData.title || !postData.content) {
                 alert("Please provide both a title and content for the post.");
@@ -285,13 +261,12 @@ permalink: /resource_corner
             }
 
             try {
-                const token = await getAuthToken(); // Get the token from localStorage
                 const response = await fetch(API_URL, {
                     method: "POST",
                     headers: {
-                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json",
                     },
-                    body: formData, // Don't set Content-Type, let the browser handle it
+                    body: JSON.stringify(postData),
                 });
 
                 if (!response.ok) {
@@ -300,9 +275,8 @@ permalink: /resource_corner
 
                 const data = await response.json();
                 console.log("Post saved successfully:", data);
-                fetchPosts(); // Refresh the posts after saving
-                closeForm(); // Close the form after saving the post
-
+                fetchPosts();
+                closeForm();
             } catch (error) {
                 console.error("Error saving post:", error);
             }
@@ -311,12 +285,8 @@ permalink: /resource_corner
         // Delete post function
         async function deletePost(postId) {
             try {
-                const token = await getAuthToken(); // Get the token from localStorage
                 const response = await fetch(`${API_URL}/${postId}`, {
                     method: "DELETE",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
                 });
 
                 if (!response.ok) throw new Error("Failed to delete post");
@@ -335,7 +305,6 @@ permalink: /resource_corner
         function closeForm() {
             postForm.style.display = "none";
             noteInput.value = "";
-            imageInput.value = "";
         }
 
         newPostBtn.addEventListener("click", openPostForm);
