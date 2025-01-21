@@ -4,7 +4,6 @@ title: Quotes
 permalink: /quotesdatabase
 ---
 
-
 <body>
     <header>
         <h1>Quotes Manager</h1>
@@ -35,6 +34,7 @@ permalink: /quotesdatabase
                         <th>Author</th>
                         <th>Quote</th>
                         <th>Date</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="quotes-body">
@@ -61,6 +61,10 @@ permalink: /quotesdatabase
                     <td>${quote.author}</td>
                     <td>${quote.quote}</td>
                     <td>${quote.date}</td>
+                    <td>
+                        <button onclick="editQuote(${quote.id}, '${quote.author}', '${quote.quote}', '${quote.date}')">Edit</button>
+                        <button onclick="deleteQuote(${quote.id})">Delete</button>
+                    </td>
                 `;
                 quotesBody.appendChild(row);
             });
@@ -89,6 +93,54 @@ permalink: /quotesdatabase
             } else {
                 alert('Failed to add quote.');
             }
+        }
+
+        // Function to handle deleting a quote
+        async function deleteQuote(id) {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                alert('Quote deleted successfully!');
+                fetchQuotes();
+            } else {
+                alert('Failed to delete quote.');
+            }
+        }
+
+        // Function to handle editing a quote
+        function editQuote(id, currentAuthor, currentQuote, currentDate) {
+            // Pre-fill the form with existing quote data
+            document.getElementById('author').value = currentAuthor;
+            document.getElementById('quote').value = currentQuote;
+            document.getElementById('date').value = currentDate;
+
+            // Change form submission to update quote
+            const form = document.getElementById('add-quote-form');
+            form.onsubmit = async function(event) {
+                event.preventDefault();
+
+                const author = document.getElementById('author').value;
+                const quote = document.getElementById('quote').value;
+                const date = document.getElementById('date').value;
+
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ author, quote, date }),
+                });
+
+                if (response.ok) {
+                    alert('Quote updated successfully!');
+                    fetchQuotes();
+                    form.reset();
+                } else {
+                    alert('Failed to update quote.');
+                }
+            };
         }
 
         // Initialize the app
