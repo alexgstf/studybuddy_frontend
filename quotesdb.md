@@ -126,9 +126,8 @@ permalink: /quotesdatabase
     }
 </style>
 
-<header>
-    <h1>Quotes Manager</h1>
-</header>
+<h1>Quotes Manager</h1>
+
 <main>
     <section id="quote-form">
         <h2>Add a New Quote</h2>
