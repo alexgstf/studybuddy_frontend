@@ -125,6 +125,47 @@ permalink: /task_manager
         background: #c82333; /* Darker red */
         border: 2px solid #c82333; /* Darker red border */
     }
+
+    #random-task-container {
+        margin-top: 2rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    #random-task-container h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #fff;
+    }
+
+    #random-task-box {
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border-radius: 8px;
+        margin: 1rem 0;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #random-task-button {
+        padding: 1rem;
+        background: #ffd700;
+        color: #000;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    #random-task-button:hover {
+        background: #ffc700;
+    }
 </style>
 
 <div id="task-manager-container">
@@ -157,6 +198,15 @@ permalink: /task_manager
     </div>
 </div>
 
+<!-- Random Task Section -->
+<div id="random-task-container">
+    <h2>Get a Random Task Idea</h2>
+    <div id="random-task-box">
+        Click the button to get a random task!
+    </div>
+    <button id="random-task-button">Get Random Task</button>
+</div>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const titleInput = document.getElementById("title-input");
@@ -165,6 +215,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const addTaskButton = document.getElementById("add-task-button");
     const taskList = document.getElementById("task-list");
     const errorMessage = document.getElementById("error-message");
+    const randomTaskBox = document.getElementById("random-task-box");
+    const randomTaskButton = document.getElementById("random-task-button");
 
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
@@ -229,6 +281,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Clear the inputs
         titleInput.value = descriptionInput.value = dateInput.value = "";
+    });
+
+    // Fetch random task from API
+    randomTaskButton.addEventListener("click", async () => {
+        try {
+            const response = await fetch("http://127.0.0.1:8887/api/tasks/random");
+            const data = await response.json();
+            randomTaskBox.textContent = data.task;
+        } catch (error) {
+            randomTaskBox.textContent = "Could not fetch a task. Please try again.";
+        }
     });
 
     renderTasks();
