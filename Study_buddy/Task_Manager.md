@@ -125,47 +125,6 @@ permalink: /task_manager
         background: #c82333; /* Darker red */
         border: 2px solid #c82333; /* Darker red border */
     }
-
-    #random-task-container {
-        margin-top: 2rem;
-        padding: 1rem;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    #random-task-container h2 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #fff;
-    }
-
-    #random-task-box {
-        padding: 1rem;
-        background: rgba(255, 255, 255, 0.1);
-        color: #fff;
-        border-radius: 8px;
-        margin: 1rem 0;
-        min-height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    #random-task-button {
-        padding: 1rem;
-        background: #ffd700;
-        color: #000;
-        border: none;
-        border-radius: 8px;
-        font-size: 1.2rem;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
-
-    #random-task-button:hover {
-        background: #ffc700;
-    }
 </style>
 
 <div id="task-manager-container">
@@ -174,9 +133,6 @@ permalink: /task_manager
 
     <label for="description-input">Description:</label>
     <textarea id="description-input" placeholder="e.g., Review Chapter 2 for the test" rows="4"></textarea>
-
-    <label for="date-input">Date to be Completed:</label>
-    <input type="date" id="date-input" />
 
     <button id="add-task-button">Add Task</button>
 
@@ -189,7 +145,6 @@ permalink: /task_manager
                 <tr>
                     <th>Title</th>
                     <th>Description</th>
-                    <th>Date</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -198,25 +153,13 @@ permalink: /task_manager
     </div>
 </div>
 
-<!-- Random Task Section -->
-<div id="random-task-container">
-    <h2>Get a Random Task Idea</h2>
-    <div id="random-task-box">
-        Click the button to get a random task!
-    </div>
-    <button id="random-task-button">Get Random Task</button>
-</div>
-
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const titleInput = document.getElementById("title-input");
     const descriptionInput = document.getElementById("description-input");
-    const dateInput = document.getElementById("date-input");
     const addTaskButton = document.getElementById("add-task-button");
     const taskList = document.getElementById("task-list");
     const errorMessage = document.getElementById("error-message");
-    const randomTaskBox = document.getElementById("random-task-box");
-    const randomTaskButton = document.getElementById("random-task-button");
 
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
@@ -231,7 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
             row.innerHTML += `
                 <td>${task.title}</td>
                 <td>${task.description}</td>
-                <td>${task.date}</td>
                 <td>
                     <button class="complete-btn" onclick="completeTask(${index})">Complete</button>
                     <button class="delete-btn" onclick="deleteTask(${index})">Delete</button>
@@ -256,44 +198,55 @@ document.addEventListener("DOMContentLoaded", () => {
         renderTasks();  // Re-render the task list
     };
 
-    addTaskButton.addEventListener("click", () => {
-        const title = titleInput.value.trim();
-        const description = descriptionInput.value.trim();
-        const date = dateInput.value;
+    addTaskButton.addEventListener("click", async () => {
 
-        // Clear previous error message
-        errorMessage.textContent = "";
+    const title = titleInput.value.trim();
+    const description = descriptionInput.value.trim();
 
-        // Validate input
-        if (!title || !description || !date) {
-            errorMessage.textContent = "Please ensure that all fields are filled out and the date is correct.";
+    // Clear previous error message
+    errorMessage.textContent = "";
+
+    // Validate input
+    if (!title || !description) {
+        errorMessage.textContent = "Please ensure that both fields are filled out.";
+        return;
+    }
+
+    try {
+        // Send task data to the backend API
+        const response = await fetch("/api/addtask", { // Assuming the backend is served from the same domain
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                title,        // Send the task title
+                description,  // Send the task description
+            }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            errorMessage.textContent = errorData.error || "An error occurred while adding the task.";
             return;
         }
 
-        const today = new Date().toISOString().split('T')[0];
-        if (date < today) {
-            errorMessage.textContent = "Please ensure the date is correct and not in the past.";
-            return;
-        }
+        const result = await response.json();
+        console.log(result.message); // Success message from the backend
 
-        tasks.push({ title, description, date });
+        // Add the new task to the local task array and re-render the task list
+        tasks.push({ title, description });
         renderTasks();
 
         // Clear the inputs
-        titleInput.value = descriptionInput.value = dateInput.value = "";
-    });
+        titleInput.value = descriptionInput.value = "";
+    } catch (error) {
+        console.error("Error:", error);
+        errorMessage.textContent = "Could not connect to the server. Please try again later.";
+    }
+});
 
-    // Fetch random task from API
-    randomTaskButton.addEventListener("click", async () => {
-        try {
-            const response = await fetch("http://127.0.0.1:8887/api/tasks/random");
-            const data = await response.json();
-            randomTaskBox.textContent = data.task;
-        } catch (error) {
-            randomTaskBox.textContent = "Could not fetch a task. Please try again.";
-        }
-    });
-
+});
     renderTasks();
 });
 </script>
