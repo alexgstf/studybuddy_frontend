@@ -16,7 +16,7 @@ hide: true
         <ul>
             <li><a href="#">Home</a></li>
             <li><a href="#features">Features</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="{{site.baseurl}}/sbprofile">SB Profile</a></li>
         </ul>
     </nav>
 </header>
