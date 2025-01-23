@@ -94,36 +94,48 @@ permalink: /task_manager
         background: rgba(255, 255, 255, 0.1);
     }
 
-    .complete-btn {
-        background: #28a745; /* Green */
+    #random-task-container {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    #random-task-container h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
         color: #fff;
-        border: 2px solid #28a745; /* Green border */
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background 0.3s ease, border 0.3s ease;
+        margin-bottom: 1rem;
     }
 
-    .complete-btn:hover {
-        background: #218838; /* Darker green */
-        border: 2px solid #218838; /* Darker green border */
-    }
-
-    .delete-btn {
-        background: #dc3545; /* Red */
+    #random-task-box {
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.1);
         color: #fff;
-        border: 2px solid #dc3545; /* Red border */
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
         border-radius: 8px;
-        cursor: pointer;
-        transition: background 0.3s ease, border 0.3s ease;
+        margin-bottom: 1.2rem;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
     }
 
-    .delete-btn:hover {
-        background: #c82333; /* Darker red */
-        border: 2px solid #c82333; /* Darker red border */
+    #random-task-button {
+        padding: 1rem;
+        background: #ffd700;
+        color: #000;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    #random-task-button:hover {
+        background: #ffc700;
     }
 </style>
 
@@ -153,6 +165,15 @@ permalink: /task_manager
     </div>
 </div>
 
+<!-- Random Task Section -->
+<div id="random-task-container">
+    <h2>Get a Random Task Idea</h2>
+    <div id="random-task-box">
+        Click the button to get a random task!
+    </div>
+    <button id="random-task-button">Get Random Task</button>
+</div>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const titleInput = document.getElementById("title-input");
@@ -160,6 +181,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const addTaskButton = document.getElementById("add-task-button");
     const taskList = document.getElementById("task-list");
     const errorMessage = document.getElementById("error-message");
+    const randomTaskBox = document.getElementById("random-task-box");
+    const randomTaskButton = document.getElementById("random-task-button");
 
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
@@ -170,12 +193,10 @@ document.addEventListener("DOMContentLoaded", () => {
         tasks.forEach((task, index) => {
             const row = document.createElement("tr");
 
-            // Task details
             row.innerHTML += `
                 <td>${task.title}</td>
                 <td>${task.description}</td>
                 <td>
-                    <button class="complete-btn" onclick="completeTask(${index})">Complete</button>
                     <button class="delete-btn" onclick="deleteTask(${index})">Delete</button>
                 </td>
             `;
@@ -183,70 +204,71 @@ document.addEventListener("DOMContentLoaded", () => {
             taskList.appendChild(row);
         });
 
-        localStorage.setItem("tasks", JSON.stringify(tasks));  // Ensure tasks are always saved
+        localStorage.setItem("tasks", JSON.stringify(tasks));
     }
-
-    // Complete task
-    window.completeTask = (index) => {
-        tasks.splice(index, 1);  // Remove task from the list
-        renderTasks();  // Re-render the task list
-    };
 
     // Delete task
     window.deleteTask = (index) => {
-        tasks.splice(index, 1);  // Remove task from the list
-        renderTasks();  // Re-render the task list
+        tasks.splice(index, 1);
+        renderTasks();
     };
 
-    addTaskButton.addEventListener("click", async () => {
+    // Function to add task to the backend
+    async function addTaskToBackend(task) {
+        try {
+            const response = await fetch("http://127.0.0.1:8887/api/addtask", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ task }),
+            });
 
-    const title = titleInput.value.trim();
-    const description = descriptionInput.value.trim();
+            if (!response.ok) {
+                throw new Error("Failed to add task to the backend.");
+            }
 
-    // Clear previous error message
-    errorMessage.textContent = "";
-
-    // Validate input
-    if (!title || !description) {
-        errorMessage.textContent = "Please ensure that both fields are filled out.";
-        return;
+            const data = await response.json();
+            console.log(data.message);
+        } catch (error) {
+            console.error(error.message);
+        }
     }
 
-    try {
-        // Send task data to the backend API
-        const response = await fetch("/api/addtask", { // Assuming the backend is served from the same domain
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                title,        // Send the task title
-                description,  // Send the task description
-            }),
-        });
+    addTaskButton.addEventListener("click", () => {
+        const title = titleInput.value.trim();
+        const description = descriptionInput.value.trim();
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            errorMessage.textContent = errorData.error || "An error occurred while adding the task.";
+        errorMessage.textContent = "";
+
+        if (!title || !description) {
+            errorMessage.textContent = "Please fill out all fields.";
             return;
         }
 
-        const result = await response.json();
-        console.log(result.message); // Success message from the backend
-
-        // Add the new task to the local task array and re-render the task list
+        const task = `${title} - ${description}`;
         tasks.push({ title, description });
+
+        // Add task to backend
+        addTaskToBackend(task);
+
         renderTasks();
 
-        // Clear the inputs
-        titleInput.value = descriptionInput.value = "";
-    } catch (error) {
-        console.error("Error:", error);
-        errorMessage.textContent = "Could not connect to the server. Please try again later.";
-    }
-});
+        titleInput.value = "";
+        descriptionInput.value = "";
+    });
 
-});
+    // Fetch random task from API
+    randomTaskButton.addEventListener("click", async () => {
+        try {
+            const response = await fetch("http://127.0.0.1:8887/api/tasks/random");
+            const data = await response.json();
+            randomTaskBox.textContent = data.task;
+        } catch (error) {
+            randomTaskBox.textContent = "Could not fetch a task. Please try again.";
+        }
+    });
+
     renderTasks();
 });
 </script>
