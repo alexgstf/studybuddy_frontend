@@ -240,136 +240,143 @@
     <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
 
     <script>
-        const questions = [];
-        for (let i = 0; i < 15; i++) {
-            const num1 = Math.floor(Math.random() * 50) + 1;
-            const num2 = Math.floor(Math.random() * 50) + 1;
-            questions.push({ num1, num2, correctAnswer: num1 + num2, userAnswer: '' });
-        }
+       const storedName = localStorage.getItem("username");
+const questions = [];
+for (let i = 0; i < 15; i++) {
+    const num1 = Math.floor(Math.random() * 50) + 1;
+    const num2 = Math.floor(Math.random() * 50) + 1;
+    questions.push({ num1, num2, correctAnswer: num1 + num2, userAnswer: '' });
+}
 
-        let currentQuestionIndex = 0;
+let currentQuestionIndex = 0;
 
-        function updateProgressBar() {
-            const progressBar = document.getElementById('progress-bar');
-            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
-            progressBar.style.width = progress + '%';
-        }
+function updateProgressBar() {
+    const progressBar = document.getElementById('progress-bar');
+    const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+    progressBar.style.width = `${progress}%`;
+}
 
-        function renderQuestion() {
-            const question = questions[currentQuestionIndex];
-            document.getElementById('current-question').textContent = `${question.num1} + ${question.num2} =`;
-            document.getElementById('answer-input').value = question.userAnswer || '';
-            document.querySelector('.question-number').textContent = `Question ${currentQuestionIndex + 1}/15`;
+function renderQuestion() {
+    const question = questions[currentQuestionIndex];
+    document.getElementById('current-question').textContent = `${question.num1} + ${question.num2} =`;
+    document.getElementById('answer-input').value = question.userAnswer || '';
+    document.querySelector('.question-number').textContent = `Question ${currentQuestionIndex + 1}/15`;
 
-            document.getElementById('back-btn').disabled = currentQuestionIndex === 0;
-            document.getElementById('next-btn').textContent = currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next';
+    document.getElementById('back-btn').disabled = currentQuestionIndex === 0;
+    document.getElementById('next-btn').textContent = currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next';
 
-            updateProgressBar();
-        }
+    updateProgressBar();
+}
 
-        function saveAnswer() {
-            const input = document.getElementById('answer-input');
-            questions[currentQuestionIndex].userAnswer = input.value;
-        }
+function saveAnswer() {
+    const input = document.getElementById('answer-input');
+    questions[currentQuestionIndex].userAnswer = input.value;
+}
 
-        function prevQuestion() {
-            saveAnswer();
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                renderQuestion();
-            }
-        }
+function prevQuestion() {
+    saveAnswer();
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        renderQuestion();
+    }
+}
 
-        function nextQuestion() {
-            saveAnswer();
-            if (currentQuestionIndex < questions.length - 1) {
-                currentQuestionIndex++;
-                renderQuestion();
-            } else {
-                submitQuiz();
-            }
-        }
+function nextQuestion() {
+    saveAnswer();
+    if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        renderQuestion();
+    } else {
+        submitQuiz();
+    }
+}
 
-        async function submitQuiz() {
-        const resultsContainer = document.getElementById('results');
-        let correct = 0;
-        let feedback = '';
-        resultsContainer.innerHTML = '';
+async function submitQuiz() {
+    const resultsContainer = document.getElementById('results');
+    let correct = 0;
+    let feedback = '';
+    resultsContainer.innerHTML = '';
 
-        // Calculate the score and feedback
-        questions.forEach((q, index) => {
-            const isCorrect = parseInt(q.userAnswer) === q.correctAnswer;
-            feedback += `
-                <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
-                    Question ${index + 1}: ${q.num1} + ${q.num2} = ${q.correctAnswer} 
-                    (${isCorrect ? 'Correct' : `Your Answer: ${q.userAnswer || 'Blank'}`})
-                </div>
-            `;
-            if (isCorrect) correct++;
+    // Calculate the score and feedback
+    questions.forEach((q, index) => {
+        const isCorrect = parseInt(q.userAnswer) === q.correctAnswer;
+        feedback += `
+            <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
+                Question ${index + 1}: ${q.num1} + ${q.num2} = ${q.correctAnswer} 
+                (${isCorrect ? 'Correct' : `Your Answer: ${q.userAnswer || 'Blank'}`})
+            </div>
+        `;
+        if (isCorrect) correct++;
+    });
+
+    // Send quiz data to the backend
+    try {
+        const response = await fetch('http://localhost:8887/api/userstats', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user: storedName,
+                correct: correct,
+                total: questions.length
+            })
         });
 
-        // Send quiz data to the backend
-        try {
-            const response = await fetch('http://localhost:8887/api/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    correct: correct,
-                    total: questions.length
-                })
-            });
-            const data = await response.json();
-
-            // Backend response: updated XP and level
-            const { xp, level } = data;
-
-            // Check for level-up condition
-            const leveledUp = xp === 0 && level > 1;
-
-            // Display progress and XP bar
-            resultsContainer.innerHTML = `
-                <h2>Quiz Results</h2>
-                <div class="xp-bar-container">
-                    <div class="xp-bar" style="width: ${(xp / (level * 10)) * 100}%;"></div>
-                </div>
-                <div class="progress-label">
-                    XP: ${xp}/${level * 10} | Level: ${level}
-                </div>
-                ${leveledUp ? '<h3>Level Up!</h3>' : ''}
-                <div class="answer-feedback">${feedback}</div>
-                <button class="refresh-btn" onclick="location.reload()">Try Again</button>
-            `;
-
-            // Show confetti if the user leveled up
-            if (leveledUp) {
-                launchConfetti();
-            }
-        } catch (error) {
-            console.error('Error submitting quiz:', error);
-            resultsContainer.innerHTML = `<p style="color: red;">Error submitting the quiz. Please try again later.</p>`;
+        if (!response.ok) {
+            throw new Error('Failed to submit quiz');
         }
 
-        // Hide question UI after submission
-        document.getElementById('question-container').style.display = 'none';
-        document.querySelector('.navigation-buttons').style.display = 'none';
+        const data = await response.json();
+
+        // Backend response: updated XP and level
+        const { xp, level } = data;
+
+        // Check for level-up condition
+        const leveledUp = xp === 0 && level > 1;
+
+        // Display progress and XP bar
+        resultsContainer.innerHTML = `
+            <h2>Quiz Results</h2>
+            <div class="xp-bar-container">
+                <div class="xp-bar" style="width: ${(xp / (level * 10)) * 100}%;"></div>
+            </div>
+            <div class="progress-label">
+                XP: ${xp}/${level * 10} | Level: ${level}
+            </div>
+            ${leveledUp ? '<h3>Level Up!</h3>' : ''}
+            <div class="answer-feedback">${feedback}</div>
+            <button class="refresh-btn" onclick="location.reload()">Try Again</button>
+        `;
+
+        // Show confetti if the user leveled up
+        if (leveledUp) {
+            launchConfetti();
+        }
+    } catch (error) {
+        console.error('Error submitting quiz:', error);
+        resultsContainer.innerHTML = `<p style="color: red;">Error submitting the quiz. Please try again later.</p>`;
     }
 
-    // Confetti effect
-    function launchConfetti() {
-        const confettiSettings = { target: 'confetti-canvas', width: window.innerWidth, height: window.innerHeight };
-        const confetti = new ConfettiGenerator(confettiSettings);
-        confetti.render();
+    // Hide question UI after submission
+    document.getElementById('question-container').style.display = 'none';
+    document.querySelector('.navigation-buttons').style.display = 'none';
+}
 
-        // Remove confetti after 5 seconds
-        setTimeout(() => {
-            confetti.clear();
-        }, 5000);
-    }
+// Confetti effect
+function launchConfetti() {
+    const confettiSettings = { target: 'confetti-canvas', width: window.innerWidth, height: window.innerHeight };
+    const confetti = new ConfettiGenerator(confettiSettings);
+    confetti.render();
 
+    // Remove confetti after 5 seconds
+    setTimeout(() => {
+        confetti.clear();
+    }, 5000);
+}
 
-        renderQuestion();
+renderQuestion();
+
     </script>
 </body>
 </html>
