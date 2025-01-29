@@ -5,145 +5,140 @@ permalink: /factsbase
 ---
 
 <style>
-    /* General Styling for Forms */
-    form {
-        background: #000; /* Black card background */
-        padding: 12px; /* Reduced padding */
-        border-radius: 8px; /* Smaller border radius */
-        box-shadow: 0px 3px 6px rgba(66, 103, 121, 0.3); /* Lighter shadow */
-        margin-bottom: 16px; /* Reduced margin */
-        max-width: 500px; /* Limit card width */
-        margin-left: auto; /* Center alignment */
-        margin-right: auto; /* Center alignment */
-        color: #fff; /* White text for contrast */
+/* General Styling for Posting Layout */
+main {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    gap: 20px;
+    justify-content: center; /* Center content horizontally */
+    align-items: flex-start; /* Align items at the top */
+}
+
+form {
+    background: #222; /* Dark gray card */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 500px;
+    flex: 1; /* Allow the form to grow/shrink within the layout */
+}
+
+form label {
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 6px;
+}
+
+form textarea,
+form input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 16px;
+    border: none;
+    border-radius: 8px;
+    background: #333;
+    color: #fff;
+    font-size: 14px;
+    resize: none;
+    transition: border 0.3s ease;
+}
+
+form textarea:focus,
+form input[type="text"]:focus {
+    border: 2px solid #6b78f7;
+    outline: none;
+}
+
+form button {
+    width: 100%;
+    background: linear-gradient(45deg, #6b78f7, #4c5ae1);
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+form button:hover {
+    background: linear-gradient(45deg, #4c5ae1, #5e63b8);
+}
+
+/* Styling for the Table */
+section#fact-table {
+    flex: 1; /* Allow the table section to grow/shrink within the layout */
+    max-width: 500px;
+    background: #222;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
+    overflow-x: auto; /* Add horizontal scrolling for smaller screens */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #333;
+}
+
+thead th {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 2px solid #6b78f7;
+}
+
+tbody td {
+    font-size: 14px;
+    color: #ddd;
+    padding: 10px;
+    border-bottom: 1px solid #444;
+}
+
+tbody tr:hover {
+    background: #333;
+}
+
+tbody button {
+    background: #6b78f7;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+tbody button:hover {
+    background: #4c5ae1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    main {
+        flex-direction: column; /* Stack form and table vertically */
     }
 
-    label {
-        display: block;
-        margin-bottom: 6px; /* Reduced margin */
-        font-weight: 500; /* Slightly lighter font weight */
-        color: #ddd; /* Softer white for labels */
-        font-size: 14px; /* Smaller label text size */
-    }
-
-    input[type="text"],
-    textarea {
+    form,
+    section#fact-table {
         width: 100%;
-        padding: 8px; /* Reduced padding */
-        margin-bottom: 12px; /* Reduced margin */
-        border: 1px solid #444; /* Softer border color */
-        border-radius: 6px; /* Smaller radius */
-        background: #222; /* Dark gray input background */
-        font-size: 14px; /* Reduced font size */
-        color: #fff; /* White font for readability */
-        transition: all 0.3s ease;
     }
-
-    input[type="text"]::placeholder,
-    textarea::placeholder {
-        color: rgba(255, 255, 255, 0.6); /* Lighter placeholder text */
-    }
-
-    input[type="text"]:focus,
-    textarea:focus {
-        border-color: #5e63b8; /* Subtle focus border color */
-        box-shadow: 0px 0px 6px rgba(76, 90, 225, 0.4); /* Reduced shadow intensity */
-        outline: none;
-    }
-
-    button {
-        background: linear-gradient(45deg, #6b78f7, #4c5ae1); /* Gradient button */
-        border: none;
-        color: #fff; /* White text */
-        font-weight: bold;
-        padding: 8px 12px; /* Reduced button size */
-        border-radius: 6px; /* Smaller radius */
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    button:hover {
-        background: linear-gradient(45deg, #4c5ae1, #5e63b8); /* Adjusted hover colors */
-    }
-
-    /* Table Styling */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 16px; /* Reduced margin */
-        background: #000; /* Black table background */
-        border-radius: 10px; /* Slightly smaller radius */
-        overflow: hidden;
-        box-shadow: 0px 3px 6px rgba(66, 103, 121, 0.3); /* Lighter shadow */
-        color: #fff; /* White text */
-    }
-
-    th,
-    td {
-        padding: 12px; /* Reduced padding */
-        text-align: left;
-        font-size: 14px; /* Smaller font size */
-        color: #fff; /* White text for contrast */
-        border-bottom: 1px solid #444; /* Subtle border */
-    }
-
-    th {
-        background: linear-gradient(45deg, #6b78f7, #4c5ae1); /* Gradient for headers */
-        color: #fff; /* White text */
-        text-transform: uppercase;
-    }
-
-    tr:nth-child(even) {
-        background: #222; /* Darker alternate row background */
-    }
-
-    tr:hover {
-        background: #333; /* Slightly lighter hover effect */
-    }
-
-    td:last-child {
-        text-align: center;
-    }
-
-    button {
-        padding: 8px 12px; /* Reduced button padding */
-    }
-
-    button:hover {
-        filter: brightness(1.1);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        th,
-        td {
-            padding: 10px; /* Reduced padding for smaller screens */
-            font-size: 12px; /* Smaller font size */
-        }
-
-        input[type="text"],
-        textarea {
-            font-size: 12px; /* Adjusted font size */
-        }
-
-        button {
-            padding: 8px; /* Smaller button padding */
-        }
-
-        form {
-            max-width: 90%; /* Adjust form size for smaller screens */
-        }
-    }
+}
 </style>
 
 
-
-
-<h1>Facts Manager</h1>
-
 <main>
     <section id="fact-form">
-        <h2>Add a New Fact</h2>
         <form id="add-fact-form">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>

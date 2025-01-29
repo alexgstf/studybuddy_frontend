@@ -31,14 +31,10 @@ hide: true
         <h3>Collaborative Tools</h3>
         <p>Work together with friends using real-time study sessions, shared notes, and more!</p>
     </div>
-    </a>
+    <a href="{{site.baseurl}}/factsbase" style="text-decoration: none; color: inherit;">
     <div class="feature">
-        <h3>Personalized Dashboard</h3>
-        <p>Track your progress and customize your study schedule to stay on top of your goals.</p>
-    </div>
-    <div class="feature">
-        <h3>Fun Challenges</h3>
-        <p>Turn studying into a game with rewards, leaderboards, and exciting challenges!</p>
+        <h3>Fun Facts</h3>
+        <p>Interact with a Fun Fact</p>
     </div>
     <a href="{{site.baseurl}}/studybuddy/quizhome.html" style="text-decoration: none; color: inherit;">
     <div class="feature">
@@ -52,13 +48,19 @@ hide: true
         <p>Manage your tasks with our simple Task Manger tailored to your specific needs!</p>
     </div>
     </a>
+    <a href="{{site.baseurl}}/quotesdatabase" style="text-decoration: none; color: inherit;">
+    <div class="feature">
+        <h3>Quotes Manager</h3>
+        <p>Create your own table with your favorite quotes and their respective authors and dates!</p>
+    </div>
+    </a>
     <a href="{{site.baseurl}}/resource_corner" style="text-decoration: none; color: inherit;">
     <div class="feature">
         <h3>Resource Control</h3>
         <p>Upload Important Files or find important files posted by others for your own needs in school!</p>
     </div>
     </a>
-</section>
+
 
 
 
@@ -238,12 +240,11 @@ h1 {
 
 <div>
   <h1>Fun Fact Generator</h1>
-  <p>Click the button below to get a random fun fact!</p>
   <button id="fetch-fact">Get Fun Fact</button>
   <p id="fact">Your fun fact will appear here.</p>
 </div>
 
-<script>
+<script>    
   async function fetchRandomFact() {
     try {
       const response = await fetch('http://localhost:8887/api/funfacts/random');
