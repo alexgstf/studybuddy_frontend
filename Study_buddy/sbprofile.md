@@ -178,8 +178,6 @@ permalink: /sbprofile
 <!-- Popup for Editing -->
 <div id="popup-card">
     <h2>Edit Profile</h2>
-    <label for="edit-id">User ID (Required):</label>
-    <input type="text" id="edit-id">
     <label for="edit-name">Name:</label>
     <input type="text" id="edit-name">
     <label for="edit-email">Email:</label>
@@ -195,8 +193,6 @@ permalink: /sbprofile
 <!-- Popup for Deleting -->
 <div id="popup-delete">
     <h2>Delete Profile</h2>
-    <label for="delete-id">User ID (Required):</label>
-    <input type="text" id="delete-id">
     <button id="submit-delete">Delete</button>
     <button id="close-delete">Cancel</button>
 </div>
@@ -231,11 +227,13 @@ permalink: /sbprofile
 
         const fetchData = async () => {
             try {
+                const storedName = localStorage.getItem("username");
                 const response = await fetch("http://127.0.0.1:8887/api/sbuser");
                 const data = await response.json();
                 const user = data.find((user) => user.name === storedName);
 
                 if (user) {
+                    localStorage.setItem("userId", user.id);  // Store the user ID in localStorage
                     profileName.textContent = user.name;
                     profileEmail.textContent = user.email;
                     profileDob.textContent = user.date_of_birth;
@@ -304,20 +302,29 @@ permalink: /sbprofile
 
         // Submit the form to update profile
         document.getElementById("submit-edit").addEventListener("click", async () => {
-            const id = document.getElementById("edit-id").value;
+            const userId = localStorage.getItem("userId");
             const name = document.getElementById("edit-name").value;
             const email = document.getElementById("edit-email").value;
             const dob = document.getElementById("edit-dob").value;
             const city = document.getElementById("edit-city").value;
 
             try {
-                await fetch(`http://127.0.0.1:8887/api/sbuser/${id}`, {
+                const response = await fetch(`http://127.0.0.1:8887/api/sbuser/${userId}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ name, email, date_of_birth: dob, city }),
                 });
-                closePopups();
-                fetchData(); // Fetch data again after updating
+
+                if (response.ok) {
+                    // Update localStorage with the new name
+                    localStorage.setItem("username", name);
+
+                    // Fetch updated user data and refresh the profile info
+                    fetchData(); // Fetch data again after updating
+                    closePopups();
+                } else {
+                    console.error('Error updating profile');
+                }
             } catch (error) {
                 console.error("Error updating data:", error);
             }
@@ -325,14 +332,22 @@ permalink: /sbprofile
 
         // Submit the form to delete profile
         document.getElementById("submit-delete").addEventListener("click", async () => {
-            const id = document.getElementById("delete-id").value;
+            const userId = localStorage.getItem("userId");
 
             try {
-                await fetch(`http://127.0.0.1:8887/api/sbuser/${id}`, {
+                const response = await fetch(`http://127.0.0.1:8887/api/sbuser/${userId}`, {
                     method: "DELETE",
                 });
-                closePopups();
-                fetchData(); // Fetch data again after deleting
+
+                if (response.ok) {
+                    // Clear localStorage and refresh the profile info
+                    localStorage.removeItem("username");
+                    localStorage.removeItem("userId");
+                    fetchData(); // Fetch data again after deleting
+                    closePopups();
+                } else {
+                    console.error("Error deleting profile");
+                }
             } catch (error) {
                 console.error("Error deleting data:", error);
             }
