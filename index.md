@@ -48,6 +48,12 @@ hide: true
         <p>Manage your tasks with our simple Task Manger tailored to your specific needs!</p>
     </div>
     </a>
+    <a href="{{site.baseurl}}/quotesdatabase" style="text-decoration: none; color: inherit;">
+    <div class="feature">
+        <h3>Quotes Manager</h3>
+        <p>Create your own table with your favorite quotes and their respective authors and dates!</p>
+    </div>
+    </a>
     <a href="{{site.baseurl}}/resource_corner" style="text-decoration: none; color: inherit;">
     <div class="feature">
         <h3>Resource Control</h3>
