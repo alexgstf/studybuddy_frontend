@@ -236,6 +236,16 @@ permalink: /task_manager
 <div class="container">
     <div id="random-task-container">
         <h2>Get a Random Task Idea</h2>
+        
+        <!-- Category selection dropdown -->
+        <label for="category-select">Select Category:</label>
+        <select id="category-select">
+            <option value="">--Select a Category--</option>
+            <option value="Big Idea 1 - Creative Development">Big Idea 1 - Creative Development</option>
+            <option value="Big Idea 1 - Algorithms and Programming">Big Idea 1 - Algorithms and Programming</option>
+            <option value="Big Idea 1 - Data and Analysis">Big Idea 1 - Data and Analysis</option>
+        </select>
+
         <div id="random-task-box">
             Click the button to get a random task!
         </div>
@@ -291,52 +301,78 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Add new task
     addTaskButton.addEventListener("click", async () => {
-        const title = titleInput.value.trim();
-        if (!title) return;
+        const taskTitle = titleInput.value.trim();
+        if (taskTitle) {
+            const res = await fetch("http://127.0.0.1:8887/api/tasks", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ task: taskTitle }),
+            });
 
-        await fetch("http://127.0.0.1:8887/api/tasks", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ task: title }),
-        });
-
-        renderTasks();
-        titleInput.value = "";
+            if (res.ok) {
+                titleInput.value = "";
+                renderTasks();
+            } else {
+                errorMessage.textContent = "Failed to add task.";
+            }
+        }
     });
 
     // Edit task
     window.editTask = (taskId, taskTitle) => {
         editingTaskId = taskId;
-        editTitleInput.value = taskTitle;
         editTaskContainer.style.display = "block";
         overlay.style.display = "block";
+        editTitleInput.value = taskTitle;
     };
 
     // Update task
     updateTaskButton.addEventListener("click", async () => {
-        await fetch(`http://127.0.0.1:8887/api/tasks/${editingTaskId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ task: editTitleInput.value.trim() }),
-        });
+        const updatedTaskTitle = editTitleInput.value.trim();
+        if (updatedTaskTitle && editingTaskId) {
+            await fetch(`http://127.0.0.1:8887/api/tasks/${editingTaskId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ task: updatedTaskTitle }),
+            });
 
-        renderTasks();
-        editTaskContainer.style.display = "none";
-        overlay.style.display = "none";
+            editTaskContainer.style.display = "none";
+            overlay.style.display = "none";
+            editingTaskId = null;
+            renderTasks();
+        }
     });
 
-    // Get random task
-    document.getElementById("random-task-button").addEventListener("click", async () => {
-        const res = await fetch("http://127.0.0.1:8887/api/random-tasks");
-        document.getElementById("random-task-box").textContent = (await res.json()).task;
-    });
-
-    // Close the modal and overlay
+    // Close edit task
     overlay.addEventListener("click", () => {
         editTaskContainer.style.display = "none";
         overlay.style.display = "none";
+        editingTaskId = null;
     });
 
+    // Random task
+    document.getElementById("random-task-button").addEventListener("click", async () => {
+        const selectedCategory = document.getElementById("category-select").value;
+        let url = "http://127.0.0.1:8887/api/random-tasks";
+        if (selectedCategory) {
+            url += `?category=${encodeURIComponent(selectedCategory)}`;
+        }
+
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            if (data.task) {
+                document.getElementById("random-task-box").textContent = data.task;
+            } else {
+                document.getElementById("random-task-box").textContent = "No task found.";
+            }
+        } catch (error) {
+            document.getElementById("random-task-box").textContent = "Error fetching task.";
+        }
+    });
+
+    // Initialize
     renderTasks();
 });
 </script>
+
