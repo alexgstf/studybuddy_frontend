@@ -228,7 +228,7 @@ permalink: /sbprofile
         const fetchData = async () => {
             try {
                 const storedName = localStorage.getItem("username");
-                const response = await fetch("http://127.0.0.1:8887/api/sbuser");
+                const response = await fetch(`${pythonURI}/api/sbuser`);
                 const data = await response.json();
                 const user = data.find((user) => user.name === storedName);
 
@@ -288,7 +288,7 @@ permalink: /sbprofile
             const city = document.getElementById("add-city").value;
 
             try {
-                await fetch("http://127.0.0.1:8887/api/sbuser", {
+                await fetch(`${pythonURI}/api/sbuser`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ name: storedName, email, date_of_birth: dob, city }),
@@ -309,7 +309,7 @@ permalink: /sbprofile
             const city = document.getElementById("edit-city").value;
 
             try {
-                const response = await fetch(`http://127.0.0.1:8887/api/sbuser/${userId}`, {
+                const response = await fetch(`${pythonURI}/api/sbuser/${userId}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ name, email, date_of_birth: dob, city }),
@@ -335,7 +335,7 @@ permalink: /sbprofile
             const userId = localStorage.getItem("userId");
 
             try {
-                const response = await fetch(`http://127.0.0.1:8887/api/sbuser/${userId}`, {
+                const response = await fetch(`${pythonURI}/api/sbuser/${userId}`, {
                     method: "DELETE",
                 });
 
