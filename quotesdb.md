@@ -173,7 +173,7 @@ permalink: /quotesdatabase
     </section>
 </main>
 <script>
-    const API_URL = 'http://localhost:8887/api/userquotes';
+    const API_URL = 'http://localhost:8502/api/userquotes';
         // Fetch and display quotes
     async function fetchQuotes() {
         const response = await fetch(API_URL);
