@@ -273,7 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Fetch and render tasks
     async function renderTasks() {
         try {
-            const response = await fetch("http://127.0.0.1:8887/api/tasks");
+            const response = await fetch(`${pythonURI}/api/tasks`);
             const tasks = await response.json();
             taskList.innerHTML = "";
 
