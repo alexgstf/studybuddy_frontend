@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Addition Quiz</title>
+    <title>Multiplication Quiz</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -240,6 +240,7 @@
     <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
 
     <script>
+        const storedName = localStorage.getItem("username") || "Guest";
         const questions = [];
         for (let i = 0; i < 15; i++) {
             const num1 = Math.floor(Math.random() * 50) + 1;
@@ -291,85 +292,91 @@
         }
 
         async function submitQuiz() {
-        const resultsContainer = document.getElementById('results');
-        let correct = 0;
-        let feedback = '';
-        resultsContainer.innerHTML = '';
+            const resultsContainer = document.getElementById('results');
+            let correct = 0;
+            let feedback = '';
+            resultsContainer.innerHTML = '';
 
-        // Calculate the score and feedback
-        questions.forEach((q, index) => {
-            const isCorrect = parseInt(q.userAnswer) === q.correctAnswer;
-            feedback += `
-                <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
-                    Question ${index + 1}: ${q.num1} + ${q.num2} = ${q.correctAnswer} 
-                    (${isCorrect ? 'Correct' : `Your Answer: ${q.userAnswer || 'Blank'}`})
-                </div>
-            `;
-            if (isCorrect) correct++;
-        });
-
-        // Send quiz data to the backend
-        try {
-            const response = await fetch('http://localhost:8887/api/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    correct: correct,
-                    total: questions.length
-                })
+            // Calculate the score and feedback
+            questions.forEach((q, index) => {
+                const isCorrect = parseInt(q.userAnswer) === q.correctAnswer;
+                feedback += `
+                    <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
+                        Question ${index + 1}: ${q.num1} - ${q.num2} = ${q.correctAnswer} 
+                        (${isCorrect ? 'Correct' : `Your Answer: ${q.userAnswer || 'Blank'}`})
+                    </div>
+                `;
+                if (isCorrect) correct++;
             });
-            const data = await response.json();
 
-            // Backend response: updated XP and level
-            const { xp, level } = data;
+            // Send quiz data to the backend
+            try {
+                const response = await fetch('http://localhost:8887/api/userstats', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user: storedName,
+                        correct: correct,
+                        total: questions.length
+                    })
+                });
 
-            // Check for level-up condition
-            const leveledUp = xp === 0 && level > 1;
+                if (!response.ok) {
+                    throw new Error('Failed to submit quiz');
+                }
 
-            // Display progress and XP bar
-            resultsContainer.innerHTML = `
-                <h2>Quiz Results</h2>
-                <div class="xp-bar-container">
-                    <div class="xp-bar" style="width: ${(xp / (level * 10)) * 100}%;"></div>
-                </div>
-                <div class="progress-label">
-                    XP: ${xp}/${level * 10} | Level: ${level}
-                </div>
-                ${leveledUp ? '<h3>Level Up!</h3>' : ''}
-                <div class="answer-feedback">${feedback}</div>
-                <button class="refresh-btn" onclick="location.reload()">Try Again</button>
-            `;
+                const data = await response.json();
 
-            // Show confetti if the user leveled up
-            if (leveledUp) {
-                launchConfetti();
+                // Backend response: updated XP and level
+                const { xp, level } = data;
+
+                // Check for level-up condition
+                const leveledUp = xp === 0 && level > 1;
+
+                // Display progress and XP bar
+                resultsContainer.innerHTML = `
+                    <h2>Quiz Results</h2>
+                    <div class="xp-bar-container">
+                        <div class="xp-bar" style="width: ${(xp / (level * 10)) * 100}%;"></div>
+                    </div>
+                    <div class="progress-label">
+                        XP: ${xp}/${level * 10} | Level: ${level}
+                    </div>
+                    ${leveledUp ? '<h3>Level Up!</h3>' : ''}
+                    <div class="answer-feedback">${feedback}</div>
+                    <button class="refresh-btn" onclick="location.reload()">Try Again</button>
+                `;
+
+                // Show confetti if the user leveled up
+                if (leveledUp) {
+                    launchConfetti();
+                }
+            } catch (error) {
+                console.error('Error submitting quiz:', error);
+                resultsContainer.innerHTML = `<p style="color: red;">Error submitting the quiz. Please try again later.</p>`;
             }
-        } catch (error) {
-            console.error('Error submitting quiz:', error);
-            resultsContainer.innerHTML = `<p style="color: red;">Error submitting the quiz. Please try again later.</p>`;
+
+            // Hide question UI after submission
+            document.getElementById('question-container').style.display = 'none';
+            document.querySelector('.navigation-buttons').style.display = 'none';
         }
 
-        // Hide question UI after submission
-        document.getElementById('question-container').style.display = 'none';
-        document.querySelector('.navigation-buttons').style.display = 'none';
-    }
+        // Confetti effect
+        function launchConfetti() {
+            const confettiSettings = { target: 'confetti-canvas', width: window.innerWidth, height: window.innerHeight };
+            const confetti = new ConfettiGenerator(confettiSettings);
+            confetti.render();
 
-    // Confetti effect
-    function launchConfetti() {
-        const confettiSettings = { target: 'confetti-canvas', width: window.innerWidth, height: window.innerHeight };
-        const confetti = new ConfettiGenerator(confettiSettings);
-        confetti.render();
-
-        // Remove confetti after 5 seconds
-        setTimeout(() => {
-            confetti.clear();
-        }, 5000);
-    }
-
+            // Remove confetti after 5 seconds
+            setTimeout(() => {
+                confetti.clear();
+            }, 5000);
+        }
 
         renderQuestion();
     </script>
+
 </body>
 </html>
