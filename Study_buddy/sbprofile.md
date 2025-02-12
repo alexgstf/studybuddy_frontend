@@ -211,6 +211,7 @@ permalink: /sbprofile
 </div>
 
 <script>
+    import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
     document.addEventListener("DOMContentLoaded", () => {
         const storedName = localStorage.getItem("username");
         const profileName = document.getElementById("profile-name");
