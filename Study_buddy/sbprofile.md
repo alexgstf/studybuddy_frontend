@@ -210,7 +210,7 @@ permalink: /sbprofile
     <button id="close-add-info">Cancel</button>
 </div>
 
-<script>
+<script type="module">
     import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
     document.addEventListener("DOMContentLoaded", () => {
         const storedName = localStorage.getItem("username");
