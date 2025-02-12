@@ -201,7 +201,7 @@ tbody button:hover {
 
     checkAuthorization();
 
-    const API_URL = 'http://localhost:8887/api/userfacts';
+    const API_URL = 'http://localhost:8502/api/userfacts';
         // Fetch and display quotes
     async function fetchFacts() {
         const response = await fetch(API_URL);

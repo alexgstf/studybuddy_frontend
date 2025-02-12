@@ -256,7 +256,28 @@ permalink: /task_manager
 <!-- Overlay -->
 <div id="overlay"></div>
 
-<script>
+<script type = "module">
+ import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
+    async function checkAuthorization() {
+        try {
+            const response = await fetch(`${pythonURI}/api/id`, fetchOptions);
+
+            if (response.status === 401) {
+                window.location.href = "{{site.baseurl}}/login";
+            } else if (response.ok) {
+                const contentElements = document.querySelectorAll('.content');
+                contentElements.forEach(element => {
+                    element.style.display = "block";
+                });
+            }
+        } catch (error) {
+            console.error("Authorization check failed:", error);
+            window.location.href = "{{site.baseurl}}/login";
+        }
+    }
+
+    checkAuthorization();   
+
 document.addEventListener("DOMContentLoaded", () => {
     const titleInput = document.getElementById("title-input");
     const addTaskButton = document.getElementById("add-task-button");
@@ -273,7 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Fetch and render tasks
     async function renderTasks() {
         try {
-            const response = await fetch("http://127.0.0.1:8887/api/tasks");
+            const response = await fetch(`${pythonURI}/api/tasks`);
             const tasks = await response.json();
             taskList.innerHTML = "";
 
@@ -295,7 +316,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Delete task
     window.deleteTask = async (taskId) => {
-        await fetch(`http://127.0.0.1:8887/api/tasks/${taskId}`, { method: "DELETE" });
+        await fetch(`http://127.0.0.1:8502/api/tasks/${taskId}`, { method: "DELETE" });
         renderTasks();
     };
 
@@ -303,7 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
     addTaskButton.addEventListener("click", async () => {
         const taskTitle = titleInput.value.trim();
         if (taskTitle) {
-            const res = await fetch("http://127.0.0.1:8887/api/tasks", {
+            const res = await fetch("http://127.0.0.1:8502/api/tasks", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ task: taskTitle }),
@@ -330,7 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTaskButton.addEventListener("click", async () => {
         const updatedTaskTitle = editTitleInput.value.trim();
         if (updatedTaskTitle && editingTaskId) {
-            await fetch(`http://127.0.0.1:8887/api/tasks/${editingTaskId}`, {
+            await fetch(`http://127.0.0.1:8502/api/tasks/${editingTaskId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ task: updatedTaskTitle }),
@@ -353,7 +374,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Random task
     document.getElementById("random-task-button").addEventListener("click", async () => {
         const selectedCategory = document.getElementById("category-select").value;
-        let url = "http://127.0.0.1:8887/api/random-tasks";
+        let url = "http://127.0.0.1:8502/api/random-tasks";
         if (selectedCategory) {
             url += `?category=${encodeURIComponent(selectedCategory)}`;
         }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Addition Quiz</title>
+    <title>Division Quiz</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -233,22 +233,20 @@
                 <button class="nav-btn" id="back-btn" onclick="prevQuestion()" disabled>Back</button>
                 <button class="nav-btn" id="next-btn" onclick="nextQuestion()">Next</button>
             </div>
+            <canvas id="confetti-canvas" style="position: absolute; top: 0; left: 0; z-index: 9999; pointer-events: none;"></canvas>
             <div id="results"></div>
         </div>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
     <script>
+        const storedName = localStorage.getItem("username") || "Guest";
         const questions = [];
         for (let i = 0; i < 15; i++) {
-            const divisor = (Math.floor(Math.random() * 10) + 1) * 2; // Random even number as divisor
+            const divisor = (Math.floor(Math.random() * 10) + 1) * 2; // Random even divisor
             const multiplier = Math.floor(Math.random() * 10) + 1;
-            const dividend = divisor * multiplier; // Ensure dividend is a multiple of divisor
-            questions.push({ 
-                dividend, 
-                divisor, 
-                correctAnswer: dividend / divisor, 
-                userAnswer: '' 
-            });
+            const dividend = divisor * multiplier;
+            questions.push({ dividend, divisor, correctAnswer: dividend / divisor, userAnswer: '' });
         }
 
         let currentQuestionIndex = 0;
@@ -256,7 +254,7 @@
         function updateProgressBar() {
             const progressBar = document.getElementById('progress-bar');
             const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
-            progressBar.style.width = progress + '%';
+            progressBar.style.width = `${progress}%`;
         }
 
         function renderQuestion() {
@@ -301,7 +299,7 @@
             resultsContainer.innerHTML = '';
 
             questions.forEach((q, index) => {
-                const isCorrect = parseInt(q.userAnswer) === q.correctAnswer;
+                const isCorrect = parseFloat(q.userAnswer) === q.correctAnswer;
                 feedback += `
                     <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
                         Question ${index + 1}: ${q.dividend} ÷ ${q.divisor} = ${q.correctAnswer} 
@@ -311,18 +309,59 @@
                 if (isCorrect) correct++;
             });
 
-            resultsContainer.innerHTML = `
-                <h2>Quiz Results</h2>
-                <p>You got ${correct} out of ${questions.length} correct.</p>
-                <div class="answer-feedback">${feedback}</div>
-                <button class="refresh-btn" onclick="location.reload()">Try Again</button>
-            `;
+            try {
+                const response = await fetch('http://localhost:8502/api/userstats', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user: storedName,
+                        correct: correct,
+                        total: questions.length
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to submit quiz');
+                }
+
+                const data = await response.json();
+                const { xp, level } = data;
+                const leveledUp = xp === 0 && level > 1;
+
+                resultsContainer.innerHTML = `
+                    <h2>Quiz Results</h2>
+                    <div class="xp-bar-container">
+                        <div class="xp-bar" style="width: ${(xp / (level * 10)) * 100}%;"></div>
+                    </div>
+                    <div class="progress-label">
+                        XP: ${xp}/${level * 10} | Level: ${level}
+                    </div>
+                    ${leveledUp ? '<h3>Level Up!</h3>' : ''}
+                    <div class="answer-feedback">${feedback}</div>
+                    <button class="refresh-btn" onclick="location.reload()">Try Again</button>
+                `;
+
+                if (leveledUp) {
+                    launchConfetti();
+                }
+            } catch (error) {
+                console.error('Error submitting quiz:', error);
+                resultsContainer.innerHTML = `<p style="color: red;">Error submitting the quiz. Please try again later.</p>`;
+            }
 
             document.getElementById('question-container').style.display = 'none';
             document.querySelector('.navigation-buttons').style.display = 'none';
         }
 
+        function launchConfetti() {
+            const confettiSettings = { target: 'confetti-canvas', width: window.innerWidth, height: window.innerHeight };
+            const confetti = new ConfettiGenerator(confettiSettings);
+            confetti.render();
+            setTimeout(() => confetti.clear(), 5000);
+        }
+
         renderQuestion();
     </script>
+</body>
 </body>
 </html>

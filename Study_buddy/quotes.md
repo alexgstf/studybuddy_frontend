@@ -74,7 +74,27 @@ permalink: /quotes
     }
 </style>
 
-<script>
+<script type = "module">
+import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
+    async function checkAuthorization() {
+        try {
+            const response = await fetch(`${pythonURI}/api/id`, fetchOptions);
+
+            if (response.status === 401) {
+                window.location.href = "{{site.baseurl}}/login";
+            } else if (response.ok) {
+                const contentElements = document.querySelectorAll('.content');
+                contentElements.forEach(element => {
+                    element.style.display = "block";
+                });
+            }
+        } catch (error) {
+            console.error("Authorization check failed:", error);
+            window.location.href = "{{site.baseurl}}/login";
+        }
+    }
+    checkAuthorization();
+
     document.addEventListener('DOMContentLoaded', () => {
         console.log('JavaScript Loaded');
 
@@ -89,7 +109,7 @@ permalink: /quotes
         async function fetchQuote() {
             console.log('Fetching quote...');
             try {
-                const response = await fetch('http://localhost:8887/api/quotes/random');
+                const response = await fetch('http://localhost:8502/api/quotes/random');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
