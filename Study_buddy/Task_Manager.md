@@ -316,7 +316,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Delete task
     window.deleteTask = async (taskId) => {
-        await fetch(`http://127.0.0.1:8502/api/tasks/${taskId}`, { method: "DELETE" });
+        await fetch("http://127.0.0.1:8502/api/tasks/${taskId}", { method: "DELETE" });
         renderTasks();
     };
 
@@ -351,7 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTaskButton.addEventListener("click", async () => {
         const updatedTaskTitle = editTitleInput.value.trim();
         if (updatedTaskTitle && editingTaskId) {
-            await fetch(`http://127.0.0.1:8502/api/tasks/${editingTaskId}`, {
+            await fetch("http://127.0.0.1:8502/api/tasks/${editingTaskId}", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ task: updatedTaskTitle }),
