@@ -311,7 +311,7 @@ async function submitQuiz() {
 
     // Send quiz data to the backend
     try {
-        const response = await fetch('http://localhost:8887/api/userstats', {
+        const response = await fetch('http://localhost:8502/api/userstats', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
