@@ -316,7 +316,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Delete task
     window.deleteTask = async (taskId) => {
-        await fetch("http://127.0.0.1:8502/api/tasks/${taskId}", { method: "DELETE" });
+        await fetch(`${pythonURI}/api/tasks/${taskId}`,
+        {...fetchOptions, method: "DELETE"});
         renderTasks();
     };
 
@@ -324,8 +325,8 @@ document.addEventListener("DOMContentLoaded", () => {
     addTaskButton.addEventListener("click", async () => {
         const taskTitle = titleInput.value.trim();
         if (taskTitle) {
-            const res = await fetch("http://127.0.0.1:8502/api/tasks", {
-                method: "POST",
+            const res = await fetch(`${pythonURI}/api/tasks`, 
+            {   ...fetchOptions, method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ task: taskTitle }),
             });
@@ -351,8 +352,8 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTaskButton.addEventListener("click", async () => {
         const updatedTaskTitle = editTitleInput.value.trim();
         if (updatedTaskTitle && editingTaskId) {
-            await fetch("http://127.0.0.1:8502/api/tasks/${editingTaskId}", {
-                method: "PUT",
+            await fetch(`${pythonURI}/api/tasks/${editingTaskId}`, 
+            {   ...fetchOptions, method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ task: updatedTaskTitle }),
             });
@@ -374,7 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Random task
     document.getElementById("random-task-button").addEventListener("click", async () => {
         const selectedCategory = document.getElementById("category-select").value;
-        let url = "http://127.0.0.1:8502/api/random-tasks";
+        let url = "https://studybuddy.stu.nighthawkcodingsociety.com/api/random-tasks";
         if (selectedCategory) {
             url += `?category=${encodeURIComponent(selectedCategory)}`;
         }
