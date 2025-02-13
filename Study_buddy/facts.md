@@ -201,7 +201,7 @@ tbody button:hover {
 
     checkAuthorization();
 
-    const API_URL = 'http://studybuddy.stu.nighthawkcodingsociety.com/api/userfacts';
+    const API_URL = 'https://studybuddy.stu.nighthawkcodingsociety.com/api/userfacts';
         // Fetch and display quotes
     document.addEventListener('DOMContentLoaded', init);
 
