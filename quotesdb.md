@@ -172,8 +172,25 @@ permalink: /quotesdatabase
         </table>
     </section>
 </main>
-<script>
-    const API_URL = '${pythonURI}/api/userquotes';
+<script type ="module">
+    import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
+    async function checkAuthorization() {
+        try {
+            const response = await fetch(`${pythonURI}/api/id`, fetchOptions);
+            if (response.status === 401) {
+                window.location.href = "{{site.baseurl}}/login";
+            } else if (response.ok) {
+                const contentElements = document.querySelectorAll('.content');
+                contentElements.forEach(element => {
+                    element.style.display = "block";
+                });
+            }
+        } catch (error) {
+            console.error("Authorization check failed:", error);
+            window.location.href = "{{site.baseurl}}/login";
+        }
+    }
+    const API_URL = 'https://studybuddy.stu.nighthawkcodingsociety.com/api/userquotes';
         // Fetch and display quotes
     async function fetchQuotes() {
         const response = await fetch(API_URL);
