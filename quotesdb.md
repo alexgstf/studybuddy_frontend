@@ -172,7 +172,7 @@ permalink: /quotesdatabase
         </table>
     </section>
 </main>
-<script type="module">
+<script type ="module">
     import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
     async function checkAuthorization() {
         try {
@@ -180,7 +180,8 @@ permalink: /quotesdatabase
             if (response.status === 401) {
                 window.location.href = "{{site.baseurl}}/login";
             } else if (response.ok) {
-                document.querySelectorAll('.content').forEach(element => {
+                const contentElements = document.querySelectorAll('.content');
+                contentElements.forEach(element => {
                     element.style.display = "block";
                 });
             }
@@ -190,7 +191,7 @@ permalink: /quotesdatabase
         }
     }
     const API_URL = 'https://studybuddy.stu.nighthawkcodingsociety.com/api/userquotes';
-    // Fetch and display quotes
+        // Fetch and display quotes
     async function fetchQuotes() {
         const response = await fetch(API_URL);
         const quotes = await response.json();
@@ -219,7 +220,9 @@ permalink: /quotesdatabase
         const date = document.getElementById('date').value;
         const response = await fetch(API_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify({ author, quote, date }),
         });
         if (response.ok) {
@@ -232,7 +235,9 @@ permalink: /quotesdatabase
     }
     // Function to handle deleting a quote
     async function deleteQuote(id) {
-        const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: 'DELETE',
+        });
     if (response.ok) {
             alert('Quote deleted successfully!');
             fetchQuotes();
@@ -242,34 +247,38 @@ permalink: /quotesdatabase
     }
     // Function to handle editing a quote
     function editQuote(id, currentAuthor, currentQuote, currentDate) {
+        // Show the edit form
         document.getElementById('quote-edit-form').style.display = 'block';
-        document.getElementById('quote-form').style.display = 'none';
+        document.getElementById('quote-form').style.display = 'none'; // Hide the Add form
+        // Pre-fill the form with existing quote data
         document.getElementById('edit-author').value = currentAuthor;
         document.getElementById('edit-quote').value = currentQuote;
         document.getElementById('edit-date').value = currentDate;
+        // Change form submission to update quote
         const form = document.getElementById('edit-quote-form');
         form.onsubmit = async function(event) {
             event.preventDefault();
             const author = document.getElementById('edit-author').value;
             const quote = document.getElementById('edit-quote').value;
             const date = document.getElementById('edit-date').value;
+            // Send PUT request for updating the quote
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
-                 },
+                },
                 body: JSON.stringify({ author, quote, date }),
             });
             if (response.ok) {
                 alert('Quote updated successfully!');
                 fetchQuotes();
-                cancelEdit();
+                cancelEdit(); // Cancel the editing view
             } else {
                 alert('Failed to update quote.');
             }
         };
     }
-    // Cancel editing and reset to Add form
+        // Cancel editing and reset to Add form
     function cancelEdit() {
         document.getElementById('quote-edit-form').style.display = 'none';
         document.getElementById('quote-form').style.display = 'block';
@@ -277,8 +286,8 @@ permalink: /quotesdatabase
     }
         // Initialize the app
     function init() {
-        document.getElementById('add-fact-form').addEventListener('submit', addFact);
-        fetchFacts();
+        document.getElementById('add-quote-form').addEventListener('submit', addQuote);
+        fetchQuotes();
     }
     document.addEventListener('DOMContentLoaded', init);
 </script>
