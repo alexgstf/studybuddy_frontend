@@ -201,8 +201,10 @@ tbody button:hover {
 
     checkAuthorization();
 
-    const API_URL = 'http://localhost:8502/api/userfacts';
+    const API_URL = 'http://studybuddy.stu.nighthawkcodingsociety.com/api/userfacts';
         // Fetch and display quotes
+    document.addEventListener('DOMContentLoaded', init);
+
     async function fetchFacts() {
         const response = await fetch(API_URL);
         const facts = await response.json();
@@ -215,11 +217,28 @@ tbody button:hover {
                 <td>${fact.name}</td>
                 <td>${fact.fact}</td>
                 <td>
-                    <button onclick="editFact(${fact.id}, '${fact.name}', '${fact.fact}')">Edit</button>
-                    <button onclick="deleteFact(${fact.id})">Delete</button>
+                    <button class="edit-button" data-id="${fact.id}" data-name="${fact.name}" data-fact="${fact.fact}">Edit</button>
+                    <button class="delete-button" data-id="${fact.id}">Delete</button>
                 </td>
             `;
             factsBody.appendChild(row);
+        });
+
+        // Add event listeners after facts are displayed
+        const editButtons = document.querySelectorAll('.edit-button');
+        editButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const { id, name, fact } = e.target.dataset;
+                editFact(id, name, fact);
+            });
+        });
+
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const id = e.target.dataset.id;
+                deleteFact(id);
+            });
         });
     }
     // Add a new quote
