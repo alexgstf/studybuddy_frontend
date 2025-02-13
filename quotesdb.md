@@ -233,7 +233,7 @@ permalink: /quotesdatabase
     // Function to handle deleting a quote
     async function deleteQuote(id) {
         const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-        if (response.ok) {
+    if (response.ok) {
             alert('Quote deleted successfully!');
             fetchQuotes();
         } else {
@@ -255,7 +255,9 @@ permalink: /quotesdatabase
             const date = document.getElementById('edit-date').value;
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                 },
                 body: JSON.stringify({ author, quote, date }),
             });
             if (response.ok) {
@@ -273,12 +275,10 @@ permalink: /quotesdatabase
         document.getElementById('quote-form').style.display = 'block';
         document.getElementById('edit-quote-form').reset();
     }
-    // Expose functions globally
-    window.editQuote = editQuote;
-    window.deleteQuote = deleteQuote;
+        // Initialize the app
     function init() {
-        document.getElementById('add-quote-form').addEventListener('submit', addQuote);
-        fetchQuotes();
+        document.getElementById('add-fact-form').addEventListener('submit', addFact);
+        fetchFacts();
     }
     document.addEventListener('DOMContentLoaded', init);
 </script>
