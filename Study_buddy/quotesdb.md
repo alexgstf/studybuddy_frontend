@@ -216,7 +216,6 @@ permalink: /quotesdatabase
         });
         // Add event listeners after quotes are displayed
         const editButtons = document.querySelectorAll('.edit-button');
-        const editButtons = document.querySelectorAll('.edit-button');
         editButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 const { id, author, quote, date } = e.target.dataset;
