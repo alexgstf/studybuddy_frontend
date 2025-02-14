@@ -214,14 +214,16 @@ permalink: /quotesdatabase
             `;
             quotesBody.appendChild(row);
         });
-        // Add event listeners after facts are displayed
+        // Add event listeners after quotes are displayed
+        const editButtons = document.querySelectorAll('.edit-button');
         const editButtons = document.querySelectorAll('.edit-button');
         editButtons.forEach(button => {
             button.addEventListener('click', (e) => {
-                const { id, author, quote, date} = e.target.dataset;
+                const { id, author, quote, date } = e.target.dataset;
                 editQuote(id, author, quote, date);
             });
         });
+
 
         const deleteButtons = document.querySelectorAll('.delete-button');
         deleteButtons.forEach(button => {
@@ -270,10 +272,17 @@ permalink: /quotesdatabase
         // Show the edit form
         document.getElementById('quote-edit-form').style.display = 'block';
         document.getElementById('quote-form').style.display = 'none'; // Hide the Add form
-        // Pre-fill the form with existing quote data
-        document.getElementById('edit-author').value = currentAuthor;
-        document.getElementById('edit-quote').value = currentQuote;
-        document.getElementById('edit-date').value = currentDate;
+
+        // Correctly set placeholders
+        document.getElementById('edit-author').placeholder = currentAuthor;
+        document.getElementById('edit-quote').placeholder = currentQuote;
+        document.getElementById('edit-date').placeholder = currentDate;
+
+        // Reset values so users can type new ones
+        document.getElementById('edit-author').value = "";
+        document.getElementById('edit-quote').value = "";
+        document.getElementById('edit-date').value = "";
+
         // Change form submission to update quote
         const form = document.getElementById('edit-quote-form');
         form.onsubmit = async function(event) {
@@ -281,6 +290,7 @@ permalink: /quotesdatabase
             const author = document.getElementById('edit-author').value || currentAuthor;
             const quote = document.getElementById('edit-quote').value || currentQuote;
             const date = document.getElementById('edit-date').value || currentDate;
+
             // Send PUT request for updating the quote
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
@@ -289,15 +299,17 @@ permalink: /quotesdatabase
                 },
                 body: JSON.stringify({ author, quote, date }),
             });
+
             if (response.ok) {
                 alert('Quote updated successfully!');
                 fetchQuotes();
-                cancelEdit(); // Cancel the editing view
+                cancelEdit(); // Hide edit form after update
             } else {
                 alert('Failed to update quote.');
             }
         };
     }
+
         // Cancel editing and reset to Add form
     function cancelEdit() {
         document.getElementById('quote-edit-form').style.display = 'none';
