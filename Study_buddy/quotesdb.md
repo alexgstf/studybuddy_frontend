@@ -174,12 +174,7 @@ permalink: /quotesdatabase
 </main>
 
 <script type ="module">
-            // Cancel editing and reset to Add form
-    function cancelEdit() {
-        document.getElementById('quote-edit-form').style.display = 'none';
-        document.getElementById('quote-form').style.display = 'block';
-        document.getElementById('edit-quote-form').reset();
-    }
+
     import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
     async function checkAuthorization() {
         try {
@@ -312,8 +307,28 @@ permalink: /quotesdatabase
             }
         };
     }
+    window.cancelEdit = function cancelEdit() {
+        console.log("Cancel button clicked!"); // Debugging
 
+        const editForm = document.getElementById('quote-edit-form');
+        const addForm = document.getElementById('quote-form');
 
+        if (editForm && addForm) {
+            editForm.style.display = 'none';
+            addForm.style.display = 'block';
+            console.log("Switched to Add Form"); // Debugging
+        } else {
+            console.error("Edit form or add form not found!");
+        }
+
+        const editQuoteForm = document.getElementById('edit-quote-form');
+        if (editQuoteForm) {
+            editQuoteForm.reset();
+            console.log("Edit form reset"); // Debugging
+        } else {
+            console.error("Edit quote form not found!");
+        }
+    };
         // Initialize the app
     function init() {
         document.getElementById('add-quote-form').addEventListener('submit', addQuote);
