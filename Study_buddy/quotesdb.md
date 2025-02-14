@@ -222,7 +222,11 @@ permalink: /quotesdatabase
                 editQuote(id, author, quote, date);
             });
         });
-
+        // Event listener for the cancel button in edit form
+        const cancelButton = document.querySelector("#quote-edit-form button[type='button']");
+        if (cancelButton) {
+            cancelButton.addEventListener('click', cancelEdit);
+        }
 
         const deleteButtons = document.querySelectorAll('.delete-button');
         deleteButtons.forEach(button => {
@@ -310,11 +314,13 @@ permalink: /quotesdatabase
     }
 
         // Cancel editing and reset to Add form
+// Cancel editing and reset to Add form
     function cancelEdit() {
         document.getElementById('quote-edit-form').style.display = 'none';
         document.getElementById('quote-form').style.display = 'block';
         document.getElementById('edit-quote-form').reset();
     }
+
         // Initialize the app
     function init() {
         document.getElementById('add-quote-form').addEventListener('submit', addQuote);
