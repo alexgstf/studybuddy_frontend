@@ -1,3 +1,8 @@
+---
+layout: base
+title: Addition Quiz
+permalink: /studybuddy/additionquiz
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,208 +12,208 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: #fff;
-            overflow-x: hidden;
+            font-family: 'Poppins', sans-serif !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: linear-gradient(135deg, #6a11cb, #2575fc) !important;
+            color: #fff !important;
+            overflow-x: hidden !important;
         }
 
         header {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(10px) !important;
+            padding: 1rem 2rem !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1000 !important;
         }
 
         header h1 {
-            margin: 0;
-            font-size: 2rem;
+            margin: 0 !important;
+            font-size: 2rem !important;
         }
 
         .back-home {
-            display: inline-block;
-            margin: 1rem auto;
-            margin-right: 1%;
-            padding: 0.8rem 2rem;
-            font-size: 1rem;
-            font-weight: bold;
-            color: #fff;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid #fff;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: inline-block !important;
+            margin: 1rem auto !important;
+            margin-right: 1% !important;
+            padding: 0.8rem 2rem !important;
+            font-size: 1rem !important;
+            font-weight: bold !important;
+            color: #fff !important;
+            background: rgba(255, 255, 255, 0.2) !important;
+            border: 1px solid #fff !important;
+            border-radius: 8px !important;
+            text-decoration: none !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
         }
 
         .back-home:hover {
-            background: rgba(255, 255, 255, 0.35);
-            color: #000;
-            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.35) !important;
+            color: #000 !important;
+            transform: scale(1.05) !important;
         }
 
         .quiz-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            text-align: center;
+            max-width: 800px !important;
+            margin: 2rem auto !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+            padding: 2rem !important;
+            border-radius: 10px !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+            text-align: center !important;
         }
 
         .question-number {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+            font-size: 1.5rem !important;
+            margin-bottom: 1rem !important;
         }
 
         .question {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
+            font-size: 1.2rem !important;
+            margin-bottom: 1rem !important;
         }
 
         input[type="text"] {
-            text-align: center;
-            border: none;
-            border-bottom: 2px solid #fff;
-            background: none;
-            color: #fff;
-            font-size: 1rem;
-            width: 80px;
-            outline: none;
-            padding: 5px 0;
-            margin-left: 10px;
-            transition: border-bottom-color 0.2s;
+            text-align: center !important;
+            border: none !important;
+            border-bottom: 2px solid #fff !important;
+            background: none !important;
+            color: #fff !important;
+            font-size: 1rem !important;
+            width: 80px !important;
+            outline: none !important;
+            padding: 5px 0 !important;
+            margin-left: 10px !important;
+            transition: border-bottom-color 0.2s !important;
         }
 
         input[type="text"]:focus {
-            border-bottom-color: #90dfff;
+            border-bottom-color: #90dfff !important;
         }
 
         .navigation-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2rem;
+            display: flex !important;
+            justify-content: space-between !important;
+            margin-top: 2rem !important;
         }
 
         .nav-btn {
-            padding: 1rem 2rem;
-            font-size: 1rem;
-            font-weight: bold;
-            color: #fff;
-            background: #8bb6ff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s ease;
+            padding: 1rem 2rem !important;
+            font-size: 1rem !important;
+            font-weight: bold !important;
+            color: #fff !important;
+            background: #8bb6ff !important;
+            border: none !important;
+            border-radius: 5px !important;
+            cursor: pointer !important;
+            transition: background 0.3s ease !important;
         }
 
         .nav-btn:hover {
-            background: #81ecff;
-            color: #000;
+            background: #81ecff !important;
+            color: #000 !important;
         }
 
         .nav-btn:disabled {
-            background: rgba(255, 255, 255, 0.3);
-            cursor: not-allowed;
+            background: rgba(255, 255, 255, 0.3) !important;
+            cursor: not-allowed !important;
         }
 
         .progress-bar-container {
-            position: relative;
-            margin: 2rem auto;
-            width: 80%;
-            background: rgba(255, 255, 255, 0.1);
-            height: 30px;
-            border-radius: 15px;
-            overflow: hidden;
+            position: relative !important;
+            margin: 2rem auto !important;
+            width: 80% !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+            height: 30px !important;
+            border-radius: 15px !important;
+            overflow: hidden !important;
         }
 
         .progress-bar {
-            height: 100%;
-            transition: width 0.5s ease;
-            background: #ffd700;
-            position: relative;
+            height: 100% !important;
+            transition: width 0.5s ease !important;
+            background: #ffd700 !important;
+            position: relative !important;
         }
 
         .progress-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 5px;
-            height: 100%;
-            background: #fff;
+            content: '' !important;
+            position: absolute !important;
+            top: 0 !important;
+            right: 0 !important;
+            width: 5px !important;
+            height: 100% !important;
+            background: #fff !important;
         }
 
         .progress-label {
-            margin-top: 10px;
-            font-size: 1.5rem;
-            color: #fff;
-            font-weight: bold;
+            margin-top: 10px !important;
+            font-size: 1.5rem !important;
+            color: #fff !important;
+            font-weight: bold !important;
         }
 
         .answer-feedback {
-            margin-top: 2rem;
-            text-align: left;
+            margin-top: 2rem !important;
+            text-align: left !important;
         }
 
         .feedback {
-            padding: 0.8rem;
-            border-radius: 8px;
-            margin: 0.5rem 0;
+            padding: 0.8rem !important;
+            border-radius: 8px !important;
+            margin: 0.5rem 0 !important;
         }
 
         .correct {
-            color: #0f5132;
-            background: #d1e7dd;
+            color: #0f5132 !important;
+            background: #d1e7dd !important;
         }
 
         .incorrect {
-            color: #664d03;
-            background: #fff3cd;
+            color: #664d03 !important;
+            background: #fff3cd !important;
         }
 
         .refresh-btn {
-            display: block;
-            width: 100%;
-            padding: 1rem;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #fff;
-            background: #ff4b4b;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 1rem;
-            transition: background 0.3s ease;
+            display: block !important;
+            width: 100% !important;
+            padding: 1rem !important;
+            font-size: 1.2rem !important;
+            font-weight: bold !important;
+            color: #fff !important;
+            background: #ff4b4b !important;
+            border: none !important;
+            border-radius: 5px !important;
+            cursor: pointer !important;
+            margin-top: 1rem !important;
+            transition: background 0.3s ease !important;
         }
 
         .refresh-btn:hover {
-            background: #ff7373;
+            background: #ff7373 !important;
         }
         .xp-bar-container {
-            position: relative;
-            margin: 2rem auto;
-            width: 80%;
-            background: rgba(255, 255, 255, 0.1);
-            height: 30px;
-            border-radius: 15px;
-            overflow: hidden;
+            position: relative !important;
+            margin: 2rem auto !important;
+            width: 80% !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+            height: 30px !important;
+            border-radius: 15px !important;
+            overflow: hidden !important;
         }
 
         .xp-bar {
-            height: 100%;
-            transition: width 0.5s ease;
-            background: linear-gradient(90deg, #1e90ff, #00bfff); /* Blue gradient for XP bar */
-            position: relative;
-            border-radius: 15px;
+            height: 100% !important;
+            transition: width 0.5s ease !important;
+            background: linear-gradient(90deg, #1e90ff, #00bfff) !important; /* Blue gradient for XP bar */
+            position: relative !important;
+            border-radius: 15px !important;
         }
 
     </style>
@@ -240,7 +245,6 @@
     <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
 
     <script type="module">
-        console.log("{{site.baseurl}}");
         import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
         document.addEventListener("DOMContentLoaded", () => {
             const storedName = localStorage.getItem("username");
@@ -313,6 +317,7 @@
 
                 try {
                     const response = await fetch(`${pythonURI}/api/userstats`, {
+                        ...fetchOptions,
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -320,7 +325,6 @@
                             correct: correct,
                             total: questions.length
                         }),
-                        ...fetchOptions
                     });
 
                     if (!response.ok) {
@@ -362,6 +366,9 @@
                 confetti.render();
                 setTimeout(() => confetti.clear(), 5000);
             }
+
+            window.prevQuestion = prevQuestion;
+            window.nextQuestion = nextQuestion;
 
             renderQuestion();
 
