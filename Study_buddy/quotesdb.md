@@ -218,7 +218,7 @@ permalink: /quotesdatabase
         const editButtons = document.querySelectorAll('.edit-button');
         editButtons.forEach(button => {
             button.addEventListener('click', (e) => {
-                const { id, name, fact } = e.target.dataset;
+                const { id, author, quote, date} = e.target.dataset;
                 editQuote(id, author, quote, date);
             });
         });
@@ -278,9 +278,9 @@ permalink: /quotesdatabase
         const form = document.getElementById('edit-quote-form');
         form.onsubmit = async function(event) {
             event.preventDefault();
-            const author = document.getElementById('edit-author').value;
-            const quote = document.getElementById('edit-quote').value;
-            const date = document.getElementById('edit-date').value;
+            const author = document.getElementById('edit-author').value || currentAuthor;
+            const quote = document.getElementById('edit-quote').value || currentQuote;
+            const date = document.getElementById('edit-date').value || currentDate;
             // Send PUT request for updating the quote
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
