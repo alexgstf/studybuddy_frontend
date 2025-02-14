@@ -172,6 +172,7 @@ permalink: /quotesdatabase
         </table>
     </section>
 </main>
+
 <script type ="module">
     import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
     async function checkAuthorization() {
@@ -190,8 +191,10 @@ permalink: /quotesdatabase
             window.location.href = "{{site.baseurl}}/login";
         }
     }
+    checkAuthorization();
     const API_URL = 'https://studybuddy.stu.nighthawkcodingsociety.com/api/userquotes';
     // Fetch and display quotes
+    document.addEventListener('DOMContentLoaded', init);
     async function fetchQuotes() {
         const response = await fetch(API_URL);
         const quotes = await response.json();
