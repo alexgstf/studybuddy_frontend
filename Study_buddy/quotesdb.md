@@ -214,14 +214,17 @@ permalink: /quotesdatabase
             `;
             quotesBody.appendChild(row);
         });
-        // Add event listeners after quotes are displayed
-        document.querySelectorAll('.edit-button').forEach(button => {
+        // Add event listeners after facts are displayed
+        const editButtons = document.querySelectorAll('.edit-button');
+        editButtons.forEach(button => {
             button.addEventListener('click', (e) => {
-                const { id, author, quote, date } = e.target.dataset;
+                const { id, name, fact } = e.target.dataset;
                 editQuote(id, author, quote, date);
             });
         });
-        document.querySelectorAll('.delete-button').forEach(button => {
+
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 const id = e.target.dataset.id;
                 deleteQuote(id);
