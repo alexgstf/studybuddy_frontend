@@ -191,7 +191,7 @@ permalink: /quotesdatabase
         }
     }
     const API_URL = 'https://studybuddy.stu.nighthawkcodingsociety.com/api/userquotes';
-        // Fetch and display quotes
+    // Fetch and display quotes
     async function fetchQuotes() {
         const response = await fetch(API_URL);
         const quotes = await response.json();
@@ -205,13 +205,27 @@ permalink: /quotesdatabase
                 <td>${quote.quote}</td>
                 <td>${quote.date}</td>
                 <td>
-                    <button onclick="editQuote(${quote.id}, '${quote.author}', '${quote.quote}', '${quote.date}')">Edit</button>
-                    <button onclick="deleteQuote(${quote.id})">Delete</button>
+                    <button class="edit-button" data-id="${quote.id}" data-author="${quote.author}" data-quote="${quote.quote}" data-date="${quote.date}">Edit</button>
+                    <button class="delete-button" data-id="${quote.id}">Delete</button>
                 </td>
             `;
             quotesBody.appendChild(row);
         });
+        // Add event listeners after quotes are displayed
+        document.querySelectorAll('.edit-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const { id, author, quote, date } = e.target.dataset;
+                editQuote(id, author, quote, date);
+            });
+        });
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const id = e.target.dataset.id;
+                deleteQuote(id);
+            });
+        });
     }
+
     // Add a new quote
     async function addQuote(event) {
         event.preventDefault();
