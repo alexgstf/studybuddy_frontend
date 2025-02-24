@@ -1,7 +1,7 @@
 ---
 layout: base
-title: Addition Quiz
-permalink: /studybuddy/additionquiz
+title: Subtraction Quiz
+permalink: /studybuddy/subtractionquiz
 ---
 <html lang="en">
 <head>
@@ -220,7 +220,7 @@ permalink: /studybuddy/additionquiz
 <body>
     <header>
         <h1>Subtraction Quiz</h1>
-        <a href="../quizhome.html" class="back-home">Back to Quiz Homepage</a>
+        <a href="quizhome.html" class="back-home">Back to Quiz Homepage</a>
     </header>
 
     <main>

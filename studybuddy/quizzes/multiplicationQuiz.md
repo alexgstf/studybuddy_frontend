@@ -1,13 +1,13 @@
 ---
 layout: base
-title: Addition Quiz
-permalink: /studybuddy/additionquiz
+title: Multiplication Quiz
+permalink: /studybuddy/multiplicationquiz
 ---
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Addition Quiz</title>
+    <title>Multiplication Quiz</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -219,7 +219,7 @@ permalink: /studybuddy/additionquiz
 </head>
 <body>
     <header>
-        <h1>Addition Quiz</h1>
+        <h1>Multiplication Quiz</h1>
         <a href="quizhome.html" class="back-home">Back to Quiz Homepage</a>
     </header>
 
@@ -246,12 +246,13 @@ permalink: /studybuddy/additionquiz
     <script type="module">
         import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
         document.addEventListener("DOMContentLoaded", () => {
-            const storedName = localStorage.getItem("username");
+            const storedName = localStorage.getItem("username") || "Guest";
             const questions = [];
+
             for (let i = 0; i < 15; i++) {
-                const num1 = Math.floor(Math.random() * 50) + 1;
-                const num2 = Math.floor(Math.random() * 50) + 1;
-                questions.push({ num1, num2, correctAnswer: num1 + num2, userAnswer: '' });
+                const num1 = Math.floor(Math.random() * 20) + 1;
+                const num2 = Math.floor(Math.random() * 20) + 1;
+                questions.push({ num1, num2, correctAnswer: num1 * num2, userAnswer: '' });
             }
 
             let currentQuestionIndex = 0;
@@ -264,7 +265,7 @@ permalink: /studybuddy/additionquiz
 
             function renderQuestion() {
                 const question = questions[currentQuestionIndex];
-                document.getElementById('current-question').textContent = `${question.num1} + ${question.num2} =`;
+                document.getElementById('current-question').textContent = `${question.num1} * ${question.num2} =`;
                 document.getElementById('answer-input').value = question.userAnswer || '';
                 document.querySelector('.question-number').textContent = `Question ${currentQuestionIndex + 1}/15`;
 
@@ -307,7 +308,7 @@ permalink: /studybuddy/additionquiz
                     const isCorrect = parseInt(q.userAnswer) === q.correctAnswer;
                     feedback += `
                         <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
-                            Question ${index + 1}: ${q.num1} + ${q.num2} = ${q.correctAnswer} 
+                            Question ${index + 1}: ${q.num1} * ${q.num2} = ${q.correctAnswer} 
                             (${isCorrect ? 'Correct' : `Your Answer: ${q.userAnswer || 'Blank'}`})
                         </div>
                     `;
@@ -363,15 +364,18 @@ permalink: /studybuddy/additionquiz
                 const confettiSettings = { target: 'confetti-canvas', width: window.innerWidth, height: window.innerHeight };
                 const confetti = new ConfettiGenerator(confettiSettings);
                 confetti.render();
-                setTimeout(() => confetti.clear(), 5000);
+                setTimeout(() => {
+                    confetti.clear();
+                }, 5000);
             }
 
             window.prevQuestion = prevQuestion;
             window.nextQuestion = nextQuestion;
 
             renderQuestion();
-
-        });
+    });
     </script>
+    
+    
 </body>
 </html>
