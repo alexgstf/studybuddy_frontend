@@ -291,7 +291,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById("overlay");
     let editingTaskId = null;
 
-    // Function to get logged-in user ID (from sessionStorage or localStorage)
+    const pythonURI = "https://yourbackendserver.com"; // Change this to your actual backend URL
+
+    // Function to get logged-in user ID
     function getLoggedInUserId() {
         return sessionStorage.getItem('user_id') || localStorage.getItem('user_id');
     }
@@ -306,6 +308,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             const response = await fetch(`${pythonURI}/api/tasks?user_id=${userId}`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch tasks.");
+            }
             const tasks = await response.json();
             taskList.innerHTML = "";
 
@@ -333,13 +338,20 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        await fetch(`${pythonURI}/api/tasks/${taskId}`, {
-            ...fetchOptions,
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ user_id: userId }), // Ensure only the owner can delete
-        });
-        renderTasks();
+        try {
+            const res = await fetch(`${pythonURI}/api/tasks/${taskId}`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: userId }), // Correct way to send user_id
+            });
+
+            if (!res.ok) {
+                throw new Error("Failed to delete task.");
+            }
+            renderTasks();
+        } catch (error) {
+            console.error("Error deleting task:", error);
+        }
     };
 
     // Add new task
@@ -352,18 +364,22 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (taskTitle) {
-            const res = await fetch(`${pythonURI}/api/tasks`, {
-                ...fetchOptions,
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ task: taskTitle, user_id: userId }),
-            });
+            try {
+                const res = await fetch(`${pythonURI}/api/tasks`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ task: taskTitle, user_id: userId }),
+                });
 
-            if (res.ok) {
+                if (!res.ok) {
+                    throw new Error("Failed to add task.");
+                }
+
                 titleInput.value = "";
                 renderTasks();
-            } else {
-                errorMessage.textContent = "Failed to add task.";
+            } catch (error) {
+                errorMessage.textContent = error.message;
+                console.error("Error adding task:", error);
             }
         }
     });
@@ -386,17 +402,24 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (updatedTaskTitle && editingTaskId) {
-            await fetch(`${pythonURI}/api/tasks/${editingTaskId}`, {
-                ...fetchOptions,
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ task: updatedTaskTitle, user_id: userId }),
-            });
+            try {
+                const res = await fetch(`${pythonURI}/api/tasks/${editingTaskId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ task: updatedTaskTitle, user_id: userId }),
+                });
 
-            editTaskContainer.style.display = "none";
-            overlay.style.display = "none";
-            editingTaskId = null;
-            renderTasks();
+                if (!res.ok) {
+                    throw new Error("Failed to update task.");
+                }
+
+                editTaskContainer.style.display = "none";
+                overlay.style.display = "none";
+                editingTaskId = null;
+                renderTasks();
+            } catch (error) {
+                console.error("Error updating task:", error);
+            }
         }
     });
 
