@@ -7,7 +7,7 @@ permalink: /studybuddy/additionquiz
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Addition Quiz</title>
+    <title>Subtraction Quiz</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -219,7 +219,7 @@ permalink: /studybuddy/additionquiz
 </head>
 <body>
     <header>
-        <h1>Addition Quiz</h1>
+        <h1>Subtraction Quiz</h1>
         <a href="../quizhome.html" class="back-home">Back to Quiz Homepage</a>
     </header>
 
@@ -246,12 +246,12 @@ permalink: /studybuddy/additionquiz
     <script type="module">
         import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
         document.addEventListener("DOMContentLoaded", () => {
-            const storedName = localStorage.getItem("username");
+            const storedName = localStorage.getItem("username") || "Guest";
             const questions = [];
             for (let i = 0; i < 15; i++) {
                 const num1 = Math.floor(Math.random() * 50) + 1;
                 const num2 = Math.floor(Math.random() * 50) + 1;
-                questions.push({ num1, num2, correctAnswer: num1 + num2, userAnswer: '' });
+                questions.push({ num1, num2, correctAnswer: num1 - num2, userAnswer: '' });
             }
 
             let currentQuestionIndex = 0;
@@ -259,12 +259,12 @@ permalink: /studybuddy/additionquiz
             function updateProgressBar() {
                 const progressBar = document.getElementById('progress-bar');
                 const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
-                progressBar.style.width = `${progress}%`;
+                progressBar.style.width = progress + '%';
             }
 
             function renderQuestion() {
                 const question = questions[currentQuestionIndex];
-                document.getElementById('current-question').textContent = `${question.num1} + ${question.num2} =`;
+                document.getElementById('current-question').textContent = `${question.num1} - ${question.num2} =`;
                 document.getElementById('answer-input').value = question.userAnswer || '';
                 document.querySelector('.question-number').textContent = `Question ${currentQuestionIndex + 1}/15`;
 
@@ -303,17 +303,19 @@ permalink: /studybuddy/additionquiz
                 let feedback = '';
                 resultsContainer.innerHTML = '';
 
+                // Calculate the score and feedback
                 questions.forEach((q, index) => {
                     const isCorrect = parseInt(q.userAnswer) === q.correctAnswer;
                     feedback += `
                         <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
-                            Question ${index + 1}: ${q.num1} + ${q.num2} = ${q.correctAnswer} 
+                            Question ${index + 1}: ${q.num1} - ${q.num2} = ${q.correctAnswer} 
                             (${isCorrect ? 'Correct' : `Your Answer: ${q.userAnswer || 'Blank'}`})
                         </div>
                     `;
                     if (isCorrect) correct++;
                 });
 
+                // Send quiz data to the backend
                 try {
                     const response = await fetch(`${pythonURI}/api/userstats`, {
                         ...fetchOptions,
@@ -331,9 +333,14 @@ permalink: /studybuddy/additionquiz
                     }
 
                     const data = await response.json();
+
+                    // Backend response: updated XP and level
                     const { xp, level } = data;
+
+                    // Check for level-up condition
                     const leveledUp = xp === 0 && level > 1;
 
+                    // Display progress and XP bar
                     resultsContainer.innerHTML = `
                         <h2>Quiz Results</h2>
                         <div class="xp-bar-container">
@@ -347,6 +354,7 @@ permalink: /studybuddy/additionquiz
                         <button class="refresh-btn" onclick="location.reload()">Try Again</button>
                     `;
 
+                    // Show confetti if the user leveled up
                     if (leveledUp) {
                         launchConfetti();
                     }
@@ -355,23 +363,29 @@ permalink: /studybuddy/additionquiz
                     resultsContainer.innerHTML = `<p style="color: red;">Error submitting the quiz. Please try again later.</p>`;
                 }
 
+                // Hide question UI after submission
                 document.getElementById('question-container').style.display = 'none';
                 document.querySelector('.navigation-buttons').style.display = 'none';
             }
 
+            // Confetti effect
             function launchConfetti() {
                 const confettiSettings = { target: 'confetti-canvas', width: window.innerWidth, height: window.innerHeight };
                 const confetti = new ConfettiGenerator(confettiSettings);
                 confetti.render();
-                setTimeout(() => confetti.clear(), 5000);
+
+                // Remove confetti after 5 seconds
+                setTimeout(() => {
+                    confetti.clear();
+                }, 5000);
             }
 
             window.prevQuestion = prevQuestion;
             window.nextQuestion = nextQuestion;
 
             renderQuestion();
-
         });
     </script>
+
 </body>
 </html>
