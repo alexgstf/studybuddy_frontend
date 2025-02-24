@@ -239,7 +239,8 @@
     </main>
     <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
 
-    <script>
+    <script type="module">
+        import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
         const storedName = localStorage.getItem("username") || "Guest";
         const questions = [];
         for (let i = 0; i < 15; i++) {
@@ -311,7 +312,7 @@
 
             // Send quiz data to the backend
             try {
-                const response = await fetch('http://localhost:8502/api/userstats', {
+                const response = await fetch(`${pythonURI}/api/userstats`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

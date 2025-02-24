@@ -1,11 +1,18 @@
 {% include sb-theme.html %}
-<header class="site-header">
+<header class="site-header" style="position: sticky;z-index: 10000 !important;">
   <div class="wrapper">
     {%- assign default_paths = site.pages | map: "path" -%}
     {%- assign page_paths = site.header_pages | default: default_paths -%}
     {%- assign titles_size = site.pages | map: 'title' | join: '' | size -%}
     <a class="site-title" rel="author" href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
-
+    <nav style="float:right !important;">
+      <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    
     {%- if titles_size > 0 -%}
       <nav class="site-nav" style="float: right;">
         <input type="checkbox" id="nav-trigger" class="nav-trigger"/>

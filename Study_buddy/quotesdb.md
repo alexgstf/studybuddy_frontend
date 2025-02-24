@@ -172,9 +172,30 @@ permalink: /quotesdatabase
         </table>
     </section>
 </main>
-<script>
-    const API_URL = 'http://localhost:8502/api/userquotes';
-        // Fetch and display quotes
+
+<script type ="module">
+
+    import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
+    async function checkAuthorization() {
+        try {
+            const response = await fetch(`${pythonURI}/api/id`, fetchOptions);
+            if (response.status === 401) {
+                window.location.href = "{{site.baseurl}}/login";
+            } else if (response.ok) {
+                const contentElements = document.querySelectorAll('.content');
+                contentElements.forEach(element => {
+                    element.style.display = "block";
+                });
+            }
+        } catch (error) {
+            console.error("Authorization check failed:", error);
+            window.location.href = "{{site.baseurl}}/login";
+        }
+    }
+    checkAuthorization();
+    const API_URL = 'https://studybuddy.stu.nighthawkcodingsociety.com/api/userquotes';
+    // Fetch and display quotes
+    document.addEventListener('DOMContentLoaded', init);
     async function fetchQuotes() {
         const response = await fetch(API_URL);
         const quotes = await response.json();
@@ -188,13 +209,29 @@ permalink: /quotesdatabase
                 <td>${quote.quote}</td>
                 <td>${quote.date}</td>
                 <td>
-                    <button onclick="editQuote(${quote.id}, '${quote.author}', '${quote.quote}', '${quote.date}')">Edit</button>
-                    <button onclick="deleteQuote(${quote.id})">Delete</button>
+                    <button class="edit-button" data-id="${quote.id}" data-author="${quote.author}" data-quote="${quote.quote}" data-date="${quote.date}">Edit</button>
+                    <button class="delete-button" data-id="${quote.id}">Delete</button>
                 </td>
             `;
             quotesBody.appendChild(row);
         });
+        // Add event listeners after quotes are displayed
+        const editButtons = document.querySelectorAll('.edit-button');
+        editButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const { id, author, quote, date } = e.target.dataset;
+                editQuote(id, author, quote, date);
+            });
+        });
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const id = e.target.dataset.id;
+                deleteQuote(id);
+            });
+        });
     }
+
     // Add a new quote
     async function addQuote(event) {
         event.preventDefault();
@@ -233,17 +270,25 @@ permalink: /quotesdatabase
         // Show the edit form
         document.getElementById('quote-edit-form').style.display = 'block';
         document.getElementById('quote-form').style.display = 'none'; // Hide the Add form
-        // Pre-fill the form with existing quote data
-        document.getElementById('edit-author').value = currentAuthor;
-        document.getElementById('edit-quote').value = currentQuote;
-        document.getElementById('edit-date').value = currentDate;
+
+        // Correctly set placeholders
+        document.getElementById('edit-author').placeholder = currentAuthor;
+        document.getElementById('edit-quote').placeholder = currentQuote;
+        document.getElementById('edit-date').placeholder = currentDate;
+
+        // Reset values so users can type new ones
+        document.getElementById('edit-author').value = "";
+        document.getElementById('edit-quote').value = "";
+        document.getElementById('edit-date').value = "";
+
         // Change form submission to update quote
         const form = document.getElementById('edit-quote-form');
         form.onsubmit = async function(event) {
             event.preventDefault();
-            const author = document.getElementById('edit-author').value;
-            const quote = document.getElementById('edit-quote').value;
-            const date = document.getElementById('edit-date').value;
+            const author = document.getElementById('edit-author').value || currentAuthor;
+            const quote = document.getElementById('edit-quote').value || currentQuote;
+            const date = document.getElementById('edit-date').value || currentDate;
+
             // Send PUT request for updating the quote
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
@@ -252,21 +297,38 @@ permalink: /quotesdatabase
                 },
                 body: JSON.stringify({ author, quote, date }),
             });
+
             if (response.ok) {
                 alert('Quote updated successfully!');
                 fetchQuotes();
-                cancelEdit(); // Cancel the editing view
+                cancelEdit(); // Hide edit form after update
             } else {
                 alert('Failed to update quote.');
             }
         };
     }
-        // Cancel editing and reset to Add form
-    function cancelEdit() {
-        document.getElementById('quote-edit-form').style.display = 'none';
-        document.getElementById('quote-form').style.display = 'block';
-        document.getElementById('edit-quote-form').reset();
-    }
+    window.cancelEdit = function cancelEdit() {
+        console.log("Cancel button clicked!"); // Debugging
+
+        const editForm = document.getElementById('quote-edit-form');
+        const addForm = document.getElementById('quote-form');
+
+        if (editForm && addForm) {
+            editForm.style.display = 'none';
+            addForm.style.display = 'block';
+            console.log("Switched to Add Form"); // Debugging
+        } else {
+            console.error("Edit form or add form not found!");
+        }
+
+        const editQuoteForm = document.getElementById('edit-quote-form');
+        if (editQuoteForm) {
+            editQuoteForm.reset();
+            console.log("Edit form reset"); // Debugging
+        } else {
+            console.error("Edit quote form not found!");
+        }
+    };
         // Initialize the app
     function init() {
         document.getElementById('add-quote-form').addEventListener('submit', addQuote);

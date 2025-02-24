@@ -246,7 +246,7 @@ h1 {
 <script>    
   async function fetchRandomFact() {
     try {
-      const response = await fetch('http://localhost:8887/api/funfacts/random');
+      const response = await fetch(`${pythonURI}/api/funfacts/random`);
       if (response.ok) {
         const data = await response.json();
         document.getElementById('fact').innerText = data.fact;
