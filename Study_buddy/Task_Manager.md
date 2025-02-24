@@ -266,7 +266,7 @@ permalink: /task_manager
                 window.location.href = "{{site.baseurl}}/login";
             } else if (response.ok) {
                 const contentElements = document.querySelectorAll('.content');
-                contentElements.forEach(element => {
+                contentElements.forEach(element => { 
                     element.style.display = "block";
                 });
             }
@@ -276,7 +276,7 @@ permalink: /task_manager
         }
     }
 
-    checkAuthorization();   
+    checkAuthorization();
 
 document.addEventListener("DOMContentLoaded", () => {
     const titleInput = document.getElementById("title-input");
@@ -291,10 +291,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById("overlay");
     let editingTaskId = null;
 
-    // Fetch and render tasks
+    // Function to get logged-in user ID (from sessionStorage or localStorage)
+    function getLoggedInUserId() {
+        return sessionStorage.getItem('user_id') || localStorage.getItem('user_id');
+    }
+
+    // Fetch and render tasks for the logged-in user
     async function renderTasks() {
+        const userId = getLoggedInUserId();
+        if (!userId) {
+            console.error("User not logged in.");
+            return;
+        }
+
         try {
-            const response = await fetch(`${pythonURI}/api/tasks`);
+            const response = await fetch(`${pythonURI}/api/tasks?user_id=${userId}`);
             const tasks = await response.json();
             taskList.innerHTML = "";
 
@@ -316,19 +327,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Delete task
     window.deleteTask = async (taskId) => {
-        await fetch(`${pythonURI}/api/tasks/${taskId}`,
-        {...fetchOptions, method: "DELETE"});
+        const userId = getLoggedInUserId();
+        if (!userId) {
+            console.error("User not logged in.");
+            return;
+        }
+
+        await fetch(`${pythonURI}/api/tasks/${taskId}`, {
+            ...fetchOptions,
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user_id: userId }), // Ensure only the owner can delete
+        });
         renderTasks();
     };
 
     // Add new task
     addTaskButton.addEventListener("click", async () => {
         const taskTitle = titleInput.value.trim();
+        const userId = getLoggedInUserId();
+        if (!userId) {
+            console.error("User not logged in.");
+            return;
+        }
+
         if (taskTitle) {
-            const res = await fetch(`${pythonURI}/api/tasks`, 
-            {   ...fetchOptions, method: "POST",
+            const res = await fetch(`${pythonURI}/api/tasks`, {
+                ...fetchOptions,
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ task: taskTitle }),
+                body: JSON.stringify({ task: taskTitle, user_id: userId }),
             });
 
             if (res.ok) {
@@ -351,11 +379,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update task
     updateTaskButton.addEventListener("click", async () => {
         const updatedTaskTitle = editTitleInput.value.trim();
+        const userId = getLoggedInUserId();
+        if (!userId) {
+            console.error("User not logged in.");
+            return;
+        }
+
         if (updatedTaskTitle && editingTaskId) {
-            await fetch(`${pythonURI}/api/tasks/${editingTaskId}`, 
-            {   ...fetchOptions, method: "PUT",
+            await fetch(`${pythonURI}/api/tasks/${editingTaskId}`, {
+                ...fetchOptions,
+                method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ task: updatedTaskTitle }),
+                body: JSON.stringify({ task: updatedTaskTitle, user_id: userId }),
             });
 
             editTaskContainer.style.display = "none";
@@ -396,5 +431,3 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize
     renderTasks();
 });
-</script>
-
