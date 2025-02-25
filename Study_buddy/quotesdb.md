@@ -153,6 +153,12 @@ permalink: /notesdatabase
         border: 1px solid #ddd;
         font-size: 16px;
     }
+    /* Pinned notes styling */
+    .quote-card.pinned {
+        background-color: #f5f1ff; /* Lighter background for pinned notes */
+        border: 2px solid #7a4cf7; /* Border to indicate pinned status */
+    }
+
 </style>
 
 <h1>Notes Manager</h1>
@@ -219,6 +225,7 @@ permalink: /notesdatabase
                 <p>${quote.quote}</p>
                 <span>${quote.date}</span>
                 <div class="actions">
+                    <button class="pin-button" data-id="${quote.id}">Pin</button>
                     <button class="copy-button" data-quote="${quote.quote}">Copy</button>
                     <button class="edit-button" data-id="${quote.id}" data-author="${quote.author}" data-quote="${quote.quote}" data-date="${quote.date}">Edit</button>
                     <button class="delete-button" data-id="${quote.id}">Delete</button>
@@ -251,6 +258,13 @@ permalink: /notesdatabase
                 const quoteContent = e.target.dataset.quote;
                 navigator.clipboard.writeText(quoteContent);
                 alert('Notes copied to clipboard!');
+            });
+        });
+        const pinButtons = document.querySelectorAll('.pin-button');
+        pinButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const id = e.target.dataset.id;
+                togglePin(id);
             });
         });
     }
@@ -342,6 +356,13 @@ permalink: /notesdatabase
             editQuoteForm.reset();
         }
     };
+    // Function to toggle the pinned status of a quote
+    function togglePin(id) {
+        const quoteCard = document.querySelector(`[data-id="${id}"]`).closest('.quote-card');
+        quoteCard.classList.toggle('pinned');
+        // You can add logic here to save the pinned state to a database or localStorage if needed
+    }
+
 
     // Search functionality
     document.getElementById('search-input').addEventListener('input', function() {
