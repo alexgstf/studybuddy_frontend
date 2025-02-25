@@ -263,6 +263,7 @@ permalink: /notesdatabase
         const pinButtons = document.querySelectorAll('.pin-button');
         pinButtons.forEach(button => {
             button.addEventListener('click', (e) => {
+                e.stopPropagation();  // Prevent the click from triggering the expansion
                 const id = e.target.dataset.id;
                 togglePin(id); // Call togglePin to toggle the pinned state
             });
