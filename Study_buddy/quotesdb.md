@@ -138,11 +138,30 @@ permalink: /quotesdatabase
             width: 100%;
         }
     }
+
+    /* Search Bar Styling */
+    .search-bar {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .search-bar input {
+        width: 60%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        font-size: 16px;
+    }
 </style>
 
 <h1>Notes Manager</h1>
 
 <main>
+    <section id="search-bar" class="search-bar">
+        <input type="text" id="search-input" placeholder="Search Notes..." />
+    </section>
+
     <section id="quote-form">
         <h2>Add Notes</h2>
         <form id="add-quote-form">
@@ -151,7 +170,7 @@ permalink: /quotesdatabase
             <label for="quote">Content:</label>
             <textarea id="quote" name="quote" required></textarea>
             <label for="date">Subject:</label>
-            <input type="text" id="date" name="date" placeholder="YYYY" required>
+            <input type="text" id="date" name="date" placeholder="..." required>
             <button type="submit">Add Notes</button>
         </form>
     </section>
@@ -164,7 +183,7 @@ permalink: /quotesdatabase
             <label for="edit-quote">Content:</label>
             <textarea id="edit-quote" name="quote" required></textarea>
             <label for="edit-date">Subject:</label>
-            <input type="text" id="edit-date" name="date" placeholder="YYYY" required>
+            <input type="text" id="edit-date" name="date" placeholder="..." required>
             <button type="submit">Update Notes</button>
             <button type="button" onclick="cancelEdit()">Cancel</button>
         </form>
@@ -180,7 +199,6 @@ permalink: /quotesdatabase
 
 <script type ="module">
     import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
-
 
     const API_URL = 'https://studybuddy.stu.nighthawkcodingsociety.com/api/userquotes';
 
@@ -199,6 +217,7 @@ permalink: /quotesdatabase
                 <p>${quote.quote}</p>
                 <span>${quote.date}</span>
                 <div class="actions">
+                    <button class="copy-button" data-quote="${quote.quote}">Copy</button>
                     <button class="edit-button" data-id="${quote.id}" data-author="${quote.author}" data-quote="${quote.quote}" data-date="${quote.date}">Edit</button>
                     <button class="delete-button" data-id="${quote.id}">Delete</button>
                 </div>
@@ -222,6 +241,14 @@ permalink: /quotesdatabase
             button.addEventListener('click', (e) => {
                 const id = e.target.dataset.id;
                 deleteQuote(id);
+            });
+        });
+        const copyButtons = document.querySelectorAll('.copy-button');
+        copyButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const quoteContent = e.target.dataset.quote;
+                navigator.clipboard.writeText(quoteContent);
+                alert('Quote copied to clipboard!');
             });
         });
     }
@@ -313,6 +340,21 @@ permalink: /quotesdatabase
             editQuoteForm.reset();
         }
     };
+
+    // Search functionality
+    document.getElementById('search-input').addEventListener('input', function() {
+        const searchQuery = this.value.toLowerCase();
+        const allQuotes = document.querySelectorAll('.quote-card');
+        allQuotes.forEach(quote => {
+            const title = quote.querySelector('h3').textContent.toLowerCase();
+            const content = quote.querySelector('p').textContent.toLowerCase();
+            if (title.includes(searchQuery) || content.includes(searchQuery)) {
+                quote.style.display = '';
+            } else {
+                quote.style.display = 'none';
+            }
+        });
+    });
 
     function init() {
         document.getElementById('add-quote-form').addEventListener('submit', addQuote);
