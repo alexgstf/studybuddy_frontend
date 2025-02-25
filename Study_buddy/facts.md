@@ -1,10 +1,10 @@
 ---
 layout: base
-title: Facts
+title: Insights
 permalink: /factsbase
 ---
 
-<h3 style="text-align: center;">Post Your Facts!</h3>
+<h3 style="text-align: center;">Post Your Insights!</h3>
 
 <style>
 /* General Styling for Posting Layout */
@@ -129,14 +129,41 @@ form button:hover {
 }
 </style>
 
+## 🌟 Community Guidelines for StudyBuddy 🌟
+
+
+
+---
+
+### 🔹 1. Respect Others
+✔ Be kind and respectful to all members.  
+✔ No bullying, harassment, or discrimination.  
+
+---
+
+### 🔹 2. Appropriate Content
+✔ Keep posts **educational** and **relevant**.  
+✔ No offensive or sensitive content.  
+
+---
+
+### 🔹 3. Academic Integrity
+✔ No plagiarism or misrepresentation of work.  
+
+---
+
+Thank you for contributing to a **positive learning environment**! ✅
+
+
+
 <main>
     <section id="fact-form">
         <form id="add-fact-form">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
-            <label for="fact">Fact:</label>
+            <label for="fact">Insight:</label>
             <textarea id="fact" name="fact" required></textarea>
-            <button type="submit">Add Fact</button>
+            <button type="submit">Add Insight</button>
         </form>
     </section>
     <section id="facts-container">
@@ -161,61 +188,117 @@ form button:hover {
 
     checkAuthorization();
 
-    const API_URL = 'https://studybuddy.stu.nighthawkcodingsociety.com/api/userfacts';
-    document.addEventListener('DOMContentLoaded', init);
+   const API_URL = 'https://studybuddy.stu.nighthawkcodingsociety.com/api/userfacts';
 
-    async function fetchFacts() {
-        const response = await fetch(API_URL);
-        const facts = await response.json();
-        const factsContainer = document.getElementById('facts-container');
-        factsContainer.innerHTML = '';
-        facts.forEach((fact) => {
-            const card = document.createElement('div');
-            card.classList.add('fact-card');
-            card.innerHTML = `
-                <h4>${fact.name}</h4>
-                <p>${fact.fact}</p>
-                <div class="actions">
-                    <button class="edit-button" data-id="${fact.id}" data-name="${fact.name}" data-fact="${fact.fact}">Edit</button>
-                    <button class="delete-button" data-id="${fact.id}">Delete</button>
-                </div>
-            `;
-            factsContainer.appendChild(card);
+document.addEventListener('DOMContentLoaded', init);
+
+async function fetchFacts() {
+    const response = await fetch(API_URL);
+    const facts = await response.json();
+    const factsContainer = document.getElementById('facts-container');
+    factsContainer.innerHTML = '';
+    
+    facts.forEach((fact) => {
+        const card = document.createElement('div');
+        card.classList.add('fact-card');
+        card.innerHTML = `
+            <h4>${fact.name}</h4>
+            <p>${fact.fact}</p>
+            <div class="actions">
+                <button class="like-button" data-id="${fact.id}">
+                    ❤️ ${fact.likes || 0}
+                </button>
+                <button class="comment-toggle" data-id="${fact.id}">
+                    💬 ${fact.comments ? fact.comments.length : 0}
+                </button>
+            </div>
+            <div class="comments-section" id="comments-section-${fact.id}" style="display: none;">
+                <input type="text" class="comment-input" data-id="${fact.id}" placeholder="Add a comment...">
+                <button class="comment-button" data-id="${fact.id}">Post</button>
+                <div class="comments-list" id="comments-${fact.id}"></div>
+            </div>
+        `;
+        factsContainer.appendChild(card);
+    });
+
+    document.querySelectorAll('.like-button').forEach(button => {
+        button.addEventListener('click', (e) => {
+            likeFact(e.target.dataset.id, e.target);
         });
+    });
 
-        document.querySelectorAll('.delete-button').forEach(button => {
-            button.addEventListener('click', (e) => {
-                deleteFact(e.target.dataset.id);
-            });
+    document.querySelectorAll('.comment-toggle').forEach(button => {
+        button.addEventListener('click', (e) => {
+            toggleComments(e.target.dataset.id);
         });
-    }
+    });
 
-    async function addFact(event) {
-        event.preventDefault();
-        const name = document.getElementById('name').value;
-        const fact = document.getElementById('fact').value;
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, fact })
+    document.querySelectorAll('.comment-button').forEach(button => {
+        button.addEventListener('click', (e) => {
+            addComment(e.target.dataset.id);
         });
-        if (response.ok) {
-            alert('Fact added successfully!');
-            fetchFacts();
-            document.getElementById('add-fact-form').reset();
-        }
-    }
+    });
+}
 
-    async function deleteFact(id) {
-        const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-        if (response.ok) {
-            alert('Fact deleted successfully!');
-            fetchFacts();
-        }
-    }
-
-    function init() {
-        document.getElementById('add-fact-form').addEventListener('submit', addFact);
+async function addFact(event) {
+    event.preventDefault();
+    const name = document.getElementById('name').value;
+    const fact = document.getElementById('fact').value;
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, fact, likes: 0, comments: [] })
+    });
+    if (response.ok) {
+        alert('Fact added successfully!');
         fetchFacts();
+        document.getElementById('add-fact-form').reset();
     }
-</script>
+}
+
+async function likeFact(id, button) {
+    const response = await fetch(`${API_URL}/${id}/like`, { method: 'POST' });
+    if (response.ok) {
+        const updatedFact = await response.json();
+        button.textContent = `❤️ ${updatedFact.likes}`;
+    }
+}
+
+async function addComment(id) {
+    const input = document.querySelector(`.comment-input[data-id='${id}']`);
+    const commentText = input.value;
+    if (!commentText) return;
+    
+    const response = await fetch(`${API_URL}/${id}/comment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment: commentText })
+    });
+    
+    if (response.ok) {
+        input.value = '';
+        displayComments(id);
+    }
+}
+
+async function displayComments(id) {
+    const response = await fetch(`${API_URL}/${id}/comments`);
+    const comments = await response.json();
+    const commentsList = document.getElementById(`comments-${id}`);
+    commentsList.innerHTML = '';
+    comments.forEach(comment => {
+        const p = document.createElement('p');
+        p.textContent = comment;
+        commentsList.appendChild(p);
+    });
+}
+
+function toggleComments(id) {
+    const commentsSection = document.getElementById(`comments-section-${id}`);
+    commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+}
+
+function init() {
+    document.getElementById('add-fact-form').addEventListener('submit', addFact);
+    fetchFacts();
+}
