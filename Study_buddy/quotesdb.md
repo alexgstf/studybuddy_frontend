@@ -158,9 +158,7 @@ permalink: /quotesdatabase
 <h1>Notes Manager</h1>
 
 <main>
-    <section id="search-bar" class="search-bar">
-        <input type="text" id="search-input" placeholder="Search Notes..." />
-    </section>
+
 
     <section id="quote-form">
         <h2>Add Notes</h2>
@@ -176,7 +174,7 @@ permalink: /quotesdatabase
     </section>
 
     <section id="quote-edit-form" style="display: none;">
-        <h2>Edit Quote</h2>
+        <h2>Edit Notes</h2>
         <form id="edit-quote-form">
             <label for="edit-author">Title:</label>
             <input type="text" id="edit-author" name="author" required>
@@ -187,6 +185,10 @@ permalink: /quotesdatabase
             <button type="submit">Update Notes</button>
             <button type="button" onclick="cancelEdit()">Cancel</button>
         </form>
+    </section>
+
+    <section id="search-bar" class="search-bar">
+        <input type="text" id="search-input" placeholder="Search Notes..." />
     </section>
 
     <section id="quote-box">
@@ -248,7 +250,7 @@ permalink: /quotesdatabase
             button.addEventListener('click', (e) => {
                 const quoteContent = e.target.dataset.quote;
                 navigator.clipboard.writeText(quoteContent);
-                alert('Quote copied to clipboard!');
+                alert('Notes copied to clipboard!');
             });
         });
     }
@@ -317,11 +319,11 @@ permalink: /quotesdatabase
             });
 
             if (response.ok) {
-                alert('Quote updated successfully!');
+                alert('Notes updated successfully!');
                 fetchQuotes();
                 cancelEdit();
             } else {
-                alert('Failed to update quote.');
+                alert('Failed to update notes.');
             }
         };
     }
