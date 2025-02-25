@@ -61,139 +61,129 @@ permalink: /quotesdatabase
         background: linear-gradient(45deg, #5c51e1, #6a61b9);
     }
 
-    /* Table Styling */
-    table {
+    /* Quote Box Styling */
+    .quote-box {
         width: 100%;
-        border-collapse: collapse;
         margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 15px;
+    }
+
+    .quote-card {
+        width: 300px;
         background: #fff;
         border-radius: 12px;
-        overflow: hidden;
+        padding: 15px;
         box-shadow: 0px 4px 8px rgba(66, 103, 121, 0.51);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        overflow: hidden;
+        text-align: left;
     }
 
-    th,
-    td {
-        padding: 16px;
-        text-align: left;
+    .quote-card:hover {
+        box-shadow: 0px 4px 12px rgba(92, 81, 225, 0.6);
+    }
+
+    .quote-card h3 {
+        margin: 0;
+        font-size: 18px;
+        color: #4a4a4a;
+        font-weight: 600;
+    }
+
+    .quote-card p {
+        display: none;
         font-size: 16px;
         color: #4a4a4a;
-        border-bottom: 1px solid #f0f0f5;
+        margin-top: 10px;
     }
 
-    th {
-        background: linear-gradient(45deg, #7a4cf7, #3e3e9e);
+    .quote-card span {
+        display: block;
+        font-size: 14px;
+        color: #888;
+        margin-top: 10px;
+    }
+
+    .quote-card.active p {
+        display: block;
+    }
+
+    /* Edit and Delete buttons for each quote */
+    .quote-card .actions {
+        margin-top: 15px;
+        text-align: right;
+    }
+
+    .quote-card .actions button {
+        background: #7a4cf7;
+        border: none;
         color: #fff;
-        text-transform: uppercase;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
     }
 
-    tr:nth-child(even) {
-        background: #f9f9fc;
-    }
-
-    tr:hover {
-        background: #efefff;
-    }
-
-    td:last-child {
-        text-align: center;
-    }
-
-    button {
-        padding: 10px 14px;
-    }
-
-    button:hover {
-        filter: brightness(1.1);
+    .quote-card .actions button:hover {
+        background: #5c51e1;
     }
 
     /* Responsive Design */
     @media (max-width: 768px) {
-        th,
-        td {
-            padding: 12px;
-            font-size: 14px;
-        }
-
-        input[type="text"],
-        textarea {
-            font-size: 14px;
-        }
-
-        button {
-            padding: 10px;
+        .quote-card {
+            width: 100%;
         }
     }
 </style>
 
-<h1>Quotes Manager</h1>
+<h1>Notes Manager</h1>
 
 <main>
     <section id="quote-form">
-        <h2>Add a New Quote</h2>
+        <h2>Add Notes</h2>
         <form id="add-quote-form">
-            <label for="author">Author:</label>
+            <label for="author">Title:</label>
             <input type="text" id="author" name="author" required>
-            <label for="quote">Quote:</label>
+            <label for="quote">Content:</label>
             <textarea id="quote" name="quote" required></textarea>
-            <label for="date">Date:</label>
+            <label for="date">Subject:</label>
             <input type="text" id="date" name="date" placeholder="YYYY" required>
-            <button type="submit">Add Quote</button>
+            <button type="submit">Add Notes</button>
         </form>
     </section>
-        <section id="quote-edit-form" style="display: none;">
+
+    <section id="quote-edit-form" style="display: none;">
         <h2>Edit Quote</h2>
         <form id="edit-quote-form">
-            <label for="edit-author">Author:</label>
+            <label for="edit-author">Title:</label>
             <input type="text" id="edit-author" name="author" required>
-            <label for="edit-quote">Quote:</label>
+            <label for="edit-quote">Content:</label>
             <textarea id="edit-quote" name="quote" required></textarea>
-            <label for="edit-date">Date:</label>
+            <label for="edit-date">Subject:</label>
             <input type="text" id="edit-date" name="date" placeholder="YYYY" required>
-            <button type="submit">Update Quote</button>
+            <button type="submit">Update Notes</button>
             <button type="button" onclick="cancelEdit()">Cancel</button>
         </form>
     </section>
-    <section id="quote-table">
-        <h2>All Quotes</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Author</th>
-                    <th>Quote</th>
-                    <th>Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="quotes-body">
-                <!-- Quotes will be dynamically added here -->
-            </tbody>
-        </table>
+
+    <section id="quote-box">
+        <h2>All Notes</h2>
+        <div id="quotes-body" class="quote-box">
+            <!-- Quotes will be dynamically added here -->
+        </div>
     </section>
 </main>
 
 <script type ="module">
-
     import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
-    async function checkAuthorization() {
-        try {
-            const response = await fetch(`${pythonURI}/api/id`, fetchOptions);
-            if (response.status === 401) {
-                window.location.href = "{{site.baseurl}}/login";
-            } else if (response.ok) {
-                const contentElements = document.querySelectorAll('.content');
-                contentElements.forEach(element => {
-                    element.style.display = "block";
-                });
-            }
-        } catch (error) {
-            console.error("Authorization check failed:", error);
-            window.location.href = "{{site.baseurl}}/login";
-        }
-    }
-    checkAuthorization();
+
+
     const API_URL = 'https://studybuddy.stu.nighthawkcodingsociety.com/api/userquotes';
+
     // Fetch and display quotes
     document.addEventListener('DOMContentLoaded', init);
     async function fetchQuotes() {
@@ -202,19 +192,23 @@ permalink: /quotesdatabase
         const quotesBody = document.getElementById('quotes-body');
         quotesBody.innerHTML = '';
         quotes.forEach((quote) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${quote.id}</td>
-                <td>${quote.author}</td>
-                <td>${quote.quote}</td>
-                <td>${quote.date}</td>
-                <td>
+            const card = document.createElement('div');
+            card.classList.add('quote-card');
+            card.innerHTML = `
+                <h3>${quote.author}</h3>
+                <p>${quote.quote}</p>
+                <span>${quote.date}</span>
+                <div class="actions">
                     <button class="edit-button" data-id="${quote.id}" data-author="${quote.author}" data-quote="${quote.quote}" data-date="${quote.date}">Edit</button>
                     <button class="delete-button" data-id="${quote.id}">Delete</button>
-                </td>
+                </div>
             `;
-            quotesBody.appendChild(row);
+            card.addEventListener('click', () => {
+                card.classList.toggle('active');
+            });
+            quotesBody.appendChild(card);
         });
+
         // Add event listeners after quotes are displayed
         const editButtons = document.querySelectorAll('.edit-button');
         editButtons.forEach(button => {
@@ -246,42 +240,40 @@ permalink: /quotesdatabase
             body: JSON.stringify({ author, quote, date }),
         });
         if (response.ok) {
-            alert('Quote added successfully!');
+            alert('Notes added successfully!');
             fetchQuotes();
             document.getElementById('add-quote-form').reset();
         } else {
-            alert('Failed to add quote.');
+            alert('Failed to add notes.');
         }
     }
+
     // Function to handle deleting a quote
     async function deleteQuote(id) {
         const response = await fetch(`${API_URL}/${id}`, {
             method: 'DELETE',
         });
-    if (response.ok) {
-            alert('Quote deleted successfully!');
+        if (response.ok) {
+            alert('Notes deleted successfully!');
             fetchQuotes();
         } else {
-            alert('Failed to delete quote.');
+            alert('Failed to delete notes.');
         }
     }
+
     // Function to handle editing a quote
     function editQuote(id, currentAuthor, currentQuote, currentDate) {
-        // Show the edit form
         document.getElementById('quote-edit-form').style.display = 'block';
         document.getElementById('quote-form').style.display = 'none'; // Hide the Add form
 
-        // Correctly set placeholders
         document.getElementById('edit-author').placeholder = currentAuthor;
         document.getElementById('edit-quote').placeholder = currentQuote;
         document.getElementById('edit-date').placeholder = currentDate;
 
-        // Reset values so users can type new ones
         document.getElementById('edit-author').value = "";
         document.getElementById('edit-quote').value = "";
         document.getElementById('edit-date').value = "";
 
-        // Change form submission to update quote
         const form = document.getElementById('edit-quote-form');
         form.onsubmit = async function(event) {
             event.preventDefault();
@@ -289,7 +281,6 @@ permalink: /quotesdatabase
             const quote = document.getElementById('edit-quote').value || currentQuote;
             const date = document.getElementById('edit-date').value || currentDate;
 
-            // Send PUT request for updating the quote
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
                 headers: {
@@ -301,38 +292,32 @@ permalink: /quotesdatabase
             if (response.ok) {
                 alert('Quote updated successfully!');
                 fetchQuotes();
-                cancelEdit(); // Hide edit form after update
+                cancelEdit();
             } else {
                 alert('Failed to update quote.');
             }
         };
     }
-    window.cancelEdit = function cancelEdit() {
-        console.log("Cancel button clicked!"); // Debugging
 
+    window.cancelEdit = function cancelEdit() {
         const editForm = document.getElementById('quote-edit-form');
         const addForm = document.getElementById('quote-form');
 
         if (editForm && addForm) {
             editForm.style.display = 'none';
             addForm.style.display = 'block';
-            console.log("Switched to Add Form"); // Debugging
-        } else {
-            console.error("Edit form or add form not found!");
         }
 
         const editQuoteForm = document.getElementById('edit-quote-form');
         if (editQuoteForm) {
             editQuoteForm.reset();
-            console.log("Edit form reset"); // Debugging
-        } else {
-            console.error("Edit quote form not found!");
         }
     };
-        // Initialize the app
+
     function init() {
         document.getElementById('add-quote-form').addEventListener('submit', addQuote);
         fetchQuotes();
     }
+
     document.addEventListener('DOMContentLoaded', init);
 </script>
