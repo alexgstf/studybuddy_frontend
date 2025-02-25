@@ -1,10 +1,10 @@
 ---
 layout: base
 title: Facts
-permalink: /factsbase
+permalink: /insightsbase
 ---
 
-<h3 style="text-align: center;">Post Your Facts!</h3>
+<h3 style="text-align: center;">Post Your Insights!</h3>
 
 <style>
 /* General Styling for Posting Layout */
@@ -134,9 +134,9 @@ form button:hover {
         <form id="add-fact-form">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
-            <label for="fact">Fact:</label>
+            <label for="fact">Insight:</label>
             <textarea id="fact" name="fact" required></textarea>
-            <button type="submit">Add Fact</button>
+            <button type="submit">Add Insight</button>
         </form>
     </section>
     <section id="facts-container">
