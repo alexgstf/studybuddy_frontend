@@ -14,8 +14,7 @@ hide: true
     <h1>Study Buddy</h1>
     <nav>
         <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#features">Features</a></li>
+            <!-- Removed Home and Features links -->
         </ul>
     </nav>
 </header>
@@ -36,32 +35,7 @@ hide: true
         <p>Interact with a Fun Fact</p>
     </div>
     <a href="{{site.baseurl}}/studybuddy/quizhome.html" style="text-decoration: none; color: inherit;">
-    <div class="feature">
-        <h3>Quiz Zone</h3>
-        <p>Test your knowledge with our staff-curated quizzes, covering a wide variety of subjects!</p>
-    </div>
-    </a>
-    <a href="{{site.baseurl}}/task_manager" style="text-decoration: none; color: inherit;">
-    <div class="feature">
-        <h3>Task Manager</h3>
-        <p>Manage your tasks with our simple Task Manger tailored to your specific needs!</p>
-    </div>
-    </a>
-    <a href="{{site.baseurl}}/quotesdatabase" style="text-decoration: none; color: inherit;">
-    <div class="feature">
-        <h3>Quotes Manager</h3>
-        <p>Create your own table with your favorite quotes and their respective authors and dates!</p>
-    </div>
-    </a>
-    <a href="{{site.baseurl}}/resource_corner" style="text-decoration: none; color: inherit;">
-    <div class="feature">
-        <h3>Resource Control</h3>
-        <p>Upload Important Files or find important files posted by others for your own needs in school!</p>
-    </div>
-    </a>
-
-
-
+    <div class="feature
 
 
 
@@ -236,33 +210,3 @@ h1 {
 
 </style>
 
-
-<div>
-  <h1>Fun Fact Generator</h1>
-  <button id="fetch-fact">Get Fun Fact</button>
-  <p id="fact">Your fun fact will appear here.</p>
-</div>
-
-<script>    
-  async function fetchRandomFact() {
-    try {
-      const response = await fetch(`${pythonURI}/api/funfacts/random`);
-      if (response.ok) {
-        const data = await response.json();
-        document.getElementById('fact').innerText = data.fact;
-      } else {
-        document.getElementById('fact').innerText =
-          'Could not fetch a fun fact. Please try again later.';
-        console.error('Failed to fetch fact');
-      }
-    } catch (error) {
-      document.getElementById('fact').innerText =
-        'Could not fetch a fun fact. Please try again later.';
-      console.error('Error fetching fact:', error);
-    }
-  }
-
-  document
-    .getElementById('fetch-fact')
-    .addEventListener('click', fetchRandomFact);
-</script>
