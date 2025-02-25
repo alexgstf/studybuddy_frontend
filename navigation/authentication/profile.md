@@ -7,32 +7,141 @@ search_exclude: true
 show_reading_time: false
 ---
 <div class="profile-container">
- <div class="card">
-   <form>
-     <div>
-       <label for="newUid">Enter New Username:</label>
-       <input type="text" id="newUid" placeholder="New Username">
-     </div>
-     <div>
-       <label for="newName">Enter New Name:</label>
-       <input type="text" id="newName" placeholder="New Name">
-     </div>
-      <div>
-       <label for="newPassword">Enter New Password:</label>
-       <input type="text" id="newPassword" placeholder="New Password">
-     </div>
-     <br>
-     <br>
-     <label for="profilePicture" class="file-icon"> Upload Profile Picture <i class="fas fa-upload"></i> <!-- Replace this with your desired icon -->
-     </label>
-     <input type="file" id="profilePicture" accept="image/*" onchange="saveProfilePicture()">
-     <div class="image-container" id="profileImageBox">
-         <!-- Profile picture will be displayed here -->
-     </div>
-     <p id="profile-message" style="color: red;"></p>
-   </form>
- </div>
+    <div class="card">
+        <form>
+            <div class="form-container">
+                <div>
+                    <label for="newUid">Enter New Username:</label>
+                    <input type="text" id="newUid" placeholder="New Username">
+                </div>
+                <div>
+                    <label for="newName">Enter New Name:</label>
+                    <input type="text" id="newName" placeholder="New Name">
+                </div>
+                <div>
+                    <label for="newPassword">Enter New Password:</label>
+                    <input type="text" id="newPassword" placeholder="New Password">
+                </div>
+                <div>
+                    <label for="newEmail">Enter New Email:</label>
+                    <input type="text" id="newEmail" placeholder="New Email">
+                </div>
+                <div>
+                    <label for="newDob">Enter Date of Birth:</label>
+                    <input type="text" id="newDob" placeholder="Date of Birth">
+                </div>
+                <div>
+                    <label for="newCity">Enter City:</label>
+                    <input type="text" id="newCity" placeholder="City">
+                </div>
+            </div>
+            <br>
+            <br>
+            <label for="profilePicture" class="file-icon"> Upload Profile Picture <i class="fas fa-upload"></i> <!-- Replace this with your desired icon -->
+            </label>
+            <input type="file" id="profilePicture" accept="image/*" onchange="saveProfilePicture()">
+            <div class="image-container" id="profileImageBox">
+                <!-- Profile picture will be displayed here -->
+            </div>
+            <p id="profile-message" style="color: red;"></p>
+        </form>
+    </div>
 </div>
+
+<style>
+    .profile-container {
+        margin: 2rem auto;
+        max-width: 700px;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .profile-container .card {
+        background: rgba(0, 0, 0, 0.9);
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .profile-container .form-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(3, auto);
+        gap: 1rem;
+        flex: 2 1 300px;
+    }
+
+    .profile-container label {
+        font-weight: 600;
+        margin-top: 1rem;
+        display: block;
+        color: #ffd700;
+    }
+
+    .profile-container input[type="text"],
+    .profile-container input[type="file"] {
+        width: 100%;
+        padding: 0.8rem;
+        margin: 0.5rem 0;
+        border: 1px solid #fff;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+
+    .profile-container .file-icon {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+        background: #ffd700;
+        color: #000;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        text-align: center;
+    }
+
+    .profile-container .file-icon:hover {
+        background: #ffc700;
+    }
+
+    .profile-container .image-container {
+        margin-top: 1rem;
+        text-align: center;
+        flex: 1 1 150px;
+        max-width: 100%;
+    }
+
+    .profile-container .image-container img {
+        max-width: 100%;
+        border-radius: 10px;
+        width: 100%;
+        height: auto;
+    }
+
+    .profile-container #profile-message {
+        color: #ff3b3b;
+        font-size: 1.1rem;
+        text-align: center;
+        margin-top: 1rem;
+    }
+</style>
 
 <script type="module">
 // Import fetchOptions from config.js
@@ -233,6 +342,27 @@ window.updateNameField = function(newName) {
   nameInput.placeholder = newName;
 }
 
+// Function to update UI with new Email and change placeholder
+window.updateEmailField = function(newEmail) {
+    const emailInput = document.getElementById('newEmail');
+    emailInput.value = newEmail;
+    emailInput.placeholder = newEmail;
+}
+
+// Function to update UI with new Date of Birth and change placeholder
+window.updateDobField = function(newDob) {
+    const dobInput = document.getElementById('newDob');
+    dobInput.value = newDob;
+    dobInput.placeholder = newDob;
+}
+
+// Function to update UI with new City and change placeholder
+window.updateCityField = function(newCity) {
+    const cityInput = document.getElementById('newCity');
+    cityInput.value = newCity;
+    cityInput.placeholder = newCity;
+}
+
 // Function to change UID
 window.changeUid = async function(uid) {
    if (uid) {
@@ -307,6 +437,78 @@ window.changeName = async function(name) {
    }
 }
 
+// Function to change Email
+window.changeEmail = async function(email) {
+    if (email) {
+        const URL = pythonURI + "/api/user"; // Adjusted endpoint
+
+        const options = {
+            URL,
+            body: { email },
+            message: 'email-message', // Adjust the message area as needed
+            callback: () => {
+                console.log('Email updated successfully!');
+                window.updateEmailField(email);
+            }
+        };
+
+        try {
+            await putUpdate(options);
+        } catch (error) {
+            console.error('Error updating Email:', error.message);
+            document.getElementById('email-message').textContent = 'Error updating Email: ' + error.message;
+        }
+    }
+}
+
+// Function to change Date of Birth
+window.changeDob = async function(dob) {
+    if (dob) {
+        const URL = pythonURI + "/api/user"; // Adjusted endpoint
+
+        const options = {
+            URL,
+            body: { dob },
+            message: 'dob-message', // Adjust the message area as needed
+            callback: () => {
+                console.log('Date of Birth updated successfully!');
+                window.updateDobField(dob);
+            }
+        };
+
+        try {
+            await putUpdate(options);
+        } catch (error) {
+            console.error('Error updating Date of Birth:', error.message);
+            document.getElementById('dob-message').textContent = 'Error updating Date of Birth: ' + error.message;
+        }
+    }
+}
+
+// Function to change City
+window.changeCity = async function(city) {
+    if (city) {
+        const URL = pythonURI + "/api/user"; // Adjusted endpoint
+
+        const options = {
+            URL,
+            body: { city },
+            message: 'city-message', // Adjust the message area as needed
+            callback: () => {
+                console.log('City updated successfully!');
+                window.updateCityField(city);
+            }
+        };
+
+        try {
+            await putUpdate(options);
+        } catch (error) {
+            console.error('Error updating City:', error.message);
+            document.getElementById('city-message').textContent = 'Error updating City: ' + error.message;
+        }
+    }
+}
+
 // Event listener to trigger updateUid function when UID field is changed
 document.getElementById('newUid').addEventListener('change', function() {
     const uid = this.value;
@@ -327,6 +529,22 @@ document.getElementById('newPassword').addEventListener('change', function() {
 
 });
 
+// Event listeners to trigger change functions when fields are changed
+document.getElementById('newEmail').addEventListener('change', function() {
+    const email = this.value;
+    window.changeEmail(email);
+});
+
+document.getElementById('newDob').addEventListener('change', function() {
+    const dob = this.value;
+    window.changeDob(dob);
+});
+
+document.getElementById('newCity').addEventListener('change', function() {
+    const city = this.value;
+    window.changeCity(city);
+});
+
 // Function to fetch Name from backend
 window.fetchName = async function() {
     const URL = pythonURI + "/api/user"; // Adjusted endpoint
@@ -345,20 +563,89 @@ window.fetchName = async function() {
     }
 };
 
+// Function to fetch Email from backend
+window.fetchEmail = async function() {
+    const URL = pythonURI + "/api/user"; // Adjusted endpoint
+
+    try {
+        const response = await fetch(URL, fetchOptions);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch Email: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.email;
+    } catch (error) {
+        console.error('Error fetching Email:', error.message);
+        return null;
+    }
+}
+
+// Function to fetch Date of Birth from backend
+window.fetchDob = async function() {
+    const URL = pythonURI + "/api/user"; // Adjusted endpoint
+
+    try {
+        const response = await fetch(URL, fetchOptions);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch Date of Birth: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.dob;
+    } catch (error) {
+        console.error('Error fetching Date of Birth:', error.message);
+        return null;
+    }
+}
+
+// Function to fetch City from backend
+window.fetchCity = async function() {
+    const URL = pythonURI + "/api/user"; // Adjusted endpoint
+
+    try {
+        const response = await fetch(URL, fetchOptions);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch City: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.city;
+    } catch (error) {
+        console.error('Error fetching City:', error.message);
+        return null;
+    }
+}
+
 // Function to set placeholders for UID and Name
 window.setPlaceholders = async function() {
     const uidInput = document.getElementById('newUid');
     const nameInput = document.getElementById('newName');
+    const emailInput = document.getElementById('newEmail');
+    const dobInput = document.getElementById('newDob');
+    const cityInput = document.getElementById('newCity');
 
     try {
         const uid = await window.fetchUid();
         const name = await window.fetchName();
+        const email = await window.fetchEmail();
+        const dob = await window.fetchDob();
+        const city = await window.fetchCity();
 
         if (uid !== null) {
             uidInput.placeholder = uid;
         }
         if (name !== null) {
             nameInput.placeholder = name;
+        }
+        if (email !== null) {
+            emailInput.placeholder = email;
+        }
+        if (dob !== null) {
+            dobInput.placeholder = dob;
+        }
+        if (city !== null) {
+            cityInput.placeholder = city;
         }
     } catch (error) {
         console.error('Error setting placeholders:', error.message);
