@@ -1,10 +1,10 @@
 ---
 layout: base
-title: Insights
+title: Facts
 permalink: /factsbase
 ---
 
-<h3 style="text-align: center;">Post Your Insights!</h3>
+<h3 style="text-align: center;">Post Your Facts!</h3>
 
 <style>
 /* General Styling for Posting Layout */
@@ -129,41 +129,14 @@ form button:hover {
 }
 </style>
 
-## 🌟 Community Guidelines for StudyBuddy 🌟
-
-
-
----
-
-### 🔹 1. Respect Others
-✔ Be kind and respectful to all members.  
-✔ No bullying, harassment, or discrimination.  
-
----
-
-### 🔹 2. Appropriate Content
-✔ Keep posts **educational** and **relevant**.  
-✔ No offensive or sensitive content.  
-
----
-
-### 🔹 3. Academic Integrity
-✔ No plagiarism or misrepresentation of work.  
-
----
-
-Thank you for contributing to a **positive learning environment**! ✅
-
-
-
 <main>
     <section id="fact-form">
         <form id="add-fact-form">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
-            <label for="fact">Insight:</label>
+            <label for="fact">Fact:</label>
             <textarea id="fact" name="fact" required></textarea>
-            <button type="submit">Add Insight</button>
+            <button type="submit">Add Fact</button>
         </form>
     </section>
     <section id="facts-container">
