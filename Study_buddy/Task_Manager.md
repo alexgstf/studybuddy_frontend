@@ -1,4 +1,4 @@
- ---
+---
 layout: base
 title: Task Manager
 permalink: /task_manager
