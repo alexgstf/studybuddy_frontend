@@ -1,4 +1,4 @@
----
+ ---
 layout: base
 title: Task Manager
 permalink: /task_manager
@@ -260,7 +260,7 @@ permalink: /task_manager
  import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
     async function checkAuthorization() {
         try {
-            const response = await fetch(`${pythonURI}/api/id`, fetchOptions);
+            const response = await fetch(${pythonURI}/api/id, fetchOptions);
 
             if (response.status === 401) {
                 window.location.href = "{{site.baseurl}}/login";
@@ -291,9 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById("overlay");
     let editingTaskId = null;
 
-    const pythonURI = "https://yourbackendserver.com"; // Change this to your actual backend URL
-
-    // Function to get logged-in user ID
+    // Function to get logged-in user ID (from sessionStorage or localStorage)
     function getLoggedInUserId() {
         return sessionStorage.getItem('user_id') || localStorage.getItem('user_id');
     }
@@ -307,22 +305,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const response = await fetch(`${pythonURI}/api/tasks?user_id=${userId}`);
-            if (!response.ok) {
-                throw new Error("Failed to fetch tasks.");
-            }
+            const response = await fetch(${pythonURI}/api/tasks?user_id=${userId});
             const tasks = await response.json();
             taskList.innerHTML = "";
 
             tasks.forEach((task) => {
                 const row = document.createElement("tr");
-                row.innerHTML = `
+                row.innerHTML = 
                     <td>${task.task}</td>
                     <td>
                         <button class="edit-btn" onclick="editTask(${task.id}, '${task.task}')">Edit</button>
                         <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
                     </td>
-                `;
+                ;
                 taskList.appendChild(row);
             });
         } catch (error) {
@@ -338,20 +333,13 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        try {
-            const res = await fetch(`${pythonURI}/api/tasks/${taskId}`, {
-                method: "DELETE",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_id: userId }), // Correct way to send user_id
-            });
-
-            if (!res.ok) {
-                throw new Error("Failed to delete task.");
-            }
-            renderTasks();
-        } catch (error) {
-            console.error("Error deleting task:", error);
-        }
+        await fetch(${pythonURI}/api/tasks/${taskId}, {
+            ...fetchOptions,
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user_id: userId }), // Ensure only the owner can delete
+        });
+        renderTasks();
     };
 
     // Add new task
@@ -364,22 +352,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (taskTitle) {
-            try {
-                const res = await fetch(`${pythonURI}/api/tasks`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ task: taskTitle, user_id: userId }),
-                });
+            const res = await fetch(${pythonURI}/api/tasks, {
+                ...fetchOptions,
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ task: taskTitle, user_id: userId }),
+            });
 
-                if (!res.ok) {
-                    throw new Error("Failed to add task.");
-                }
-
+            if (res.ok) {
                 titleInput.value = "";
                 renderTasks();
-            } catch (error) {
-                errorMessage.textContent = error.message;
-                console.error("Error adding task:", error);
+            } else {
+                errorMessage.textContent = "Failed to add task.";
             }
         }
     });
@@ -402,24 +386,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (updatedTaskTitle && editingTaskId) {
-            try {
-                const res = await fetch(`${pythonURI}/api/tasks/${editingTaskId}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ task: updatedTaskTitle, user_id: userId }),
-                });
+            await fetch(${pythonURI}/api/tasks/${editingTaskId}, {
+                ...fetchOptions,
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ task: updatedTaskTitle, user_id: userId }),
+            });
 
-                if (!res.ok) {
-                    throw new Error("Failed to update task.");
-                }
-
-                editTaskContainer.style.display = "none";
-                overlay.style.display = "none";
-                editingTaskId = null;
-                renderTasks();
-            } catch (error) {
-                console.error("Error updating task:", error);
-            }
+            editTaskContainer.style.display = "none";
+            overlay.style.display = "none";
+            editingTaskId = null;
+            renderTasks();
         }
     });
 
@@ -435,7 +412,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const selectedCategory = document.getElementById("category-select").value;
         let url = "https://studybuddy.stu.nighthawkcodingsociety.com/api/random-tasks";
         if (selectedCategory) {
-            url += `?category=${encodeURIComponent(selectedCategory)}`;
+            url += ?category=${encodeURIComponent(selectedCategory)};
         }
 
         try {
