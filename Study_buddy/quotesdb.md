@@ -264,7 +264,7 @@ permalink: /notesdatabase
         pinButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 const id = e.target.dataset.id;
-                togglePin(id);
+                togglePin(id); // Call togglePin to toggle the pinned state
             });
         });
     }
