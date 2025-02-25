@@ -1,7 +1,7 @@
 ---
 layout: base
-title: Quotes
-permalink: /quotesdatabase
+title: Notes
+permalink: /notesdatabase
 ---
 
 <style>
