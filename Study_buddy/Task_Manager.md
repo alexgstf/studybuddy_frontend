@@ -260,13 +260,13 @@ permalink: /task_manager
  import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
     async function checkAuthorization() {
         try {
-            const response = await fetch(${pythonURI}/api/id, fetchOptions);
+            const response = await fetch(`${pythonURI}/api/id`, fetchOptions);
 
             if (response.status === 401) {
                 window.location.href = "{{site.baseurl}}/login";
             } else if (response.ok) {
                 const contentElements = document.querySelectorAll('.content');
-                contentElements.forEach(element => { 
+                contentElements.forEach(element => {
                     element.style.display = "block";
                 });
             }
@@ -276,7 +276,7 @@ permalink: /task_manager
         }
     }
 
-    checkAuthorization();
+    checkAuthorization();   
 
 document.addEventListener("DOMContentLoaded", () => {
     const titleInput = document.getElementById("title-input");
@@ -291,33 +291,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById("overlay");
     let editingTaskId = null;
 
-    // Function to get logged-in user ID (from sessionStorage or localStorage)
-    function getLoggedInUserId() {
-        return sessionStorage.getItem('user_id') || localStorage.getItem('user_id');
-    }
-
-    // Fetch and render tasks for the logged-in user
+    // Fetch and render tasks
     async function renderTasks() {
-        const userId = getLoggedInUserId();
-        if (!userId) {
-            console.error("User not logged in.");
-            return;
-        }
-
         try {
-            const response = await fetch(${pythonURI}/api/tasks?user_id=${userId});
+            const response = await fetch(`${pythonURI}/api/tasks`);
             const tasks = await response.json();
             taskList.innerHTML = "";
 
             tasks.forEach((task) => {
                 const row = document.createElement("tr");
-                row.innerHTML = 
+                row.innerHTML = `
                     <td>${task.task}</td>
                     <td>
                         <button class="edit-btn" onclick="editTask(${task.id}, '${task.task}')">Edit</button>
                         <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
                     </td>
-                ;
+                `;
                 taskList.appendChild(row);
             });
         } catch (error) {
@@ -327,36 +316,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Delete task
     window.deleteTask = async (taskId) => {
-        const userId = getLoggedInUserId();
-        if (!userId) {
-            console.error("User not logged in.");
-            return;
-        }
-
-        await fetch(${pythonURI}/api/tasks/${taskId}, {
-            ...fetchOptions,
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ user_id: userId }), // Ensure only the owner can delete
-        });
+        await fetch(`${pythonURI}/api/tasks/${taskId}`,
+        {...fetchOptions, method: "DELETE"});
         renderTasks();
     };
 
     // Add new task
     addTaskButton.addEventListener("click", async () => {
         const taskTitle = titleInput.value.trim();
-        const userId = getLoggedInUserId();
-        if (!userId) {
-            console.error("User not logged in.");
-            return;
-        }
-
         if (taskTitle) {
-            const res = await fetch(${pythonURI}/api/tasks, {
-                ...fetchOptions,
-                method: "POST",
+            const res = await fetch(`${pythonURI}/api/tasks`, 
+            {   ...fetchOptions, method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ task: taskTitle, user_id: userId }),
+                body: JSON.stringify({ task: taskTitle }),
             });
 
             if (res.ok) {
@@ -379,18 +351,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update task
     updateTaskButton.addEventListener("click", async () => {
         const updatedTaskTitle = editTitleInput.value.trim();
-        const userId = getLoggedInUserId();
-        if (!userId) {
-            console.error("User not logged in.");
-            return;
-        }
-
         if (updatedTaskTitle && editingTaskId) {
-            await fetch(${pythonURI}/api/tasks/${editingTaskId}, {
-                ...fetchOptions,
-                method: "PUT",
+            await fetch(`${pythonURI}/api/tasks/${editingTaskId}`, 
+            {   ...fetchOptions, method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ task: updatedTaskTitle, user_id: userId }),
+                body: JSON.stringify({ task: updatedTaskTitle }),
             });
 
             editTaskContainer.style.display = "none";
@@ -412,7 +377,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const selectedCategory = document.getElementById("category-select").value;
         let url = "https://studybuddy.stu.nighthawkcodingsociety.com/api/random-tasks";
         if (selectedCategory) {
-            url += ?category=${encodeURIComponent(selectedCategory)};
+            url += `?category=${encodeURIComponent(selectedCategory)}`;
         }
 
         try {
@@ -431,3 +396,5 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize
     renderTasks();
 });
+</script>
+
