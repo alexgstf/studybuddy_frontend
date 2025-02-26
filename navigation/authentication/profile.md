@@ -11,28 +11,40 @@ show_reading_time: false
         <form>
             <div class="form-container">
                 <div>
-                    <label for="newUid">Enter New Username:</label>
-                    <input type="text" id="newUid" placeholder="New Username">
+                    <label for="newUid">Username:</label>
+                    <span id="displayUid">None</span>
+                    <input type="text" id="newUid" placeholder="New Username" style="display: none;">
+                    <i class="fas fa-pencil-alt edit-icon" id="editUid"></i>
                 </div>
                 <div>
-                    <label for="newName">Enter New Name:</label>
-                    <input type="text" id="newName" placeholder="New Name">
+                    <label for="newName">Name:</label>
+                    <span id="displayName">None</span>
+                    <input type="text" id="newName" placeholder="New Name" style="display: none;">
+                    <i class="fas fa-pencil-alt edit-icon" id="editName"></i>
                 </div>
                 <div>
-                    <label for="newPassword">Enter New Password:</label>
-                    <input type="text" id="newPassword" placeholder="New Password">
+                    <label for="newPassword">Password:</label>
+                    <span id="displayPassword">(Hidden)</span>
+                    <input type="text" id="newPassword" placeholder="New Password" style="display: none;">
+                    <i class="fas fa-pencil-alt edit-icon" id="editPassword"></i>
                 </div>
                 <div>
-                    <label for="newEmail">Enter New Email:</label>
-                    <input type="text" id="newEmail" placeholder="New Email">
+                    <label for="newEmail">Email:</label>
+                    <span id="displayEmail">None</span>
+                    <input type="text" id="newEmail" placeholder="New Email" style="display: none;">
+                    <i class="fas fa-pencil-alt edit-icon" id="editEmail"></i>
                 </div>
                 <div>
-                    <label for="newDob">Enter Date of Birth:</label>
-                    <input type="text" id="newDob" placeholder="Date of Birth">
+                    <label for="newDob">Date of Birth:</label>
+                    <span id="displayDob">None</span>
+                    <input type="text" id="newDob" placeholder="Date of Birth" style="display: none;">
+                    <i class="fas fa-pencil-alt edit-icon" id="editDob"></i>
                 </div>
                 <div>
-                    <label for="newCity">Enter City:</label>
-                    <input type="text" id="newCity" placeholder="City">
+                    <label for="newCity">City:</label>
+                    <span id="displayCity">None</span>
+                    <input type="text" id="newCity" placeholder="City" style="display: none;">
+                    <i class="fas fa-pencil-alt edit-icon" id="editCity"></i>
                 </div>
             </div>
             <br>
@@ -148,6 +160,7 @@ show_reading_time: false
 import {pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
 // Import functions from config.js
 import { putUpdate, postUpdate, deleteData, logoutUser } from "{{site.baseurl}}/assets/js/api/profile.js";
+import { getCredentials } from '{{site.baseurl}}/assets/js/api/login.js';
 
 // Function to update table with fetched data
 function updateTableWithData(data) {
@@ -234,18 +247,28 @@ function updateTableWithData(data) {
 
 }
 
-// Function to fetch user profile data
+// Function to update UI with fetched user profile data
+function updateProfileUI(profileData) {
+    document.getElementById('displayUid').textContent = profileData.uid || 'None';
+    document.getElementById('displayName').textContent = profileData.name || 'None';
+    document.getElementById('displayEmail').textContent = profileData.email || 'None';
+    document.getElementById('displayDob').textContent = profileData.dob || 'None';
+    document.getElementById('displayCity').textContent = profileData.city || 'None';
+    // Assuming password is not fetched for security reasons, so no update for displayPassword
+}
+
+// Function to fetch user profile data and update UI
 async function fetchUserProfile() {
-    const URL = pythonURI + "/api/id/pfp"; // Endpoint to fetch user profile data
+    const baseurl = document.querySelector('.trigger').getAttribute('data-baseurl');
 
     try {
-        const response = await fetch(URL, fetchOptions);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch user profile: ${response.status}`);
+        const profileData = await getCredentials(baseurl);
+        if (!profileData) {
+            throw new Error('Failed to fetch user profile');
         }
 
-        const profileData = await response.json();
         displayUserProfile(profileData);
+        updateProfileUI(profileData); // Update UI with fetched data
     } catch (error) {
         console.error('Error fetching user profile:', error.message);
         // Handle error display or fallback mechanism
@@ -271,7 +294,6 @@ function displayUserProfile(profileData) {
 
 // Function to save profile picture
 window.saveProfilePicture = async function () {
-
     const fileInput = document.getElementById('profilePicture');
     const file = fileInput.files[0];
     if (file) {
@@ -289,7 +311,6 @@ window.saveProfilePicture = async function () {
         const base64String = await convertToBase64(file);
         await sendProfilePicture(base64String);
         console.log('Profile picture uploaded successfully!');
-
     } catch (error) {
         console.error('Error uploading profile picture:', error.message);
         // Handle error display or fallback mechanism
@@ -308,26 +329,27 @@ async function convertToBase64(file) {
 
 // Function to send profile picture to server
 async function sendProfilePicture(base64String) {
-   const URL = pythonURI + "/api/id/pfp"; // Adjust endpoint as needed
+    const URL = pythonURI + "/api/id/pfp"; // Adjust endpoint as needed
 
-   // Create options object for PUT request
-   const options = {
-       URL,
-       body: { pfp: base64String },
-       message: 'profile-message', // Adjust the message area as needed
-       callback: () => {
-           console.log('Profile picture uploaded successfully!');
-           // Handle success response as needed
-       }
-   };
+    // Create options object for PUT request
+    const options = {
+        URL,
+        body: { pfp: base64String },
+        message: 'profile-message', // Adjust the message area as needed
+        callback: () => {
+            console.log('Profile picture uploaded successfully!');
+            // Handle success response as needed
+        }
+    };
 
-   try {
-       await putUpdate(options);
-   } catch (error) {
-       console.error('Error uploading profile picture:', error.message);
-       document.getElementById('profile-message').textContent = 'Error uploading profile picture: ' + error.message;
-   }
+    try {
+        await putUpdate(options);
+    } catch (error) {
+        console.error('Error uploading profile picture:', error.message);
+        document.getElementById('profile-message').textContent = 'Error uploading profile picture: ' + error.message;
+    }
 }
+
   // Function to update UI with new UID and change placeholder
 window.updateUidField = function(newUid) {
   const uidInput = document.getElementById('newUid');
@@ -372,10 +394,11 @@ window.changeUid = async function(uid) {
            URL,
            body: { uid },
            message: 'uid-message', // Adjust the message area as needed
-           callback: () => {
+           callback: async () => {
                alert("You updated your Github ID, so you will automatically be logged out. Be sure to remember your new github id to log in!");
                console.log('UID updated successfully!');
                window.updateUidField(uid);
+               await fetchUserProfile(); // Fetch and update profile data after change
                window.location.href = '/portfolio_2025/login'
            }
        };
@@ -423,9 +446,10 @@ window.changeName = async function(name) {
            URL,
            body: { name },
            message: 'name-message',
-           callback: () => {
+           callback: async () => {
                console.log('Name updated successfully!');
                window.updateNameField(name);
+               await fetchUserProfile(); // Fetch and update profile data after change
            }
        };
        try {
@@ -446,9 +470,10 @@ window.changeEmail = async function(email) {
             URL,
             body: { email },
             message: 'email-message', // Adjust the message area as needed
-            callback: () => {
+            callback: async () => {
                 console.log('Email updated successfully!');
                 window.updateEmailField(email);
+                await fetchUserProfile(); // Fetch and update profile data after change
             }
         };
 
@@ -470,9 +495,10 @@ window.changeDob = async function(dob) {
             URL,
             body: { dob },
             message: 'dob-message', // Adjust the message area as needed
-            callback: () => {
+            callback: async () => {
                 console.log('Date of Birth updated successfully!');
                 window.updateDobField(dob);
+                await fetchUserProfile(); // Fetch and update profile data after change
             }
         };
 
@@ -494,9 +520,10 @@ window.changeCity = async function(city) {
             URL,
             body: { city },
             message: 'city-message', // Adjust the message area as needed
-            callback: () => {
+            callback: async () => {
                 console.log('City updated successfully!');
                 window.updateCityField(city);
+                await fetchUserProfile(); // Fetch and update profile data after change
             }
         };
 
@@ -652,11 +679,62 @@ window.setPlaceholders = async function() {
     }
 };
 
+// Function to toggle input fields and display attributes
+function toggleInputField(displayElementId, inputElementId, editIconId) {
+    const displayElement = document.getElementById(displayElementId);
+    const inputElement = document.getElementById(inputElementId);
+    const editIcon = document.getElementById(editIconId);
+
+    displayElement.style.display = 'none';
+    inputElement.style.display = 'inline';
+    editIcon.style.display = 'none';
+
+    inputElement.focus();
+
+    inputElement.addEventListener('blur', function () {
+        displayElement.textContent = inputElement.value || 'None';
+        displayElement.style.display = 'inline';
+        inputElement.style.display = 'none';
+        editIcon.style.display = 'inline';
+    });
+
+    inputElement.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            inputElement.blur();
+        }
+    });
+}
+
+// Event listeners for edit icons
+document.getElementById('editUid').addEventListener('click', function () {
+    toggleInputField('displayUid', 'newUid', 'editUid');
+});
+
+document.getElementById('editName').addEventListener('click', function () {
+    toggleInputField('displayName', 'newName', 'editName');
+});
+
+document.getElementById('editEmail').addEventListener('click', function () {
+    toggleInputField('displayEmail', 'newEmail', 'editEmail');
+});
+
+document.getElementById('editDob').addEventListener('click', function () {
+    toggleInputField('displayDob', 'newDob', 'editDob');
+});
+
+document.getElementById('editCity').addEventListener('click', function () {
+    toggleInputField('displayCity', 'newCity', 'editCity');
+});
+
+document.getElementById('editPassword').addEventListener('click', function () {
+    toggleInputField('displayPassword', 'newPassword', 'editPassword');
+});
+
 // Call and initializeProfileSetup when DOM content is loaded
 document.addEventListener('DOMContentLoaded', async function () {
     try {
         await fetchUserProfile(); // Fetch user profile data
-        await setPlaceholders();
+        await setPlaceholders(); // Set placeholders with fetched data
     } catch (error) {
         console.error('Initialization error:', error.message);
         // Handle initialization error gracefully

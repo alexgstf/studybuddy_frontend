@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 });
 
-function getCredentials(baseurl) {
+export function getCredentials(baseurl) {
     const URL = pythonURI + '/api/id'; // This URL fetches the user credentials
     return fetch(URL, fetchOptions)
         .then(response => { // API response handler
