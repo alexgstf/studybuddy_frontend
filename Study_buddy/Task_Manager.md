@@ -320,133 +320,166 @@ permalink: /task_manager
 <script type="module">
     import { pythonURI, fetchOptions } from "{{site.baseurl}}/assets/js/api/config.js";
 
-    document.addEventListener("DOMContentLoaded", () => {
-        const titleInput = document.getElementById("title-input");
-        const addTaskButton = document.getElementById("add-task-button");
-        const errorMessage = document.getElementById("error-message");
-        const calendarContainer = document.getElementById("calendar-container");
-        const monthHeader = document.getElementById("month-header");
-        const overlay = document.getElementById("overlay");
-        const closeOverlayButton = document.getElementById("close-overlay-button");
-        const taskListForDay = document.getElementById("task-list-for-day");
+document.addEventListener("DOMContentLoaded", () => {
+    const titleInput = document.getElementById("title-input");
+    const addTaskButton = document.getElementById("add-task-button");
+    const errorMessage = document.getElementById("error-message");
+    const calendarContainer = document.getElementById("calendar-container");
+    const monthHeader = document.getElementById("month-header");
+    const overlay = document.getElementById("overlay");
+    const closeOverlayButton = document.getElementById("close-overlay-button");
+    const taskListForDay = document.getElementById("task-list-for-day");
 
-        // Function to generate calendar days
-        function generateCalendarDays() {
-            const daysInMonth = 31; // For February, you can dynamically change this.
-            const monthName = new Date().toLocaleString('default', { month: 'long' });
-            monthHeader.textContent = monthName; // Set the current month in the header
+    // Function to generate calendar days
+    function generateCalendarDays() {
+        const daysInMonth = 31; // For February, you can dynamically change this.
+        const monthName = new Date().toLocaleString('default', { month: 'long' });
+        monthHeader.textContent = monthName; // Set the current month in the header
 
-            calendarContainer.innerHTML = "";
+        calendarContainer.innerHTML = "";
 
-            for (let i = 1; i <= daysInMonth; i++) {
-                const dayElement = document.createElement("div");
-                dayElement.classList.add("calendar-day");
-                dayElement.innerHTML = `
-                    <span>${i}</span>
-                `;
-                dayElement.addEventListener("click", () => showTasksForDay(i)); // Click handler
-                calendarContainer.appendChild(dayElement);
-            }
+        for (let i = 1; i <= daysInMonth; i++) {
+            const dayElement = document.createElement("div");
+            dayElement.classList.add("calendar-day");
+            dayElement.innerHTML = `
+                <span>${i}</span>
+            `;
+            dayElement.addEventListener("click", () => showTasksForDay(i)); // Click handler
+            calendarContainer.appendChild(dayElement);
         }
+    }
 
-        // Fetch and render tasks for the selected day
-        async function fetchTasksForDay(day) {
+    // Fetch and render tasks for the selected day
+    async function fetchTasksForDay(day) {
+        try {
+            const response = await fetch(`${pythonURI}/api/tasks?day=${day}`);
+            const tasks = await response.json();
+
+            taskListForDay.innerHTML = ""; // Clear previous tasks
+            if (tasks.length > 0) {
+                tasks.forEach((task) => {
+                    const taskItem = document.createElement("div");
+                    taskItem.classList.add("task-item");
+                    taskItem.textContent = task.task;
+                    taskItem.setAttribute("data-id", task.id);
+                    taskItem.addEventListener("click", () => showTaskOptions(task)); // Click handler for task item
+                    taskListForDay.appendChild(taskItem);
+                });
+            } else {
+                taskListForDay.innerHTML = "<p>No tasks for this day.</p>";
+            }
+        } catch (error) {
+            taskListForDay.innerHTML = "<p>Error fetching tasks.</p>";
+        }
+    }
+
+    // Show task options (edit/delete)
+    function showTaskOptions(task) {
+        const taskItem = document.createElement("div");
+        taskItem.classList.add("task-item");
+        taskItem.innerHTML = `
+            <span>${task.task}</span>
+            <div class="task-actions">
+                <button class="edit-btn" onclick="editTask(${task.id}, '${task.task}')">Edit</button>
+                <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
+            </div>
+        `;
+        taskListForDay.innerHTML = ''; // Clear the task list and display the task with options
+        taskListForDay.appendChild(taskItem);
+    }
+
+    // Edit task
+    window.editTask = async function (taskId, currentText) {
+        const newText = prompt("Edit task:", currentText);
+        if (newText && newText !== currentText) {
             try {
-                const response = await fetch(`${pythonURI}/api/tasks?day=${day}`);
-                const tasks = await response.json();
+                const res = await fetch(`${pythonURI}/api/tasks/${taskId}`, {
+                    ...fetchOptions,
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ task: newText }),
+                });
 
-                taskListForDay.innerHTML = ""; // Clear previous tasks
-                if (tasks.length > 0) {
-                    tasks.forEach((task) => {
-                        const taskItem = document.createElement("div");
-                        taskItem.classList.add("task-item");
-                        taskItem.textContent = task.task;
-                        taskItem.setAttribute("data-id", task.id);
-                        taskItem.addEventListener("click", () => showTaskOptions(task)); // Click handler for task item
-                        taskListForDay.appendChild(taskItem);
-                    });
+                const result = await res.json();
+                if (res.ok) {
+                    alert(result.message);
+                    fetchTasksForDay(1); // Reload tasks for the selected day after update
                 } else {
-                    taskListForDay.innerHTML = "<p>No tasks for this day.</p>";
+                    alert(`Failed to update task: ${result.error}`);
                 }
             } catch (error) {
-                taskListForDay.innerHTML = "<p>Error fetching tasks.</p>";
+                alert("Error updating task.");
             }
         }
+    }
 
-        // Show task options (edit/delete)
-        function showTaskOptions(task) {
-            const taskItem = document.createElement("div");
-            taskItem.classList.add("task-item");
-            taskItem.innerHTML = `
-                <span>${task.task}</span>
-                <div class="task-actions">
-                    <button class="edit-btn" onclick="editTask(${task.id}, '${task.task}')">Edit</button>
-                    <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
-                </div>
-            `;
-            taskListForDay.innerHTML = ''; // Clear the task list and display the task with options
-            taskListForDay.appendChild(taskItem);
-        }
+    // Delete task
+    window.deleteTask = async function (taskId) {
+        const confirmation = confirm("Are you sure you want to delete this task?");
+        if (confirmation) {
+            try {
+                const res = await fetch(`${pythonURI}/api/tasks/${taskId}`, {
+                    ...fetchOptions,
+                    method: "DELETE",
+                });
 
-        // Edit task
-        async function editTask(taskId, currentText) {
-            const newText = prompt("Edit task:", currentText);
-            if (newText && newText !== currentText) {
-                try {
-                    const res = await fetch(`${pythonURI}/api/tasks/${taskId}`, {
-                        ...fetchOptions,
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ task: newText }),
-                    });
-
-                    const result = await res.json();
-                    if (res.ok) {
-                        alert(result.message);
-                        fetchTasksForDay(1); // Reload tasks for the selected day after update
-                    } else {
-                        alert(`Failed to update task: ${result.error}`);
-                    }
-                } catch (error) {
-                    alert("Error updating task.");
+                const result = await res.json();
+                if (res.ok) {
+                    alert(result.message);
+                    fetchTasksForDay(1); // Reload tasks for the selected day after deletion
+                } else {
+                    alert(`Failed to delete task: ${result.error}`);
                 }
+            } catch (error) {
+                alert("Error deleting task.");
             }
         }
+    }
 
-        // Delete task
-        async function deleteTask(taskId) {
-            const confirmation = confirm("Are you sure you want to delete this task?");
-            if (confirmation) {
-                try {
-                    const res = await fetch(`${pythonURI}/api/tasks/${taskId}`, {
-                        ...fetchOptions,
-                        method: "DELETE",
-                    });
+    // Add new task
+    async function addTask(taskText) {
+        if (!taskText.trim()) {
+            errorMessage.textContent = "Please enter a task.";
+            return;
+        }
 
-                    const result = await res.json();
-                    if (res.ok) {
-                        alert(result.message);
-                        fetchTasksForDay(1); // Reload tasks for the selected day after deletion
-                    } else {
-                        alert(`Failed to delete task: ${result.error}`);
-                    }
-                } catch (error) {
-                    alert("Error deleting task.");
-                }
+        try {
+            const response = await fetch(`${pythonURI}/api/tasks`, {
+                ...fetchOptions,
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ task: taskText })
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.message);
+                titleInput.value = ''; // Clear input field after adding task
+                fetchTasksForDay(1); // Reload tasks for the selected day after adding
+            } else {
+                alert(`Failed to add task: ${result.error}`);
             }
+        } catch (error) {
+            alert("Error adding task.");
         }
+    }
 
-        // Show tasks for the clicked day and display overlay
-        function showTasksForDay(day) {
-            fetchTasksForDay(day);
-            overlay.style.display = "block"; // Show the overlay
-        }
-
-        closeOverlayButton.addEventListener("click", () => {
-            overlay.style.display = "none"; // Hide overlay when close button is clicked
-        });
-
-        // Initialize the calendar
-        generateCalendarDays();
+    // Add task button click handler
+    addTaskButton.addEventListener("click", () => {
+        const taskText = titleInput.value;
+        addTask(taskText);
     });
-</script>
+
+    // Show tasks for the clicked day and display overlay
+    function showTasksForDay(day) {
+        fetchTasksForDay(day);
+        overlay.style.display = "block"; // Show the overlay
+    }
+
+    closeOverlayButton.addEventListener("click", () => {
+        overlay.style.display = "none"; // Hide overlay when close button is clicked
+    });
+
+    // Initialize the calendar
+    generateCalendarDays();
+});
