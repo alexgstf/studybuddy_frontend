@@ -1,8 +1,7 @@
 ---
 layout: post
-title: Profile Settings
 permalink: /profile
-menu: nav/home.html
+title: My Profile
 search_exclude: true
 show_reading_time: false
 ---
@@ -49,10 +48,8 @@ show_reading_time: false
             </div>
             <br>
             <br>
-            <label for="profilePicture" class="file-icon"> Upload Profile Picture <i class="fas fa-upload"></i> <!-- Replace this with your desired icon -->
-            </label>
-            <input type="file" id="profilePicture" accept="image/*" onchange="saveProfilePicture()">
-            <div class="image-container" id="profileImageBox">
+            <input type="file" id="profilePicture" accept="image/*" style="display: none;" onchange="saveProfilePicture()">
+            <div class="image-container" id="profileImageBox" onclick="document.getElementById('profilePicture').click()">
                 <!-- Profile picture will be displayed here -->
             </div>
             <p id="profile-message" style="color: red;"></p>
@@ -138,6 +135,7 @@ show_reading_time: false
         text-align: center;
         flex: 1 1 150px;
         max-width: 100%;
+        cursor: pointer;
     }
 
     .profile-container .image-container img {
@@ -267,11 +265,32 @@ async function fetchUserProfile() {
             throw new Error('Failed to fetch user profile');
         }
 
+        const profilePicture = await fetchProfilePicture();
+        profileData.pfp = profilePicture;
+
         displayUserProfile(profileData);
         updateProfileUI(profileData); // Update UI with fetched data
     } catch (error) {
         console.error('Error fetching user profile:', error.message);
         // Handle error display or fallback mechanism
+    }
+}
+
+// Function to fetch profile picture
+async function fetchProfilePicture() {
+    const URL = pythonURI + "/api/id/pfp"; // Endpoint to fetch user profile data
+
+    try {
+        const response = await fetch(URL, fetchOptions);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch user profile: ${response.status}`);
+        }
+
+        const profileData = await response.json();
+        return profileData.pfp; // Return the base64 image data
+    } catch (error) {
+        console.error('Error fetching user profile:', error.message);
+        return null;
     }
 }
 
@@ -285,7 +304,11 @@ function displayUserProfile(profileData) {
         profileImageBox.innerHTML = ''; // Clear existing content
         profileImageBox.appendChild(img); // Append new image element
     } else {
-        profileImageBox.innerHTML = '<p>No profile picture available.</p>';
+        const img = document.createElement('img');
+        img.src = '{{site.baseurl}}/images/default-profile.jpg';
+        img.alt = 'Default Profile Picture';
+        profileImageBox.innerHTML = ''; // Clear existing content
+        profileImageBox.appendChild(img); // Append default image element
     }
 
     // Display other profile information as needed
@@ -350,7 +373,7 @@ async function sendProfilePicture(base64String) {
     }
 }
 
-  // Function to update UI with new UID and change placeholder
+// Function to update UI with new UID and change placeholder
 window.updateUidField = function(newUid) {
   const uidInput = document.getElementById('newUid');
   uidInput.value = newUid;
