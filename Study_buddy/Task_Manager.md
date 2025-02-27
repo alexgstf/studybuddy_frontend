@@ -147,6 +147,7 @@ permalink: /task_manager
         padding: 2rem;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         width: 100%;
+        max-width: 600px; /* Match the width of task manager */
     }
 
     #random-task-container h2 {
@@ -349,10 +350,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Fetch and render tasks for the selected day
-    async function fetchTasksForDay(day) {
+    // Fetch and render tasks
+    async function fetchTasks() {
         try {
-            const response = await fetch(`${pythonURI}/api/tasks?day=${day}`);
+            const response = await fetch(`${pythonURI}/api/tasks`);
             const tasks = await response.json();
 
             taskListForDay.innerHTML = ""; // Clear previous tasks
@@ -366,7 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     taskListForDay.appendChild(taskItem);
                 });
             } else {
-                taskListForDay.innerHTML = "<p>No tasks for this day.</p>";
+                taskListForDay.innerHTML = "<p>No tasks available.</p>";
             }
         } catch (error) {
             taskListForDay.innerHTML = "<p>Error fetching tasks.</p>";
@@ -403,7 +404,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const result = await res.json();
                 if (res.ok) {
                     alert(result.message);
-                    fetchTasksForDay(1); // Reload tasks for the selected day after update
+                    fetchTasks(); // Reload tasks after update
                 } else {
                     alert(`Failed to update task: ${result.error}`);
                 }
@@ -426,7 +427,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const result = await res.json();
                 if (res.ok) {
                     alert(result.message);
-                    fetchTasksForDay(1); // Reload tasks for the selected day after deletion
+                    fetchTasks(); // Reload tasks after deletion
                 } else {
                     alert(`Failed to delete task: ${result.error}`);
                 }
@@ -455,7 +456,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 alert(result.message);
                 titleInput.value = ''; // Clear input field after adding task
-                fetchTasksForDay(1); // Reload tasks for the selected day after adding
+                fetchTasks(); // Reload tasks after adding
             } else {
                 alert(`Failed to add task: ${result.error}`);
             }
@@ -472,14 +473,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Show tasks for the clicked day and display overlay
     function showTasksForDay(day) {
-        fetchTasksForDay(day);
-        overlay.style.display = "block"; // Show the overlay
+        fetchTasks(); // Fetch all tasks (since task assignment is not implemented yet)
+
+        // Open overlay
+        overlay.style.display = "block";
     }
 
+    // Close overlay
     closeOverlayButton.addEventListener("click", () => {
-        overlay.style.display = "none"; // Hide overlay when close button is clicked
+        overlay.style.display = "none";
     });
 
-    // Initialize the calendar
+    // Fetch random task
+    async function getRandomTask(category) {
+        try {
+            const response = await fetch(`${pythonURI}/api/tasks/random?category=${category}`);
+            const task = await response.json();
+            if (response.ok) {
+                document.getElementById("random-task-box").textContent = task.message;
+            } else {
+                document.getElementById("random-task-box").textContent = "Error fetching task.";
+            }
+        } catch (error) {
+            document.getElementById("random-task-box").textContent = "Error fetching task.";
+        }
+    }
+
+    // Random task button click handler
+    document.getElementById("random-task-button").addEventListener("click", () => {
+        const category = document.getElementById("category-select").value;
+        if (!category) {
+            alert("Please select a category.");
+        } else {
+            getRandomTask(category);
+        }
+    });
+
+    // Initialize Calendar on page load
     generateCalendarDays();
+
 });
+</script>
