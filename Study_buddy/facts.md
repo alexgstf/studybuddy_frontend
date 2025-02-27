@@ -6,127 +6,174 @@ permalink: /insightsbase
 
 <h3 style="text-align: center;">Post Your Insights!</h3>
 
+### **Simple Posting Guidelines**  
+
+1. **Be Respectful** – No hate speech, bullying, or offensive content.  
+2. **Stay on Topic** – Keep posts relevant to the discussion.  
+3. **No Spam** – Avoid excessive posting, ads, or self-promotion.  
+4. **Fact-Check First** – Share accurate information; avoid spreading misinformation.  
+5. **Respect Privacy** – Don't share personal or sensitive information.  
+6. **Use Clear Language** – Keep it readable and understandable for everyone.  
+7. **Follow Community Rules** – Abide by any specific guidelines set by the platform.  
+
+Keep it positive and constructive! 🚀
+
+
 <style>
-/* General Styling for Posting Layout */
+/* General Styling */
 main {
     display: flex;
-    flex-wrap: wrap; /* Allow wrapping for smaller screens */
-    gap: 20px;
-    justify-content: center; /* Center content horizontally */
-    align-items: flex-start; /* Align items at the top */
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    background: #121826; /* Dark navy background */
 }
 
+/* Form Styling */
 form {
-    background: #222; /* Dark gray card */
+    background: #1a2136; /* Deep navy */
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.5);
+    max-width: 400px;
     width: 100%;
-    max-width: 500px;
-    flex: 1; /* Allow the form to grow/shrink within the layout */
+    margin-bottom: 20px;
 }
 
 form label {
-    display: block;
-    font-weight: bold;
-    font-size: 14px;
-    color: #ccc;
+    font-weight: 600;
+    font-size: 16px;
+    color: #b0b8d9; /* Soft gray-blue */
     margin-bottom: 6px;
+    display: block;
 }
 
 form textarea,
 form input[type="text"] {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 16px;
+    padding: 10px;
+    margin-bottom: 14px;
     border: none;
     border-radius: 8px;
-    background: #333;
+    background: #252d44; /* Softer dark blue */
     color: #fff;
     font-size: 14px;
-    resize: none;
     transition: border 0.3s ease;
 }
 
 form textarea:focus,
 form input[type="text"]:focus {
-    border: 2px solid #6b78f7;
+    border: 2px solid #7986ff;
     outline: none;
 }
 
-form button {
-    width: 100%;
+/* Unified Button Styling */
+button {
     background: linear-gradient(45deg, #6b78f7, #4c5ae1);
     border: none;
-    padding: 12px;
+    padding: 10px 14px;
     border-radius: 8px;
     color: #fff;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 15px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
-form button:hover {
+button:hover {
     background: linear-gradient(45deg, #4c5ae1, #5e63b8);
+    transform: scale(1.05);
 }
 
-/* Styling for the Facts Cards */
+/* Facts List Styling */
 #facts-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-}
-
-.fact-card {
-    background: #222;
-    padding: 16px;
-    border-radius: 12px;
-    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
-    max-width: 400px;
     width: 100%;
+    max-width: 600px;
+    background: #1a2136;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.5);
 }
 
-.fact-card h4 {
-    color: #fff;
-    margin-bottom: 8px;
-}
-
-.fact-card p {
-    color: #ddd;
-    margin-bottom: 12px;
-}
-
-.fact-card .actions {
+.fact-item {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #252d44; /* Separator line */
 }
 
-.fact-card button {
-    background: #6b78f7;
-    color: #fff;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s ease;
+.fact-item:nth-child(odd) {
+    background: #252d44; /* Alternating row colors */
 }
 
-.fact-card button:hover {
-    background: #4c5ae1;
+.fact-item:nth-child(even) {
+    background: #1a2136;
+}
+
+/* Bigger text for better readability */
+.fact-item h4 {
+    color: #d0d7ff; /* Soft pastel blue */
+    font-size: 18px; /* Increased size */
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.fact-item p {
+    color: #b0b8d9;
+    font-size: 15px; /* Increased size */
+    margin-bottom: 0;
+    line-height: 1.4;
+}
+
+/* Actions */
+.fact-item .actions {
+    display: flex;
+    gap: 4px; /* Reduce spacing between buttons */
+}
+
+/* Even Smaller Edit & Delete Buttons */
+.fact-item button {
+    padding: 4px 8px;  /* Smaller padding */
+    font-size: 12px;  /* Smaller font size */
+    border-radius: 5px; /* Slightly sharper edges */
+}
+
+.fact-item button:hover {
+    transform: scale(1.03);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     main {
-        flex-direction: column; /* Stack form and cards vertically */
+        width: 100%;
+        padding: 12px;
     }
 
     form {
-        width: 100%;
+        max-width: 100%;
+    }
+
+    #facts-container {
+        max-width: 100%;
+    }
+
+    .fact-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+    }
+
+    .fact-item .actions {
+        margin-top: 6px;
     }
 }
+
+
+
+
+
+
 </style>
 
 <main>

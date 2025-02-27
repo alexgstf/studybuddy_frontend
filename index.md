@@ -25,7 +25,7 @@ hide: true
     <a href="{{site.baseurl}}/insightsbase" style="text-decoration: none; color: inherit;">
     <div class="feature">
         <h3>Insights</h3>
-        <p>Share your Inisght</p>
+        <p>Collaborate with other users on classes, schedules and more. </p>
     </div>
     <a href="{{site.baseurl}}/studybuddy/quizhome.html" style="text-decoration: none; color: inherit;">
     <div class="feature">
