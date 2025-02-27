@@ -22,10 +22,10 @@ hide: true
         <h3>Collaborative Tools</h3>
         <p>Work together with friends using real-time study sessions, shared notes, and more!</p>
     </div>
-    <a href="{{site.baseurl}}/factsbase" style="text-decoration: none; color: inherit;">
+    <a href="{{site.baseurl}}/insightsbase" style="text-decoration: none; color: inherit;">
     <div class="feature">
-        <h3>Fun Facts</h3>
-        <p>Interact with a Fun Fact</p>
+        <h3>Insights</h3>
+        <p>Share your Inisght</p>
     </div>
     <a href="{{site.baseurl}}/studybuddy/quizhome.html" style="text-decoration: none; color: inherit;">
     <div class="feature">
