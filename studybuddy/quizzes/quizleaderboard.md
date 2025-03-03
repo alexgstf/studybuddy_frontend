@@ -80,6 +80,10 @@ permalink: /studybuddy/leaderboard
             text-align: left !important;
         }
 
+        td {
+            background:rgba(0,0,0,0.3) !important;
+        }
+
         th {
             background: rgba(255, 255, 255, 0.2) !important;
         }
@@ -117,7 +121,7 @@ permalink: /studybuddy/leaderboard
 
         document.addEventListener("DOMContentLoaded", async () => {
             try {
-                const response = await fetch(`${pythonURI}/api/leaderboard`, {
+                const response = await fetch(`${pythonURI}/api/userstats/leaderboard`, {
                     ...fetchOptions,
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
@@ -133,6 +137,7 @@ permalink: /studybuddy/leaderboard
                 leaderboardData.sort((a, b) => b.level - a.level || b.xp - a.xp);
 
                 leaderboardData.forEach((user, index) => {
+                    console.log("SKibidi");
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${index + 1}</td>
