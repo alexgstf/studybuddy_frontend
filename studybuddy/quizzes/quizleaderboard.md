@@ -128,7 +128,7 @@ permalink: /studybuddy/leaderboard
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to fetch leaderboard data');
+                    throw new Error(`Failed to fetch leaderboard data: ${response.statusText}`);
                 }
 
                 const leaderboardData = await response.json();
@@ -137,7 +137,6 @@ permalink: /studybuddy/leaderboard
                 leaderboardData.sort((a, b) => b.level - a.level || b.xp - a.xp);
 
                 leaderboardData.forEach((user, index) => {
-                    console.log("SKibidi");
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${index + 1}</td>
@@ -149,6 +148,7 @@ permalink: /studybuddy/leaderboard
                 });
             } catch (error) {
                 console.error('Error fetching leaderboard data:', error);
+                alert('An error occurred while fetching leaderboard data. Please try again later.');
             }
         });
     </script>
